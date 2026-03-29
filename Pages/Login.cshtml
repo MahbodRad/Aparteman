@@ -1,0 +1,46 @@
+﻿@page 
+@model LoginModel
+@{
+    Layout = "_LayoutLogin";
+}
+
+<div class="alert alert-primary mt-4 op-0-9 text-center">
+    <h5>ورود به پنل کاربری</h5>
+</div>
+<div class="alert alert-secondary op-0-9 small">
+    <p>
+        لطفاً نام کاربری و رمز عبور خود را برای ورود به سامانه وارد کنید.
+        در صورت وارد کردن اطلاعات صحیح، به پنل اختصاصی مجتمع خود هدایت خواهید شد.
+    </p>
+</div>
+
+<div class="text-center">
+    <div style="width:350px" class="mx-auto border text-white rounded border-info bg-dark p-5 LoginForm">
+        <form asp-antiforgery="true" method="post" asp-page-handler="Login">
+            <input type="hidden" name="ReturnPage" value="@ViewData["ReturnPage"]" />
+            <div class="text-center">
+                <h4 class="flex-fill text-center" style="font-family: DastNevis; color:orangered">سامانه</h4>
+                <h4 class="text-center" style="font-family: DastNevis;">(آپارتمان من)</h4>
+            </div>
+
+            <div class="mt-2 ">
+                <label class="form-label text-warning" onclick="ShowFastHelp(this,'نام کاربری که هنگام ثبت‌ نام یا توسط مدیر سیستم برای شما ایجاد شده است.')">نام کاربری</label>
+                <input type="text" class="form-control text-center text-white bg-dark ltr" name="UserName" value="@ViewData["UserName"]" />
+            </div>
+
+            <div class="mt-2 ">
+                <label class="form-label text-warning" onclick="ShowFastHelp(this,'رمز عبور حساب کاربری شما. در صورت فراموشی، می‌توانید از گزینه «فراموشی رمز عبور» استفاده کنید.')">رمز عبور</label>
+                <input type="password" class="form-control text-center text-white bg-dark ltr" name="Password" value="" />
+            </div>
+
+            <div class="text-warning" id="RES">@ViewData["ResTp"]</div>
+            <div class="pt-3 text-center">
+                <button type="submit" class="BTN btn_Normal btn_Blue" ondblclick="SpinnerShow('RES','در حال تائید هویت. چند لحظه صبر کنید ...');">ورود به <span class="font-20" style="font-family: DastNevis; color:darkred">آپارتمان من</span> </button>
+            </div>
+            <div class="alert alert-warning mt-2 small">
+                به دلایل امنیتی، در صورت چند بار ورود ناموفق، دسترسی موقتاً محدود می‌شود.
+            </div>
+        </form>
+    </div>
+</div>
+

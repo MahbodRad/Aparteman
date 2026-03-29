@@ -1,0 +1,266 @@
+﻿@page
+@model Aparteman.Pages.dashboard.ProfileModel
+@using System.Data;
+@using System.Web
+@{
+    DataRow pagesitem;
+    var User = Model.UserData;
+}
+
+<div>
+    <footer-page class="nav nav-tabs border-top border-light">
+        <div class="w-inline">
+            <div id="menu-page-btn">
+                <menu-page data-bs-toggle="tab" data-bs-target="#tab_A" class="active">مشخصات</menu-page><point></point>
+                <menu-page data-bs-toggle="tab" data-bs-target="#tab_B">سایر اطلاعات</menu-page><point></point>
+                <menu-page data-bs-toggle="tab" data-bs-target="#tab_C">تغییر پسورد</menu-page><point></point>
+                <menu-page data-bs-toggle="tab" data-bs-target="#tab_D">لیست اسناد</menu-page><point></point>
+                <menu-page class="w-min-50" onclick="HelpAjax(@Model.FormId);" data-bs-toggle="tooltip" data-bs-title="راهنما">
+                    <span class="menu-firuze icofont-00x icofont-learn"></span>
+                </menu-page>
+                <menu-page class="w-min-50" onclick="ToggleFullscreen();" data-bs-toggle="tooltip" data-bs-title="تمام صفحه">
+                    <span class="menu-firuze icofont-00x icofont-expand"></span>
+                </menu-page>
+                <menu-page onclick="GoToTop();" class="w-min-50" data-bs-toggle="tooltip" data-bs-title="برگشت به بالا">
+                    <span class="menu-firuze icofont-00x icofont-stylish-up"></span>
+                </menu-page>
+                <menu-page class="bg-secondary" data-bs-toggle="tooltip" data-bs-title="برگشت به صفحه قبل">
+                    <select class="text-start bg-secondary text-light" onchange="GoToUrl(this.value);">
+                        @foreach (DataRow item in Model.formData.lastForms.Rows)
+                        {
+                            <option value="/@item["Route"]">@item["FormTitle"]</option>
+                        }
+                    </select>
+                </menu-page><point></point>
+                <button type="button" class="pos-Right btn_Icon Icon_Red icofont-2x icofont-curved-double-right d-md-none"
+                        data-bs-title="اسکرول به راست" onclick="ScrollRight('menu-page-btn');"></button>
+                <button type="button" class="pos-Left btn_Icon Icon_Red icofont-2x icofont-curved-double-left d-md-none"
+                        data-bs-title="اسکرول به چپ" onclick="ScrollLeft('menu-page-btn');"></button>
+            </div>
+        </div>
+    </footer-page>
+
+    <div class="tab-content">
+
+        <!-- ✅ تب پروفایل -->
+        <div class="tab-pane fade active show" id="tab_A">
+            @{
+                pagesitem = Model.formData.Pages.Select("RJ = 1").First();
+            }
+            <div class="OnvanSafhe">
+                <h6 class="shadow">@pagesitem["OnvanPage"]</h6>
+            </div>
+
+            @if (!string.IsNullOrEmpty(pagesitem["HeaderPage"].ToString()))
+            {
+                <div class="alert alert-secondary">
+                    @Html.Raw(HttpUtility.HtmlDecode(pagesitem["HeaderPage"].ToString()))
+                </div>
+            }
+
+            <div class="w-max-600 alert alert-primary border-info">
+                <form asp-antiforgery="true" method="post" data-ajax="true"
+                      enctype="multipart/form-data"
+                      data-ajax-confirm="آیا تصویر جدید ثبت گردد؟"
+                      data-ajax-url="?handler=UpLoadPic"
+                      data-ajax-Btn="UpLoadPicBtn"
+                      data-ajax-complete="JsonResultOK">
+                    <input type="hidden" name="OldPic" value="@User["Pic"]" />
+                    <input type="submit" hidden id="UpLoadPicBtn" />
+                    <input class="d-none" type="file" id="PicUpload" name="PicUpload"
+                           accept=".jpg,.png,.bmp,.jpeg"
+                           onchange="GetPhoto(this,'PicName', 'PhotoPic'); ClickBtn('UpLoadPicBtn');" />
+
+                    <img id="PhotoPic" class="rounded rounded-5 wh-max-150 d-block mx-auto cursor-pointer"
+                            src="/Uploads/Persons/@User["Pic"]"
+                            onclick="ClickBtn('PicUpload');" />
+                    <span id="PicName">برای تغییر تصویر روی عکس کلیک کنید</span>
+
+                </form>
+                <hr />
+                <form asp-antiforgery="true" method="post"
+                      data-ajax="true"
+                      data-ajax-confirm="آیا اطلاعات خود را به روز رسانی میکنید؟ "
+                      data-ajax-Btn="UpdateUserInfoBtn"
+                      data-ajax-begin="SpinnerShowForm('چند لحظه صبر کنید');"
+                      data-ajax-url="?handler=UpdateUserInfo"
+                      data-ajax-complete="JsonResultOK">
+
+                    <h5 class="text-center">
+                        <span>@User["ComplexName"]</span>
+                    </h5>
+
+                    <div class="row mt-2">
+                        <div class="col-6"><span class="control-label">نام</span>
+                            <input type="text" class="control-input text-center" name="FullName" value="@User["FullName"]" />
+                        </div>
+                        <div class="col-6">
+                            <span class="control-label">شماره همراه</span>
+                            <input type="text" class="control-input text-center ltr" name="Mobile" value="@User["Mobile"]" />
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-6">
+                            <span class="control-label">کد ملی</span>
+                            <input type="text" class="control-input text-center ltr" name="NationalCode" value="@User["NationalCode"]" />
+                        </div>
+                        <div class="col-6">
+                            <span class="control-label">ایمیل</span>
+                            <input type="email" class="control-input text-center" name="Email" value="@User["Email"]" />
+                        </div>
+                    </div>
+
+                    <div class=" text-end p-2">
+                        <button type="submit" id="UpdateUserInfoBtn" class="btn_Icon Icon_Blue2 icofont icofont-2x icofont-checked" data-bs-toggle="tooltip" data-bs-title="ثبت شود"><span>ثبت شود</span><span class=""></span></button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+
+        <!-- ✅ سایر اطلاعات -->
+        <div class="tab-pane fade" id="tab_B">
+            @{
+                pagesitem = Model.formData.Pages.Select("RJ = 2").First();
+            }
+            <div class="OnvanSafhe">
+                <h6 class="shadow">@pagesitem["OnvanPage"]</h6>
+            </div>
+
+            @if (!string.IsNullOrEmpty(pagesitem["HeaderPage"].ToString()))
+            {
+                <div class="alert alert-secondary">
+                    @Html.Raw(HttpUtility.HtmlDecode(pagesitem["HeaderPage"].ToString()))
+                </div>
+            }
+
+            <div class="w-max-600 alert alert-primary border-info">
+                <div class="row mt-2">
+                    <div class="col-6"><span class="control-label">ساختمان</span> <span class="control-text">@User["BuildingCode"] - @User["BuildingName"]</span></div>
+                    <div class="col-6"><span class="control-label">طبقه</span> <span class="control-text">@User["FloorNumber"] - @User["FloorTitle"]</span></div>
+                </div>
+
+                <div class="row mt-2">
+                    <div class="col-4"><span class="control-label">واحد</span> <span class="control-text">@User["UnitNumber"]</span></div>
+                    <div class="col-4"><span class="control-label">مساحت</span> <span class="control-text">@User["Area"]</span></div>
+                    <div class="col-4"><span class="control-label">تعداد خواب</span> <span class="control-text">@User["NqBed"]</span></div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-4"><span class="control-label">ش پارکینگ</span> <span class="control-text">@User["NumberPark"]</span></div>
+                    <div class="col-4"><span class="control-label">ش انباری</span> <span class="control-text">@User["NumberStor"]</span></div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-6"><span class="control-label">ش کنتور آب</span> <span class="control-text">@User["NumberWater"]</span></div>
+                    <div class="col-6"><span class="control-label">ش کنتور برق</span> <span class="control-text">@User["NumberBarg"]</span></div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-6"><span class="control-label">ش کنتور گاز</span> <span class="control-text">@User["NumBerGaz"]</span></div>
+                    <div class="col-6"><span class="control-label">شروع سکونت</span> <span class="control-text">@User["StartDate"]</span></div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-6"><span class="control-label">تعداد ساکنین</span> <span class="control-text">@User["NqSaken"]</span></div>
+                    <div class="col-6"><span class="control-label">تعداد مشمول شارژ</span> <span class="control-text">@User["NqCharge"]</span></div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-6">
+                        <span class="control-label">شارژ مالک</span>
+                        <span class="w-fixC-90">
+                            <img class="w-fix-75" src="@User["IsActiveMalekIcon"]" alt="Aparteman_YesNo" />
+                        </span>
+                    </div>
+                    <div class="col-6">
+                        <span class="control-label">شارژ ساکن</span><span class="w-fixC-90">
+                            <img class="w-fix-75" src="@User["IsActiveSakenIcon"]" alt="Aparteman_YesNo" />
+                        </span>
+                    </div>
+                </div>
+
+                <div class="mt-2">
+                    <span class="control-label">آخرین ورودها</span>
+                    <select class="control-text">
+                        @foreach (DataRow item in Model.ListLogin.Rows)
+                        {
+                            <option>@item["FullData"]</option>
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- ✅ تب تغییر پسورد -->
+        <div class="tab-pane fade" id="tab_C">
+            @{
+                pagesitem = Model.formData.Pages.Select("RJ = 3").First();
+            }
+            <div class="OnvanSafhe"><h6 class="shadow">@pagesitem["OnvanPage"]</h6></div>
+            @if (!string.IsNullOrEmpty(pagesitem["HeaderPage"].ToString()))
+            {
+                <div class="alert alert-secondary">@Html.Raw(HttpUtility.HtmlDecode(pagesitem["HeaderPage"].ToString()))</div>
+            }
+
+            <div class="alert alert-primary border-primary p-3 w-max-500 mx-auto">
+                <form asp-antiforgery="true" method="post"
+                      data-ajax="true"
+                      data-ajax-confirm="آیا اصلاح اطلاعات ذخیره گردد؟"
+                      data-ajax-Btn="UpdateBtn"
+                      data-ajax-url="?handler=UpdatePass"
+                      data-ajax-complete="JsonResultOK">
+                    <div class="mb-2"><span class="control-text">@User["FullName"]</span></div>
+                    <div class="mb-2">
+                        <span class="control-label">نام کاربری</span>
+                        <input name="UserName" class="control-input text-center rounded-pill" value="@User["UserName"]" />
+                    </div>
+                    <div class="row">
+                        <div class="col-6"><span class="control-label">پسورد فعلی</span><input class="control-input text-center rounded-pill" type="password" name="PassNow" /></div>
+                        <div class="col-6"><span class="control-label">پسورد جدید</span><input class="control-input text-center rounded-pill" type="password" name="PassNew" /></div>
+                    </div>
+                    <div class="text-end mt-2">
+                        <button type="submit" id="UpdateBtn" class="btn_Icon Icon_Blue2 icofont icofont-2x icofont-checked" data-bs-toggle="tooltip" data-bs-title="ثبت شود"><span>ثبت شود</span><span class=""></span></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- ✅ تب لیست اسناد -->
+        <div class="tab-pane fade" id="tab_D">
+            @{
+                pagesitem = Model.formData.Pages.Select("RJ = 4").First();
+            }
+            <div class="OnvanSafhe"><h6 class="shadow">@pagesitem["OnvanPage"]</h6></div>
+
+            <div class="container-xl">
+                <div class="d-flex justify-content-around">
+                    <form asp-antiforgery="true" method="get"
+                          data-ajax="true"
+                          data-ajax-method="get"
+                          data-ajax-begin="SpinnerShow('Res_D', 'در حال بارگذاری لیست مدارک');"
+                          data-ajax-url="?handler=ListAsnad"
+                          data-ajax-update="#Res_D">
+                        <div class="px-2 text-start">
+                            <button type="submit" id="ListAsnadBtn" class="BTN btn_Pill btn_Blue2"><span>گزارش اسناد</span><span class="icofont-00x icofont-search-2 float-end"></span></button>
+                        </div>
+                    </form>
+
+                    <form method="get"
+                          data-ajax="true"
+                          data-ajax-method="get"
+                          data-ajax-begin="MsgFormSpinner('A','ارسال مدرک جدید', 'چند لحظه صبر کنید');"
+                          data-ajax-url="?handler=FormSabtAsnad"
+                          data-ajax-update="#MsgFormMATN_A">
+                        <div class="px-2 text-end">
+                            <button type="submit" class="BTN btn_Pill btn_Blue2"><span>ارسال سند جدید</span><span class="icofont-00x icofont-plus float-end"></span></button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="mt-3" id="Res_D">
+                    <div class="alert alert-info w-max-400 mx-auto cursor-pointer" onclick="ClickBtn('ListAsnadBtn');">
+                        <i class="icofont-search-2" style="font-size:40px;"></i>
+                        <h6 class="mt-3">هنوز جستجویی انجام نشده</h6>
+                        <p class="text-muted">برای مشاهده اسناد و فایلها، کلیک کنید</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

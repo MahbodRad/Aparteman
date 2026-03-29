@@ -1,0 +1,149 @@
+﻿@page 
+@model RegisterModel
+@{
+        Layout = "_LayoutLogin";
+}
+
+<section id="RegisterArea">
+    <div class="alert alert-primary mt-4 op-0-9 text-center">
+        <h5>ثبت ‌نام مجتمع و شروع استفاده از سامانه</h5>
+    </div>
+    <div class="alert alert-secondary op-0-9">
+        <p>
+            برای شروع استفاده از سامانه مدیریت شارژ ساختمان، ابتدا لازم است اطلاعات پایه مجتمع و مدیر آن ثبت شود.
+            این اطلاعات به ما کمک می‌کند تا یک فضای اختصاصی و امن برای مجتمع شما ایجاد کنیم.
+        </p>
+        <p class="text-brown text-center">
+            <span class="d-block">لطفا فرم زیر را با دقت پر کنید</span>
+            <span class="text-danger">برای خواندن راهنما روی کلمات عنوانهای هر دیتای خواسته شده کلیک کنید </span>
+        </p>
+    </div>
+
+
+    <div class="card ui-compact auth-form shadow-sm p-4 op-0-9">
+        <h4 class="text-center" style="color:orangered">ثبت مجتمع جدید</h4>
+        <form method="post" 
+              data-ajax="true"
+              data-ajax-method="post"
+              data-ajax-confirm="آیا ثبت نام مجتمع انجام گردد؟"
+              data-ajax-Btn="RegisterBtn"
+              data-ajax-begin="SpinnerShowForm('چند لحظه صبر کنید');"
+              data-ajax-url="?handler=CreateTenant"
+              data-ajax-complete="RegisterComplete">
+                       
+            <!-- Tenant Info -->
+            <h5 class="mb-3 text-primary text-Panevis font-18">اطلاعات مالک سیستم</h5>
+            <div class="row">
+                <div class="col-md-6 mb-2">
+                    <label class="form-label" onclick="ShowFastHelp(this,'اگر شما یک شرکت یا مجموعه هستید که چندین مجتمع دارید، نام شرکت خود را بنویسید. در غیر اینصورت نام مجتمع خود را بنویسید')">نام مجتمع / برند / شرکت</label>
+                    <input type="text" class="form-control text-center" name="tenantName" required>
+                </div>
+                <div class="col-md-6 mb-2">
+                    <label class="form-label" onclick="ShowFastHelp(this,'اطلاعات شخصی مدیر اولیه مجتمع که به‌عنوان اولین کاربر سیستم شناخته می‌شود.')">نام و نام خانوادگی مدیر / ثبت‌کننده</label>
+                    <input type="text" class="form-control text-center" name="contactName" required>
+                </div>
+                <div class="col-md-6 mb-2">
+                    <label class="form-label" onclick="ShowFastHelp(this,'برای ارتباط‌های ضروری، بازیابی رمز عبور و اطلاع‌رسانی‌های مهم استفاده می‌شود.')">موبایل</label>
+                    <input type="text" class="form-control text-center ltr" name="contactMobile" required>
+                </div>
+                <div class="col-md-6 mb-2">
+                    <label class="form-label" onclick="ShowFastHelp(this,'در صورت وارد کردن ایمیل، امکان ارسال اعلان‌ها و بازیابی حساب کاربری فراهم خواهد بود.')">ایمیل(اختیاری)</label>
+                    <input type="email" class="form-control text-center ltr" name="contactEmail">
+                </div>
+            </div>
+
+            <hr>
+
+            <!-- Complex Info -->
+            <h5 class="mb-3 text-success text-Panevis font-18">اطلاعات مجتمع</h5>
+            <div class="mb-3">
+                <label class="form-label" onclick="ShowFastHelp(this,'نامی که مجتمع شما با آن در سیستم شناخته می‌شود.این نام در گزارش‌ها و بخش‌های مدیریتی نمایش داده خواهد شد')">نام مجتمع</label>
+                <input type="text" class="form-control text-center" name="complexName" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label" onclick="ShowFastHelp(this,'آدرس مجتمع شما. در چاپ ها و مواردی که نیاز به اعلام آدرس باشد، نمایش داده خواهد شد')">آدرس</label>
+                <textarea class="form-control" name="address"></textarea>
+            </div>
+
+            <hr>
+
+            <!-- Admin User -->
+            <h5 class="mb-3 text-danger text-Panevis font-18">اطلاعات ورود مدیر</h5>
+            <div class="row">
+                <div class="col-md-6 mb-2">
+                    <label class="form-label" onclick="ShowFastHelp(this,'شناسه ورود شما به سامانه. این نام باید یکتا باشد و بعداً قابل تغییر نیست.')">نام کاربری</label>
+                    <input type="text" id="userNameRegister" class="form-control text-center ltr" name="username" required>
+                </div>
+                <div class="col-md-6 mb-2">
+                    <label class="form-label" onclick="ShowFastHelp(this,'رمز عبور برای محافظت از حساب کاربری شما استفاده می‌شود و به‌صورت امن و رمزنگاری‌شده ذخیره خواهد شد.')">رمز عبور</label>
+                    <input type="password" class="form-control text-center ltr" name="password" required>
+                </div>
+            </div>
+
+            <div class="mb-3" hidden>
+                <div class="g-recaptcha"
+                        data-sitekey="6Lecw3csAAAAAFOUrQULLnSRh9zLeQZAljI66_65">
+                </div>
+            </div>
+            <div id="resultMessage" class="p-2 text-center"></div>
+            <div class="d-grid mt-4">
+                <button type="submit" id="RegisterBtn" class="btn btn-primary btn-sm">
+                    ثبت و ایجاد حساب
+                </button>
+            </div>
+            <div class="mt-3 alert alert-warning op-0-9">
+                <p>
+                    با ثبت ‌نام، یک حساب مدیریتی برای شما ایجاد می‌شود و پس از ورود، می‌توانید سایر کاربران، واحدها و اطلاعات مجتمع را مدیریت کنید.
+                </p>
+            </div>
+
+        </form>
+    </div>
+
+</section>
+                
+                
+    <section id="LoginArea" class="dis-none">
+        <div class="pt-5 text-center">
+            <div class="p-5 mt-5">
+                <div style="width:350px" class="mx-auto border text-white rounded border-info bg-dark p-5 LoginForm ui-compact auth-form shadow-sm">
+                    <div>
+                        <h4>تبریک! ثبت نام شما تکمیل شد.</h4>
+                        <div>اکنون زمان ورود به سامانه و ثبت اولیه اطلاعات مربوط به ساختمان میباشد</div>
+                        <div>وارد سامانه شوید و اطلاعات واحد ها و ساکنین را ثبت کنید </div>
+                    </div>
+                   <form asp-antiforgery="true" method="post" data-ajax-method="post" data-ajax="true"
+                      data-ajax-begin="SpinnerShow('RES','در حال تائید هویت. چند لحظه صبر کنید ...');"
+                      data-ajax-url="?handler=Login"
+                      data-ajax-complete="LoginComp">
+                        <div class="text-center mb-2">
+                            <h4 style="font-family: DastNevis; color:orangered">سامانه</h4>
+                            <h4 style="font-family: DastNevis;">(آپارتمان من)</h4>
+                        </div>
+
+                        <div class="mb-2 text-start">
+                            <span class="form-label text-warning">نام کاربری</span>
+                            <input type="text" class="form-control text-center text-white bg-dark ltr" id="userNameLogin" name="UserName" value="@ViewData["UserName"]" />
+                        </div>
+
+                        <div class="mb-2 text-start">
+                            <span class="form-label text-warning">رمز ورود</span>
+                            <input type="password" class="form-control text-center text-white bg-dark ltr" name="Password" value="" />
+                        </div>
+
+                        <div class="pt-3 text-center">
+                            <button type="submit" class="BTN btn_Normal btn_Blue" onclick="SpinnerShow('RES','در حال تائید هویت. چند لحظه صبر کنید ...');">ورود به <span class="font-20" style="font-family: DastNevis; color:darkred">آپارتمان من</span> </button>
+                        </div>
+
+                        <div class="text-end">
+                            <button type="button" class="btn_Icon Icon_Yellow icofont-00x icofont-flag" onclick="ClickBtn('HelpBtn');" title="راهنما"></button>
+                        </div>
+
+                        <div class="text-warning" id="RES">@ViewData["ResTp"]</div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </section>
+

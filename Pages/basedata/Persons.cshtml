@@ -1,0 +1,298 @@
+﻿@page
+@model Aparteman.Pages.basedata.PersonsModel
+@using System.Data;
+@using System.Web
+@{
+    DataRow pagesitem;
+}
+
+<div>
+    <footer-page class="nav nav-tabs border-top border-light">
+        <div class="w-inline">
+            <div id="menu-page-btn">
+                <menu-page data-bs-toggle="tab" data-bs-target="#tab_A" class="active">داشبورد</menu-page><point></point>
+                <menu-page data-bs-toggle="tab" data-bs-target="#tab_B">اشخاص</menu-page><point></point>
+                <menu-page data-bs-toggle="tab" data-bs-target="#tab_C">کاربران</menu-page><point></point>
+                <menu-page class="w-min-50" onclick="HelpAjax(@Model.FormId);" data-bs-toggle="tooltip" data-bs-title="راهنما">
+                    <span class="menu-firuze icofont-00x icofont-learn"></span>
+                </menu-page>
+                <menu-page class="w-min-50" onclick="ToggleFullscreen();" data-bs-toggle="tooltip" data-bs-title="تمام صفحه">
+                    <span class="menu-firuze icofont-00x icofont-expand"></span>
+                </menu-page>
+                <menu-page onclick="GoToTop();" class="w-min-50" data-bs-toggle="tooltip" data-bs-title="برگشت به بالا">
+                    <span class="menu-firuze icofont-00x icofont-stylish-up"></span>
+                </menu-page>
+                <menu-page class="bg-secondary" data-bs-toggle="tooltip" data-bs-title="برگشت به صفحه قبل">
+                    <select class="text-start bg-secondary text-light" onchange="GoToUrl(this.value);">
+                        @foreach (DataRow item in Model.formData.lastForms.Rows)
+                        {
+                            <option value="/@item["Route"]">@item["FormTitle"]</option>
+                        }
+                    </select>
+                </menu-page><point></point>
+                <button type="button" class="pos-Right btn_Icon Icon_Red icofont-2x icofont-curved-double-right d-md-none"
+                        data-bs-title="اسکرول به راست" onclick="ScrollRight('menu-page-btn');"></button>
+                <button type="button" class="pos-Left btn_Icon Icon_Red icofont-2x icofont-curved-double-left d-md-none"
+                        data-bs-title="اسکرول به چپ" onclick="ScrollLeft('menu-page-btn');"></button>
+            </div>
+        </div>
+    </footer-page>
+
+    <div class="tab-content">
+
+        <div class="tab-pane fade active show" id="tab_A">
+            @{
+                pagesitem = Model.formData.Pages.Select("RJ = 1").First();
+            }
+            <div class="OnvanSafhe">
+                <h6 class="shadow">@pagesitem["OnvanPage"]</h6>
+            </div>
+
+            @if (!string.IsNullOrEmpty(pagesitem["HeaderPage"].ToString()))
+            {
+                <div class="alert alert-secondary">
+                    @Html.Raw(HttpUtility.HtmlDecode(pagesitem["HeaderPage"].ToString()))
+                </div>
+            }
+            <h3>مجموعه ای از گزارشات مدیریتی</h3>
+        </div>
+
+
+        <!-- ✅ تب اشخاص -->
+        <div class="tab-pane fade" id="tab_B">
+            @{
+                pagesitem = Model.formData.Pages.Select("RJ = 2").First();
+            }
+            <div class="OnvanSafhe">
+                <h6 class="shadow">@pagesitem["OnvanPage"]</h6>
+            </div>
+
+            @if (!string.IsNullOrEmpty(pagesitem["HeaderPage"].ToString()))
+            {
+                <div class="alert alert-secondary">
+                    @Html.Raw(HttpUtility.HtmlDecode(pagesitem["HeaderPage"].ToString()))
+                </div>
+            }
+
+
+            <section id="AreaPersonList">
+                <div class="container">
+                    <form method="get" data-ajax="true" data-ajax-method="get"
+                            data-ajax-begin="MsgFormSpinner('A','ثبت اطلاعات اشخاص', 'چند لحظه صبر کنید');"
+                            data-ajax-url="?handler=FormSabtPerson"
+                            data-ajax-update="#MsgFormMATN_A">
+                        <input type="hidden" name="Complex" value="@Model.userInfo.Complex" />
+                        <input type="submit" hidden id="FormSabtPersonBtn" name="ID" />
+                        <div class="px-2 text-end">
+                            <button type="button" class="BTN btn_Pill btn_Blue2" onclick="ClickBtnSimpl('FormSabtPersonBtn','0');"><span>افزدون شخص جدید</span><i class="icofont-00x icofont-plus"></i></button>
+                        </div>
+                    </form>
+                    <form method="get" data-ajax="true" data-ajax-method="get"
+                            data-ajax-begin="MsgFormSpinner('A',',واحدهای شخص', 'چند لحظه صبر کنید');"
+                            data-ajax-url="?handler=FormUnit"
+                            data-ajax-update="#MsgFormMATN_A">
+                        <input type="hidden" id="FormUnitPerson" name="PersonName" />
+                        <input type="submit" hidden id="FormUnitBtn" name="PersonId" />
+                    </form>
+                    <form method="get" data-ajax="true" data-ajax-method="get"
+                            data-ajax-begin="MsgFormSpinner('A','افراد مرتبط با شخص', 'چند لحظه صبر کنید');"
+                            data-ajax-url="?handler=FormRelation"
+                            data-ajax-update="#MsgFormMATN_A">
+                        <input type="hidden" id="FormRelationPerson" name="PersonName" />
+                        <input type="submit" hidden id="FormRelationBtn" name="PersonId" />
+                    </form>
+                    <form method="get" data-ajax="true" data-ajax-method="get"
+                            data-ajax-begin="MsgFormSpinner('A','اسناد شخص', 'چند لحظه صبر کنید');"
+                            data-ajax-url="?handler=FormAsnad"
+                            data-ajax-update="#MsgFormMATN_A">
+                        <input type="hidden" id="FormAsnadPerson" name="PersonName" />
+                        <input type="submit" hidden id="FormAsnadBtn" name="PersonId" />
+                    </form>
+
+                    <div class="filterArea">
+                        <form asp-antiforgery="true" method="get" data-ajax-method="get" data-ajax="true"
+                              data-ajax-begin="SpinnerShow('ListPersons', 'در حال بارگذاری لیست اشخاص');"
+                              data-ajax-url="?handler=ListPersons"
+                              data-ajax-update="#ListPersons">
+
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <span class="control-label">ساختمان</span>
+                                    <select name="BuildingId" class="control-input" onchange="FindListFloorAjax('FloorIdRep',this, 'All')">
+                                        <option value="0">انتخاب کنید/همه</option>
+                                        @foreach (DataRow item in Model.ListBuilding.Rows)
+                                        {
+                                            <option value="@item["BuildingId"]">@item["BuildingName"]</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-sm-6">
+                                    <span class="control-label">طبقه</span>
+                                    <select class="control-input" id="FloorId" name="FloorId">
+                                        @if (Model.ListBuilding.Rows.Count > 1)
+                                        {
+                                            <option value="">همه/ابتدا ساختمان را انتخاب کنید</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="">همه</option>
+                                            @foreach (DataRow item in Model.ListFloor.Rows)
+                                            {
+                                                <option value="@item["FloorId"]">@item["FloorTitle"]</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-6 col-sm-3">
+                                    <span class="control-label">نام شخص</span>
+                                    <input class="control-text ltr" name="FullName" value="" />
+                                </div>
+                                <div class="col-6 col-sm-3">
+                                    <span class="control-label">شماره همراه</span>
+                                    <input class="control-text ltr" name="Mobile" value="" />
+                                </div>
+                                <div class="col-6 col-sm-3">
+                                    <span class="control-label">کد ملی</span>
+                                    <input class="control-text ltr" name="NationalCode" value="" />
+                                </div>
+                                <div class="col-6 col-sm-3">
+                                    <span class="control-label">شماره واحد</span>
+                                    <input class="control-text ltr" name="UnitNumber" value="" />
+                                </div>
+
+                                <div class="col-6 col-sm-3">
+                                    <span class="control-label">نوع شخص</span>
+                                    <select class="control-input" name="RoleCode">
+                                        <option value="0">همه</option>
+                                        <option value="1">مالک</option>
+                                        <option value="2">مستاجر</option>
+                                        <option value="3">نماینده مالک</option>
+                                        <option value="100">سایر</option>
+                                    </select>
+                                </div>
+                                <div class="col-6 col-sm-3">
+                                    <span class="control-label">وضعیت در سیستم</span>
+                                    <select class="control-input" name="Active">
+                                        <option value="2">همه</option>
+                                        <option value="1">فعال است</option>
+                                        <option value="0">فعال نیست</option>
+                                    </select>
+                                </div>
+                                <div class="col-6 col-sm-3">
+                                    <span class="control-label">مرتب سازی</span>
+                                    <select class="control-input" name="Sort">
+                                        <option value="A">نام شخص</option>
+                                        <option value="B">شماره همراه</option>
+                                    </select>
+                                </div>
+                                <div class="col-12 col-sm-3">
+                                    <div class="p-4 text-end">
+                                        <button type="submit" class="BTN btn_Pill btn_Blue2"><span>جستجوی شخص</span><i class="icofont-2x icofont-search-2"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+
+                </div>
+
+                <div class="container-fluid">
+                    <div class="mt-3" id="ListPersons">
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- ✅ تب کاربران -->
+        <div class="tab-pane fade" id="tab_C">
+            @{
+                pagesitem = Model.formData.Pages.Select("RJ = 3").First();
+            }
+            <div class="OnvanSafhe">
+                <h6 class="shadow">@pagesitem["OnvanPage"]</h6>
+            </div>
+
+            @if (!string.IsNullOrEmpty(pagesitem["HeaderPage"].ToString()))
+            {
+                <div class="alert alert-secondary">
+                    @Html.Raw(HttpUtility.HtmlDecode(pagesitem["HeaderPage"].ToString()))
+                </div>
+            }
+
+            <div class="container">
+                <form hidden method="get" data-ajax="true" data-ajax-method="get"
+                      data-ajax-begin="MsgFormSpinner('A','ثبت اطلاعات کاربران', 'چند لحظه صبر کنید');"
+                      data-ajax-url="?handler=FormSabtKarbaran"
+                      data-ajax-update="#MsgFormMATN_A">
+                    <input type="submit" hidden id="FormSabtKarbaranBtn" name="PersonId" />
+                </form>
+
+                <div class="filterArea">
+                    <form asp-antiforgery="true" method="post" data-ajax-method="post" data-ajax="true"
+                            data-ajax-begin="SpinnerShow('ListKarbaran', 'در حال بارگذاری لیست کاربران');"
+                            data-ajax-url="?handler=ListKarbaran"
+                            data-ajax-update="#ListKarbaran">
+
+                        <div class="row">
+                            <div class="col-6 col-sm-4">
+                                <span class="control-label">وضعیت</span>
+                                <select name="IsActive" class="control-input">
+                                    <option value="2">همه</option>
+                                    <option value="1">فعال</option>
+                                    <option value="0">غیر فعال</option>
+                                </select>
+                            </div>
+                            <div class="col-6 col-sm-4">
+                                <span class="control-label">نام کاربر</span>
+                                <input type="text" class="control-input text-center" name="FullName" value="" />
+                            </div>
+                            <div class="col-6 col-sm-4">
+                                <span class="control-label">شماره همراه</span>
+                                <input type="text" class="control-input text-center ltr" name="Mobile" value="" />
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-6 col-sm-4">
+                                <span class="control-label">شماره واحد</span>
+                                <input type="text" class="control-input text-center ltr" name="UnitNumber" value="" />
+                            </div>
+                            <div class="col-6 col-sm-4">
+                                <span class="control-label">عنوان کاربر</span>
+                                <input type="text" class="control-input text-center ltr" name="UserName" value="" />
+                            </div>
+                            <div class="col-6 col-sm-4">
+                                <span class="control-label">ترتیب نمایش</span>
+                                <select name="Sort" class="control-input">
+                                    <option value="A">نام</option>
+                                    <option value="B">شماره همراه</option>
+                                    <option value="C">واحد</option>
+                                    <option value="D">نام کاربری</option>
+                                    <option value="E">آخرین ویزیت</option>
+                                </select>
+                            </div>
+                        </div>
+
+
+                        <div class="p-3 text-end">
+                            <button type="submit" class="BTN btn_Pill btn_Blue2"><span>جستجوی کاربران</span><i class="icofont-2x icofont-search-2"></i></button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+
+            <div class="container-fluid mt-3" id="ListKarbaran">
+                <div class="text-center wrapword text-primary">برای تهیه گزارش از فیلتر مناسب استفاده کنید.</div>
+            </div>
+        </div>
+
+
+    </div>
+</div>

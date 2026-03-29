@@ -1,0 +1,11 @@
+﻿@page
+@model Aparteman.Pages.errors._1000Model
+@{
+    ViewData["title"] = "این صفحه پیدا نشد";
+}
+
+<div class="container" style="text-align: center;  color: #888;">
+    <p class="font-32">راهنما برای صفحه داخلی پیدا نشد</p>
+    <img src="/images/error_404.gif" />
+    <p class="font-24 text-danger">صفحه داخلی: @ViewData["RJ"] - @ViewData["TabName"] </p>
+</div>

@@ -1,0 +1,31 @@
+﻿@page
+@model Aparteman.Pages.KhataModel
+@{
+    Layout = null;
+    ViewData["Title"] = "خطا";
+}
+<head>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.rtl.min.css" />
+    <link rel="stylesheet" href="~/fonts/icofont/icofont.min.css" />
+    <link rel="stylesheet" href="~/css/styles.css" asp-append-version="true" />
+</head>
+
+<div class='card w-max-350 mt-3 mx-auto text-center alert alert-danger'>
+    <p class='card-header alert alert-heading'><span class="icofont-5x text-primary icofont-live-support"></span></p>
+    <div><span class="font-32">خطا در اجرای دستور! </span>  <div class='mt-3 alert alert-info'>اطلاعات ورودی را کنترل کنید و دوباره تلاش کنید. اگر همچنان با خطا مواجه شدید به مدیریت اطلاع بدهید  </div> </div>
+    
+</div>
+<div class="text-center">
+    <div class="mx-auto w-max-350 p-5">
+        <form method="post" asp-page-handler="Return">
+            <input type="hidden" value="/@ViewData["_Page"]" name="PAGE" />
+            <input type="submit" class="BTN btn_Normal btn_Blue2 w-fix-200" value=" برگشت به صفحه قبل" />
+        </form>
+        <br />
+        <form method="post" asp-page-handler="Return">
+            <input type="hidden" value="/Home" name="PAGE" />
+            <input type="submit" class="BTN btn_Normal btn_Blue2 w-fix-200" value=" صفحه خانه" />
+        </form>
+    </div>
+
+</div>

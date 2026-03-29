@@ -1,0 +1,1235 @@
+﻿@model Aparteman.Pages.basedata.PersonsModel
+@using System.Data;
+@using Aparteman.Services;
+@{
+    var ZF = ""; var RJ = 0;
+}
+@switch (@ViewData["Switch"])
+{
+    case "ListPerson":
+
+        <div class="d-flex flex-wrap justify-content-between border-top border-secondary">
+            <div class="Area_Count w-fix-200">
+                <span>تعداد : </span><span>@Model.ListPersons.Rows.Count </span>
+            </div>
+        </div>
+
+
+        <div class="header_Table">
+            <button type="button" class="btn_Icon footer_Right Icon_Red icofont-00x icofont-curved-double-right" title="اسکرول به راست" onclick="ScrollRight('@ViewData["Switch"]_FT');"></button>
+            <button type="button" class="btn_Icon footer_Left Icon_Red icofont-00x icofont-curved-double-left" title="اسکرول به چپ" onclick="ScrollLeft('@ViewData["Switch"]_FT');"></button>
+            <div id="@ViewData["Switch"]_FT" class="overflow-hidden" onscroll="ScrollSlave(this, '@ViewData["Switch"]_MS');">
+                <table class="table grid-table">
+                    <thead>
+                        <tr>
+                            <th><span>#</span></th>
+                            <th><span class="w-fix-75"><i class="icofont-people"></i></span></th>
+                            <th><span class="w-fix-200">نام</span></th>
+                            <th><span class="w-fix-150">همراه</span></th>
+                            <th><span class="w-fix-150">کد ملی</span></th>
+                            <th><span class="w-fix-50">ویرایش</span></th>
+                            <th><span class="w-fix-50">واحد</span></th>
+                            <th><span class="w-fix-50">مرتبط</span></th>
+                            <th><span class="w-fix-50">اسناد</span></th>
+                            <th><span class="w-fix-100">نقش</span></th>
+                            <th><span class="w-fix-100">واحد</span></th>
+                            <th><span class="w-fix-100">طبقه</span></th>
+                            <th><span class="w-fix-200">ساختمان</span></th>
+                            <th><span class="w-fix-90">فعال است؟</span></th>
+                            <th><span class="w-fix-250">ایمیل</span></th>
+                            <th><span class="w-fix-50">حذف</span></th>
+                            <th><span class="w-fix-180"><span>ویرایشگر</span> / <span>زمان</span></span></th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+        <div class="overflow-auto" id="@ViewData["Switch"]_MS" onscroll="ScrollSlave(this, '@ViewData["Switch"]_FT');">
+            <table class="table grid-table">
+                <thead class="header_Tablehiden">
+                    <tr>
+                        <th><span>#</span></th>
+                        <th><span class="w-fix-75"><i class="icofont-people"></i></span></th>
+                        <th><span class="w-fix-200">نام</span></th>
+                        <th><span class="w-fix-150">همراه</span></th>
+                        <th><span class="w-fix-150">کد ملی</span></th>
+                        <th><span class="w-fix-50">ویرایش</span></th>
+                        <th><span class="w-fix-50">واحد</span></th>
+                        <th><span class="w-fix-50">مرتبط</span></th>
+                        <th><span class="w-fix-50">اسناد</span></th>
+                        <th><span class="w-fix-100">نقش</span></th>
+                        <th><span class="w-fix-100">واحد</span></th>
+                        <th><span class="w-fix-100">طبقه</span></th>
+                        <th><span class="w-fix-200">ساختمان</span></th>
+                        <th><span class="w-fix-90">فعال است؟</span></th>
+                        <th><span class="w-fix-250">ایمیل</span></th>
+                        <th><span class="w-fix-50">حذف</span></th>
+                        <th><span class="w-fix-180"><span>ویرایشگر</span> / <span>زمان</span></span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (DataRow item in Model.ListPersons.Rows)
+                    {
+                        { RJ++; }
+                        <tr onclick="RowSelect(this);" id="Per_@item["PersonId"]">
+                            <td class="text-danger">@RJ</td>
+                            <td><img src="/Uploads/Persons/@item["Pic"]" class="Area_Pill w-100" /> </td>
+                            <td><span class="w-fixC-200 text-start"><span>@item["FullName"]</span><span class="text_line23">@item["PersonId"]</span></span></td>
+                            <td><span class="w-fixC-150 ltr">@item["Mobile"]</span></td>
+                            <td><span class="w-fixC-150 ltr">@item["NationalCode"]</span></td>
+                            <td>
+                                <button type="button" class="btn_Icon Icon_Mor icofont-00x icofont-edit" title="ویرایش" onclick="ClickBtnSimpl('FormSabtPersonBtn', '@item["PersonId"]');"></button>
+                            </td>
+                            <td><span class="w-fixC-50"><button type="button" class="btn_Icon Icon_Blue icofont-00x icofont-home" title="واحد" onclick="ClickBtnSimpl('FormUnitBtn', '@item["PersonId"]','FormUnitPerson', '@item["Fullname"]' );"></button></span></td>
+                            <td><span class="w-fixC-50"><button type="button" class="btn_Icon Icon_Blue icofont-00x icofont-people" title="افراد مرتبط" onclick="ClickBtnSimpl('FormRelationBtn', '@item["PersonId"]','FormRelationPerson', '@item["Fullname"]');"></button></span></td>
+                            <td><span class="w-fixC-50"><button type="button" class="btn_Icon Icon_Blue icofont-00x icofont-file-alt" title="اسناد" onclick="ClickBtnSimpl('FormAsnadBtn', '@item["PersonId"]','FormAsnadPerson', '@item["Fullname"]');"></button></span></td>
+                            <td><span class="w-fixC-100">@item["RoleTitle"]</span></td>
+                            <td><span class="w-fixC-100 ltr">@item["UnitNumber"]</span></td>
+                            <td><span class="w-fixC-100 text-start"><span>@item["FloorTitle"]</span><span class="text_line23">@item["FloorNumber"]</span></span></td>
+                            <td><span class="w-fixC-200 text-start"><span>@item["BuildingName"]</span><span class="text_line23">@item["BuildingCode"]</span></span></td>
+                            <td>
+                                <span class="w-fixC-90">
+                                    <img class="w-fix-75" src="@item["IsActiveIcon"]" alt="Aparteman_YesNo" />
+                                </span>
+                            </td>
+                            <td><span class="w-fixC-250">@item["Email"]</span></td>
+
+                            <td>
+                                <button type="button" class="btn_Icon Icon_Red icofont-00x icofont-delete" title="حذف" onclick="ClickBtnSimpl('DeletePersonBtn', '@item["PersonId"]');"></button>
+                            </td>
+                            <td><span class="w-fixC-180 text-start"><span>@item["EditorName"]</span><span class="text_line23 ltr">@item["TimeEdit"]</span></span></td>
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+        </div>
+
+        <div hidden>
+            <form method="post" data-ajax="true" data-ajax-method="post"
+            data-ajax-confirm="آیا این شخص حذف گردد؟"
+            data-ajax-Btn="DeletePersonBtn"
+            data-ajax-begin="SpinnerShowForm('چند لحظه صبر کنید');"
+            data-ajax-url="?handler=DeletePerson"
+                  data-ajax-complete="JsonResultOK"
+            data-ajax-success="AreaHide('Per_'+EleValue('DeletePersonBtn'))">
+                <input type="submit" hidden id="DeletePersonBtn" name="ID" />
+            </form>
+
+        </div>
+        break;
+
+
+    case "FormSabtPerson":
+        <section class="container p-1">
+            <div class="secondArea w-min-330 p-2">
+                @if (@ViewData["ID"].ToString() == "0")
+                {
+                    <form asp-antiforgery="true" method="post" data-ajax-method="post" data-ajax="true"
+                    data-ajax-confirm="آیا شخص جدید به سیستم اضافه گردد؟"
+                    data-ajax-Btn="UpdatePersonBtn"
+                    data-ajax-begin="SpinnerShowForm('چند لحظه صبر کنید');"
+                    data-ajax-url="?handler=UpdatePerson"
+                    data-ajax-complete="JsonResult">
+                        <input type="hidden" name="ID" value="@ViewData["ID"]" />
+
+                        <div class="Area_Top bg-secondary text-white op-0-8">
+                            <span class="font-18">اطلاعات اصلی</span>
+                        </div>
+
+                        <div class="row py-1">
+                            <div class="col-6">
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'نام و نام خانوادگی شخص را بنویسید. برای اشخاص حقوقی نام شرکت را بنویسید. این فیلد اجباری است، ')">نام</label>
+                                <input type="text" id="jsFullName" name="FullName" class="control-input text-center" maxlength="75" />
+                            </div>
+                            <div class="col-6">
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'شماره همراه اشخاص اجباری است. از این شماره برای تماس با اشخاص استفاده میشود و بایستی معتبر باشد')">موبایل</label>
+                                <input type="tel" onkeyup="onlyNumber(this)" id="jsMobile" name="Mobile" class="control-input text-center ltr" maxlength="20" />
+                            </div>
+                        </div>
+                        <div class="row py-1">
+                            <div class="col-6">
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'در صورت نیاز کد ملی اشخاص ثبت شود. از کد ملی میتوان در موارد حقوقی استفاده کرد')">کد ملی</label>
+                                <input type="tel" onkeyup="onlyNumber(this)" name="NationalCode" class="control-input ltr text-center" maxlength="11">
+                            </div>
+                            <div class="col-6">
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'ایمیل اشخاص ثبت شود. این فیلد ضروری نیست. اما برای ارسال گزارشات و نامه ها به ایمیل استفاده میشود.')">ایمیل</label>
+                                <input type="email" name="Email" class="control-input ltr" maxlength="100" />
+                            </div>
+                        </div>
+
+                        <div class="row py-1">
+                            <div class="col-6">
+                                <span class="control-label" onclick="ShowFastHelp(this,'معمولا افراد بعد از مدتی از مجتمع میروند و دیگر نیازی نیست که برای امور مالی و موارد مشابه مجتمع انتخاب شوند. در این صورت با غیر فعال کردن وضعیت آنها، اسم این افراد دیگر دیده نمی شود. اما همچنان سابقه قعالیتشان در گزارشات مشاهده میشود')">وضعیت در سیستم فعال است؟</span>
+                                <img class="w-fix-75 cursor-pointer" src="/images/Btn_Yes.png" onclick="ToggelYesNo(this,'IsActive');" alt="Aparteman_YesNo" />
+                                <input type="hidden" id="IsActive" name="IsActive" value="1" />
+                            </div>
+                            <div class="col-6">
+                                <span class="control-label" onclick="ShowFastHelp(this,'درصورتی میخواهید این فرد بتواند به عنوان کاربر سیستم وارد سایت شود. این گزینه را «بلی» کنید. برای او یک کاربری ایجاد می شود که در قسمت کاربران می توانید سطح دسترسی او را مدیریت کنید')">آیا کاربر سایت است؟</span>
+                                <img class="w-fix-75 cursor-pointer" src="/images/Btn_No.png" onclick="ToggelYesNo(this,'IsUser');" alt="Aparteman_YesNo" />
+                                <input type="hidden" id="IsUser" name="IsUser" value="0" />
+                            </div>
+                        </div>
+
+                        <div class="Area_Top bg-secondary text-white op-0-8 mt-2">
+                            <span class="font-18">سایر اطلاعات</span>
+                        </div>
+                        <div class="row py-1">
+                            <div class="col-6">
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'برای احراز هویت، ارسال اعلان‌های رسمی یا مالی')">تاریخ تولد</label>
+                                <div class="control-Date">
+                                    <input placeholder="1400/01/01" id="BirthDate" name="BirthDate" maxlength="10" readonly class="usage control-input-plaintext" value="" />
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'فیلد اطلاعاتی برای تماس های ضروری')">تلفن ثابت</label>
+                                <input type="text" onkeyup="onlyNumber(this)" name="Phone" class="control-input text-center ltr" value="" />
+                            </div>
+                        </div>
+                        <div class="mb-2">
+                            <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'شرحی مناسب یا یادداشتی در مورد این شخص بنویسید. شرح صرفا اطلاعاتی است و فقط مدیریت مجتمع میتواند آن را ببیند و به خود شخص نمایش داده نمی شود. مثلا: معلولیت، حیوان خانگی، نیازهای ویژه')">بادداشت</label>
+                            <textarea name="Sharh" class="control-input-Area" rows="2" maxlength="150"></textarea>
+                        </div>
+                        <hr />
+                        <div class="text-end px-3">
+                            <button type="submit" id="UpdatePersonBtn" class="btn_Icon Icon_Blue2 icofont-2x icofont-checked" title="ثبت شود"><span>ثبت شود</span></button>
+                        </div>
+                    </form>
+                }
+                else
+                {
+                    <form asp-antiforgery="true" method="post" data-ajax-method="post" data-ajax="true"
+                    data-ajax-confirm="آیا اطلاعات این شخص اصلاح گردد؟"
+                    data-ajax-Btn="UpdatePersonBtn"
+                    data-ajax-begin="SpinnerShowForm('چند لحظه صبر کنید');"
+                    data-ajax-url="?handler=UpdatePerson"
+                    data-ajax-complete="JsonClose_A">
+                        <input type="hidden" name="ID" value="@ViewData["ID"]" />
+
+                        <div class="Area_Top bg-secondary text-white op-0-8">
+                            <span class="font-18">اطلاعات اصلی</span>
+                        </div>
+                        <div class="row py-1">
+                            <div class="col-6">
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'نام و نام خانوادگی شخص را بنویسید. برای اشخاص حقوقی نام شرکت را بنویسید. این فیلد اجباری است، ')">نام</label>
+                                <input type="text" name="FullName" class="control-input text-center" maxlength="75" value="@Model.RowData["FullName"]" />
+                            </div>
+                            <div class="col-6">
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'شماره همراه اشخاص اجباری است. از این شماره برای تماس با اشخاص استفاده میشود و بایستی معتبر باشد')">موبایل</label>
+                                <input type="tel" onkeyup="onlyNumber(this)" name="Mobile" class="control-input text-center ltr" maxlength="20" value="@Model.RowData["Mobile"]" />
+                            </div>
+                        </div>
+                        <div class="row py-1">
+                            <div class="col-6">
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'در صورت نیاز کد ملی اشخاص ثبت شود. از کد ملی میتوان در موارد حقوقی استفاده کرد')">کد ملی</label>
+                                <input type="tel" onkeyup="onlyNumber(this)" name="NationalCode" class="control-input ltr text-center" maxlength="11" value="@Model.RowData["NationalCode"]">
+                            </div>
+                            <div class="col-6">
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'ایمیل اشخاص ثبت شود. این فیلد ضروری نیست. اما برای ارسال گزارشات و نامه ها به ایمیل استفاده میشود.')">ایمیل</label>
+                                <input type="email" name="Email" class="control-input ltr" maxlength="100" value="@Model.RowData["Email"]" />
+                            </div>
+                        </div>
+
+                        <div class="row py-1">
+                            <div class="col-6">
+                                <span class="control-label" onclick="ShowFastHelp(this,'معمولا افراد بعد از مدتی از مجتمع میروند و دیگر نیازی نیست که برای امور مالی و موارد مشابه مجتمع انتخاب شوند. در این صورت با غیر فعال کردن وضعیت آنها، اسم این افراد دیگر دیده نمی شود. اما همچنان سابقه قعالیتشان در گزارشات مشاهده میشود')">وضعیت در سیستم فعال است؟</span>
+                                <img class="w-fix-75 cursor-pointer" src="@Model.RowData["IsActiveIcon"]" onclick="ToggelYesNo(this,'IsActive');" alt="Aparteman_YesNo" />
+                                <input type="hidden" id="IsActive" name="IsActive" value="@Model.RowData["IsActive"].ToYesNo()" />
+                            </div>
+                            <div class="col-6">
+                                <span class="control-label" onclick="ShowFastHelp(this,'درصورتی میخواهید این فرد بتواند به عنوان کاربر سیستم وارد سایت شود. این گزینه را «بلی» کنید. برای او یک کاربری ایجاد می شود که در قسمت کاربران می توانید سطح دسترسی او را مدیریت کنید')">آیا کاربر سایت است؟</span>
+                                <img class="w-fix-75 cursor-pointer" src="@Model.RowData["IsUserIcon"]" onclick="ToggelYesNo(this,'IsUser');" alt="Aparteman_YesNo" />
+                                <input type="hidden" id="IsUser" name="IsUser" value="@Model.RowData["IsUser"].ToYesNo()" />
+                            </div>
+                        </div>
+
+                        <div class="Area_Top bg-secondary text-white op-0-8 mt-2">
+                            <span class="font-18">سایر اطلاعات</span>
+                        </div>
+                        <div class="row py-1">
+                            <div class="col-6">
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'برای احراز هویت، ارسال اعلان‌های رسمی یا مالی')">تاریخ تولد</label>
+                                <div class="control-Date">
+                                    <input placeholder="1400/01/01" id="BirthDate" name="BirthDate" maxlength="10" readonly class="usage control-input-plaintext" value="@Model.RowData["BirthDate"]" />
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'فیلد اطلاعاتی برای تماس های ضروری')">تلفن ثابت</label>
+                                <input type="text" onkeyup="onlyNumber(this)" name="Phone" class="control-input text-center ltr" value="@Model.RowData["Phone"]" />
+                            </div>
+                        </div>
+                        <div class="mb-2">
+                            <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'شرحی مناسب یا یادداشتی در مورد این شخص بنویسید. شرح صرفا اطلاعاتی است و فقط مدیریت مجتمع میتواند آن را ببیند و به خود شخص نمایش داده نمی شود')">بادداشت</label>
+                            <textarea name="Sharh" class="control-input-Area" rows="2" maxlength="150">@Model.RowData["Sharh"]</textarea>
+                        </div>
+                        <hr />
+                        <div class="text-end px-3">
+                            <button type="submit" id="UpdatePersonBtn" class="btn_Icon Icon_Blue2 icofont-2x icofont-checked" title="ثبت شود"><span>ثبت شود</span></button>
+                        </div>
+                    </form>
+                }
+            </div>
+            <script>
+                ControlPersianDate('BirthDate');
+            </script>
+        </section>
+
+        break;
+
+    case "FormUnit":
+        <section class="container p-1">
+            <div class="secondArea p-2">
+                <form method="get" data-ajax="true" data-ajax-method="get"
+                      data-ajax-begin="MsgFormSpinner('B','تخصیص واحد به شخص', 'چند لحظه صبر کنید');"
+                      data-ajax-url="?handler=FormSabtUnit"
+                      data-ajax-update="#MsgFormMATN_B">
+                    <input type="hidden" name="PersonName" value="@ViewData["PersonName"]" />
+                    <input type="hidden" name="PersonId" value="@ViewData["PersonId"]" />
+                    <input type="submit" hidden id="FormSabtUnitBtn" name="ID" />
+                    <div class="p-2 text-end">
+                        <button type="button" class="BTN btn_Pill btn_Blue2 w-fix-225" onclick="ClickBtnSimpl('FormSabtUnitBtn','0');"><span>افزودن واحد جدید</span><i class="icofont-00x icofont-plus float-end"></i></button>
+                    </div>
+                </form>
+                <div id="D_ResUnit">
+                    @if(Model.ListUnit.Rows.Count == 0)
+                    {
+                        <div class="alert alert-danger">
+                            <h5>هنوز واحدی را به «@ViewData["PersonName"]»  تخصیص نداده اید</h5>
+                        </div>
+                    }else
+                    {
+                        <div class="d-flex flex-wrap justify-content-between">
+                            <div class="Area_Count w-fix-200">
+                                <span>تعداد : </span><span>@Model.ListUnit.Rows.Count </span>
+                            </div>
+                        </div>
+
+                        <div class="header_Table">
+                            <button type="button" class="btn_Icon footer_Right Icon_Red icofont-00x icofont-curved-double-right" title="اسکرول به راست" onclick="ScrollRight('@ViewData["Switch"]_FT');"></button>
+                            <button type="button" class="btn_Icon footer_Left Icon_Red icofont-00x icofont-curved-double-left" title="اسکرول به چپ" onclick="ScrollLeft('@ViewData["Switch"]_FT');"></button>
+                            <div id="@ViewData["Switch"]_FT" class="overflow-hidden" onscroll="ScrollSlave(this, '@ViewData["Switch"]_MS');">
+                                <table class="table grid-table">
+                                    <thead>
+                                        <tr>
+                                            <th><span>#</span></th>
+                                            <th><span class="w-fix-150">نقش</span></th>
+                                            <th><span class="w-fix-200">ساختمان</span></th>
+                                            <th><span class="w-fix-150">طبقه</span></th>
+                                            <th><span class="w-fix-90">واحد</span></th>
+                                            <th><span class="w-fix-100">تاریخ شروع</span></th>
+                                            <th><span class="w-fix-100">تاریخ پایان</span></th>
+                                            <th><span class="w-fix-100">وضعیت</span></th>
+                                            <th><span class="w-fix-50">ویرایش</span></th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="overflow-auto" id="@ViewData["Switch"]_MS" onscroll="ScrollSlave(this, '@ViewData["Switch"]_FT');">
+                            <table class="table grid-table">
+                                <thead class="header_Tablehiden">
+                                    <tr>
+                                        <th><span>#</span></th>
+                                        <th><span class="w-fix-150">نقش</span></th>
+                                        <th><span class="w-fix-200">ساختمان</span></th>
+                                        <th><span class="w-fix-150">طبقه</span></th>
+                                        <th><span class="w-fix-90">واحد</span></th>
+                                        <th><span class="w-fix-100">تاریخ شروع</span></th>
+                                        <th><span class="w-fix-100">تاریخ پایان</span></th>
+                                        <th><span class="w-fix-100">وضعیت</span></th>
+                                        <th><span class="w-fix-50">ویرایش</span></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (DataRow item in Model.ListUnit.Rows)
+                                    {
+                                        { RJ++; }
+                                        <tr onclick="RowSelect(this);">
+                                            <td class="text-danger">@RJ</td>
+                                            <td><span class="w-fixC-150">@item["RoleTitle"]</span></td>
+                                            <td><span class="w-fixC-200 text-start">@item["BuildingName"]<spcn class="text_line23">@item["BuildingCode"]</spcn></span></td>
+                                            <td><span class="w-fixC-150 text-start">@item["FloorTitle"]<spcn class="text_line23">@item["FloorNumber"]</spcn></span></td>
+                                            <td>@item["UnitNumber"]</td>
+                                            <td><span class="w-fixC-100">@item["StartDate"]</span></td>
+                                            <td><span class="w-fixC-100">@item["EndDate"]</span></td>
+                                            <td><span class="w-fixC-100">@item["Active"]</span></td>
+                                            <td>
+                                                <button type="button" class="btn_Icon Icon_Mor icofont-00x icofont-edit" title="ویرایش" onclick="ClickBtnSimpl('FormSabtUnitBtn','@item["UnitPersonId"]')"></button>
+                                            </td>
+                                        </tr>
+                                    }
+
+                                </tbody>
+                            </table>
+                        </div>
+
+                    }
+                </div>
+
+            </div>
+        </section>
+        break;
+
+
+    case "FormSabtUnit":
+        <section class="container p-1">
+            <div class="secondArea p-2">
+                @if (@ViewData["ID"].ToString() == "0")
+                {
+                    <form asp-antiforgery="true" method="post" data-ajax-method="post" data-ajax="true"
+                          data-ajax-confirm="آیا واحد جدید به این شخص تخصیص داده شود؟"
+                          data-ajax-Btn="UpdateSabtUnitBtn"
+                          data-ajax-begin="SpinnerShowForm('چند لحظه صبر کنید');"
+                          data-ajax-url="?handler=UpdateSabtUnit"
+                          data-ajax-complete="JsonClose_B"
+                          data-ajax-success="ClickBtn('FormUnitBtn');">
+                        <input type="hidden" name="ID" value="@ViewData["ID"]" />
+                        <input type="hidden" name="PersonId" value="@ViewData["PersonId"]" />
+
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="w-min-330">
+                                    <div>
+                                        <span class="control-label cursor-pointer" onclick="ShowFastHelp(this,'ساختمان را از لیست کشویی انتخاب کنید تا طبقات آن نمایش داده شود')">ساختمان</span>
+                                        <select name="BuildingId" class="control-input" onchange="FindListFloorAjax('FloorIdAdd',this, 'All')">
+                                            @if (Model.ListBuilding.Rows.Count > 1)
+                                            {
+                                                <option value="0">انتخاب کنید</option>
+                                            }
+                                            @foreach (DataRow item in Model.ListBuilding.Rows)
+                                            {
+                                                <option value="@item["BuildingId"]">@item["BuildingName"]</option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <span class="control-label cursor-pointer" onclick="ShowFastHelp(this,'طبقه را از لیست کشویی انتخاب کنید تا واحدهای موجود در آن نمایش داده شود. اگر طبقه مورد نظر را پیدا نکردید، لازم است در فرم مجتمع طبقه را به ساختمان اضافه کنید')">طبقه</span>
+                                        <select class="control-input" id="FloorIdAdd" name="FloorId" onchange="FindListUnitAjax('UnitIdAdd',this, 'All')">
+                                            @if (Model.ListBuilding.Rows.Count > 1)
+                                            {
+                                                <option value="0">ابتدا ساختمان را انتخاب کنید</option>
+                                            }
+                                            else
+                                            {
+                                                @foreach (DataRow item in Model.ListFloor.Rows)
+                                                {
+                                                    <option value="@item["FloorId"]">@item["FloorTitle"]</option>
+                                                }
+                                            }
+                                        </select>
+                                    </div>
+                                    <div class="">
+                                        <span class="control-label cursor-pointer" onclick="ShowFastHelp(this,'واحد را از لیست کشویی انتخاب کنید. با انتخاب واحد وضعیت فعلی سکونت و مالکیت آن نمایش داده میشود. اگر واحد را پیدا نکردید، در فرم واحدها، آن را تعریف کنید')">واحد</span>
+                                        <select id="UnitIdAdd" name="UnitId" class="control-input" onchange="ClickBtnValue('UnitSituationBtn',this)">
+                                            <option value="">ابتدا طبقه را انتخاب کنید</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="">
+                                        <span class="control-label">وضعیت فعلی واحد</span>
+                                        <div id="UnitSituation" class="alert alert-secondary">
+                                            <h5 class="text-danger">ابتدا واحد را انتخاب کنید</h5>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                            <div class="col-sm-6">
+                                <div>
+                                    <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'تاریخ شروع ارتباط «@ViewData["PersonName"]» را با این واحد انتخاب کنید. این تاریخ در سوابق مالی اهمیت دارد')">تاریخ شروع</label>
+                                    <div class="control-Date">
+                                        <input placeholder="1400/01/01" id="DateStart" name="DateStart" maxlength="10" readonly class="usage control-input-plaintext" value="" />
+                                    </div>
+                                </div>
+
+                                <div class="w-min-330 w-max-450">
+                                    <div class="">
+                                        <span class="control-label cursor-pointer" onclick="ShowFastHelp(this,'نقش «@ViewData["PersonName"]» با واحد را از لیست کشویی انتخاب کنید. تعیین کنید که «@ViewData["PersonName"]» با واحد انتخاب شده چه ارتباطی دارد. توجه کنید که بعضی از هزینه ها برای مالکین شارژ میشود و بعضی از هزینه ها برای ساکنین شارژ می شود ')">نقش «@ViewData["PersonName"]» با واحد</span>
+                                        <select name="RoleCode" class="control-input">
+                                            <option value="0">انتخاب کنید</option>
+                                            <option value="2">مستاجر است</option>
+                                            <option value="1">مالک واحد است</option>
+                                            <option value="3">نماینده مالک است</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="text-end p-3">
+                                    <button type="submit" id="UpdateSabtUnitBtn" class="btn_Icon Icon_Blue2 icofont-2x icofont-checked" title="ثبت شود"><span>ثبت شود</span></button>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </form> 
+                }
+                else{
+                    <form asp-antiforgery="true" method="post" data-ajax-method="post" data-ajax="true"
+                          data-ajax-confirm="آیا تخصیص به این شخص اصلاح شود؟"
+                          data-ajax-Btn="UpdateSabtUnitBtn"
+                          data-ajax-begin="SpinnerShowForm('چند لحظه صبر کنید');"
+                          data-ajax-url="?handler=UpdateSabtUnit"
+                          data-ajax-complete="JsonClose_B"
+                          data-ajax-success="ClickBtn('FormUnitBtn');">
+                        <input type="hidden" name="ID" value="@ViewData["ID"]" />
+                        <input type="hidden" name="PersonId" value="@ViewData["PersonId"]" />
+
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="w-min-330">
+                                    <div>
+                                        <span class="control-label cursor-pointer" onclick="ShowFastHelp(this,'ساختمان را از لیست کشویی انتخاب کنید تا طبقات آن نمایش داده شود')">ساختمان</span>
+                                        <select id="BuildingId" name="BuildingId" class="control-input" onchange="FindListFloorAjax('FloorIdAdd',this, 'All')">
+                                            @foreach (DataRow item in Model.ListBuilding.Rows)
+                                            {
+                                                <option value="@item["BuildingId"]">@item["BuildingCode"] -> @item["BuildingName"]</option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <span class="control-label cursor-pointer" onclick="ShowFastHelp(this,'طبقه را از لیست کشویی انتخاب کنید تا واحدهای موجود در آن نمایش داده شود. اگر طبقه مورد نظر را پیدا نکردید، لازم است در فرم مجتمع طبقه را به ساختمان اضافه کنید')">طبقه</span>
+                                        <select class="control-input" id="FloorIdAdd" name="FloorId" onchange="FindListUnitAjax('UnitIdAdd',this, 'All')">
+                                            <option value="@Model.RowData["FloorId"]">@Model.RowData["FloorNumber"] -> @Model.RowData["FloorTitle"]</option>
+                                            @if (Model.ListBuilding.Rows.Count > 1)
+                                            {
+                                                <option value="">ابتدا ساختمان را انتخاب کنید</option>
+                                            }
+                                            else
+                                            {
+                                                @foreach (DataRow item in Model.ListFloor.Rows)
+                                                {
+                                                    <option value="@item["FloorId"]">@item["FloorNumber"] -> @item["FloorTitle"]</option>
+                                                }
+                                            }
+                                        </select>
+                                    </div>
+                                    <div class="">
+                                        <span class="control-label cursor-pointer" onclick="ShowFastHelp(this,'واحد را از لیست کشویی انتخاب کنید. با انتخاب واحد وضعیت فعلی سکونت و مالکیت آن نمایش داده میشود. اگر واحد را پیدا نکردید، در فرم واحدها، آن را تعریف کنید')">واحد</span>
+                                        <select id="UnitIdAdd" name="UnitId" class="control-input" onchange="ClickBtnValue('UnitSituationBtn',this)">
+                                            <option value="@Model.RowData["UnitId"]">@Model.RowData["UnitNumber"]</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="">
+                                        <span class="control-label">وضعیت فعلی واحد</span>
+                                        <div id="UnitSituation" class="alert alert-secondary">
+                                            <div class="row">
+                                                <div class="col-sm-6">
+                                                    <div class="">
+                                                        <span class="control-label">نام مالک</span>
+                                                        <span class="control-text">@Model.RowData["NameMalek"]</span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <div class="">
+                                                        <span class="control-label">نام ساکن</span>
+                                                        <span class="control-text">@Model.RowData["NameSaken"]</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                            <div class="col-sm-6">
+                                <div>
+                                    <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'تاریخ شروع ارتباط «@ViewData["PersonName"]» را با این واحد انتخاب کنید. این تاریخ در سوابق مالی اهمیت دارد')">تاریخ شروع</label>
+                                    <div class="control-Date">
+                                        <input placeholder="1400/01/01" id="DateStart" name="DateStart" maxlength="10" readonly class="usage control-input-plaintext" value="@Model.RowData["StartDate"]" />
+                                    </div>
+                                </div>
+
+                                <div class="w-min-330 w-max-450">
+                                    <div class="">
+                                        <span class="control-label cursor-pointer" onclick="ShowFastHelp(this,'نقش «@ViewData["PersonName"]» با واحد را از لیست کشویی انتخاب کنید. تعیین کنید که «@ViewData["PersonName"]» با واحد انتخاب شده چه ارتباطی دارد. توجه کنید که بعضی از هزینه ها برای مالکین شارژ میشود و بعضی از هزینه ها برای ساکنین شارژ می شود ')">نقش «@ViewData["PersonName"]» با واحد</span>
+                                        <select id="RoleCode" name="RoleCode" class="control-input">
+                                            <option value="0">انتخاب کنید</option>
+                                            <option value="2">مستاجر است</option>
+                                            <option value="1">مالک واحد است</option>
+                                            <option value="3">نماینده مالک است</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="text-end p-3">
+                                    <button type="submit" id="UpdateSabtUnitBtn" class="btn_Icon Icon_Blue2 icofont-2x icofont-checked" title="ثبت شود"><span>ثبت شود</span></button>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </form>
+                    <script>
+                        SetValueSimpl('RoleCode','@Model.RowData["RoleCode"]','BuildingId','@Model.RowData["BuildingId"]')
+                    </script>
+                }
+            </div> 
+        </section>
+        <script>
+            ControlPersianDate('DateStart');
+        </script>
+
+
+        <form hidden method="get" data-ajax-method="get" data-ajax="true"
+              data-ajax-begin="SpinnerShow('UnitSituation', ' لحظه صبر کنید');"
+              data-ajax-url="?handler=UnitSituation"
+              data-ajax-update="#UnitSituation">
+            <button type="submit" id="UnitSituationBtn" hidden name="UnitId"></button>
+        </form>
+
+        break;
+
+    case "UnitSituation":
+        
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="">
+                    <span class="control-label">نام مالک</span>
+                    <span class="control-text">@Model.RowData["NameMalek"]</span>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="">
+                    <span class="control-label">نام ساکن</span>
+                    <span class="control-text">@Model.RowData["NameSaken"]</span>
+                </div>
+            </div>
+        </div>
+
+        break;
+
+    case "ListUnitPerson":
+        <div class="secondArea p-2 w-min-330">
+            <div class="d-flex flex-wrap justify-content-between">
+                <div class="Area_Count w-fix-200">
+                    <span>تعداد : </span><span>@Model.ListUnit.Rows.Count </span>
+                </div>
+            </div>
+
+            <div class="header_Table">
+                <button type="button" class="btn_Icon footer_Right Icon_Red icofont-00x icofont-curved-double-right" title="اسکرول به راست" onclick="ScrollRight('@ViewData["Switch"]_FT');"></button>
+                <button type="button" class="btn_Icon footer_Left Icon_Red icofont-00x icofont-curved-double-left" title="اسکرول به چپ" onclick="ScrollLeft('@ViewData["Switch"]_FT');"></button>
+                <div id="@ViewData["Switch"]_FT" class="overflow-hidden" onscroll="ScrollSlave(this, '@ViewData["Switch"]_MS');">
+                    <table class="table grid-table">
+                        <thead>
+                            <tr>
+                                <th><span>#</span></th>
+                                <th><span class="w-fix-150">نقش</span></th>
+                                <th><span class="w-fix-200">ساختمان</span></th>
+                                <th><span class="w-fix-150">طبقه</span></th>
+                                <th><span class="w-fix-90">واحد</span></th>
+                                <th><span class="w-fix-100">تاریخ شروع</span></th>
+                                <th><span class="w-fix-100">تاریخ پایان</span></th>
+                                <th><span class="w-fix-100">وضعیت</span></th>
+                                <th><span class="w-fix-50">ویرایش</span></th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+            <div class="overflow-auto" id="@ViewData["Switch"]_MS" onscroll="ScrollSlave(this, '@ViewData["Switch"]_FT');">
+                <table class="table grid-table">
+                    <thead class="header_Tablehiden">
+                        <tr>
+                            <th><span>#</span></th>
+                            <th><span class="w-fix-150">نقش</span></th>
+                            <th><span class="w-fix-200">ساختمان</span></th>
+                            <th><span class="w-fix-150">طبقه</span></th>
+                            <th><span class="w-fix-90">واحد</span></th>
+                            <th><span class="w-fix-100">تاریخ شروع</span></th>
+                            <th><span class="w-fix-100">تاریخ پایان</span></th>
+                            <th><span class="w-fix-100">وضعیت</span></th>
+                            <th><span class="w-fix-50">ویرایش</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (DataRow item in Model.ListUnit.Rows)
+                        {
+                            { RJ++; }
+                            <tr onclick="RowSelect(this);">
+                                <td class="text-danger">@RJ</td>
+                                <td><span class="w-fixC-150">@item["RoleTitle"]</span></td>
+                                <td><span class="w-fixC-200 text-start">@item["BuildingName"]<spcn class="text_line23">@item["BuildingCode"]</spcn></span></td>
+                                <td><span class="w-fixC-150 text-start">@item["FloorTitle"]<spcn class="text_line23">@item["FloorNumber"]</spcn></span></td>
+                                <td>@item["UnitNumber"]</td>
+                                <td><span class="w-fixC-100">@item["StartDate"]</span></td>
+                                <td><span class="w-fixC-100">@item["EndDate"]</span></td>
+                                <td><span class="w-fixC-100">@item["Active"]</span></td>
+                                <td>
+                                    <button type="button" class="btn_Icon Icon_Mor icofont-00x icofont-edit" title="ویرایش" onclick="ClickBtnSimpl('FormSabtUnitBtn','@item["UnitPersonId"]')"></button>
+                                </td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
+        break;
+
+
+    case "FormRelation":
+        <section class="container p-1">
+            <div class="secondArea p-2 w-min-330">
+                <form method="get" data-ajax="true" data-ajax-method="get"
+                        data-ajax-begin="MsgFormSpinner('B','ثبت فرد مرتبط با شخص', 'چند لحظه صبر کنید');"
+                        data-ajax-url="?handler=FormSabtRelation"
+                        data-ajax-update="#MsgFormMATN_B">
+                    <input type="hidden" name="PersonName" value="@ViewData["PersonName"]" />
+                    <input type="hidden" name="PersonId" value="@ViewData["PersonId"]" />
+                    <input type="hidden" id="FormSabtRelationPersonName" name="PersonName" />
+                    <div class="p-2 text-end">
+                        <button type="submit" class="BTN btn_Pill btn_Blue2"><span>افزودن شخص جدید</span><i class="icofont-00x icofont-plus float-end"></i></button>
+                    </div>
+                </form>
+                <div id="D_ResRelation">
+                    @if (Model.ListPersons.Rows.Count == 0)
+                    {
+                        <div class="alert alert-danger">
+                            <h5>هنوز هیچ فرد مرتبطی را با «@ViewData["PersonName"]»  تعریف نکرده اید</h5>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="d-flex flex-wrap justify-content-between">
+                            <div class="Area_Count w-fix-200">
+                                <span>تعداد : </span><span>@Model.ListPersons.Rows.Count </span>
+                            </div>
+                        </div>
+
+                        <div class="header_Table">
+                            <button type="button" class="btn_Icon footer_Right Icon_Red icofont-00x icofont-curved-double-right" title="اسکرول به راست" onclick="ScrollRight('@ViewData["Switch"]_FT');"></button>
+                            <button type="button" class="btn_Icon footer_Left Icon_Red icofont-00x icofont-curved-double-left" title="اسکرول به چپ" onclick="ScrollLeft('@ViewData["Switch"]_FT');"></button>
+                            <div id="@ViewData["Switch"]_FT" class="overflow-hidden" onscroll="ScrollSlave(this, '@ViewData["Switch"]_MS');">
+                                <table class="table grid-table">
+                                    <thead>
+                                        <tr>
+                                            <th><span>#</span></th>
+                                            <th><span class="w-fix-200">نام</span></th>
+                                            <th><span class="w-fix-150">نوع رابطه</span></th>
+                                            <th><span class="w-fix-125">شماره تماس</span></th>
+                                            <th><span class="w-fix-250">توضیح</span></th>
+                                            <th><span class="w-fix-50">حذف</span></th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="overflow-auto" id="@ViewData["Switch"]_MS" onscroll="ScrollSlave(this, '@ViewData["Switch"]_FT');">
+                            <table class="table grid-table">
+                                <thead class="header_Tablehiden">
+                                    <tr>
+                                        <th><span>#</span></th>
+                                        <th><span class="w-fix-200">نام</span></th>
+                                        <th><span class="w-fix-150">نوع رابطه</span></th>
+                                        <th><span class="w-fix-125">شماره تماس</span></th>
+                                        <th><span class="w-fix-250">توضیح</span></th>
+                                        <th><span class="w-fix-50">حذف</span></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (DataRow item in Model.ListPersons.Rows)
+                                    {
+                                        { RJ++; }
+                                        <tr onclick="RowSelect(this);">
+                                            <td class="text-danger">@RJ</td>
+                                            <td><span class="w-fixC-200">@item["FullName"]</span></td>
+                                            <td><span class="w-fixC-150">@item["RoleTitle"]</span></td>
+                                            <td><span class="w-fixC-125">@item["Phone"]</span></td>
+                                            <td><span class="w-fixC-250">@item["Sharh"]</span></td>
+                                            <td>
+                                                <button type="button" class="btn_Icon Icon_Red icofont-00x icofont-delete" title="حذف" onclick="ClickBtnSimpl('DeleteRelationBtn','@item["RelationId"]')"></button>
+                                            </td>
+                                        </tr>
+                                    }
+
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                </div>
+            </div>
+        </section>
+
+        <form hidden asp-antiforgery="true" method="post" data-ajax-method="post" data-ajax="true"
+              data-ajax-confirm="آیا ارتباط این فرد را حذف می کنید؟"
+              data-ajax-Btn="DeleteRelationBtn"
+              data-ajax-begin="SpinnerShowForm('چند لحظه صبر کنید');"
+              data-ajax-url="?handler=DeleteRelation"
+              data-ajax-complete="JsonResultOK"
+              data-ajax-success="ClickBtn('FormRelationBtn');">
+            <input type="hidden" name="PersonId" value="@ViewData["PersonId"]" />
+            <input type="submit" id="DeleteRelationBtn" name="RelationId" hidden value="0" />
+        </form>
+
+        break;
+
+    case "FormSabtRelation":
+        <section class="container p-1">
+            <div class="secondArea p-2">
+                <form asp-antiforgery="true" method="post" data-ajax-method="post" data-ajax="true"
+                      data-ajax-confirm="آیا فرد جدید به این شخص تخصیص داده شود؟"
+                      data-ajax-Btn="UpdateSabtRelationBtn"
+                      data-ajax-begin="SpinnerShowForm('چند لحظه صبر کنید');"
+                      data-ajax-url="?handler=UpdateSabtRelation"
+                      data-ajax-complete="JsonClose_B"
+                      data-ajax-success="ClickBtn('FormRelationBtn');">
+                     <input type="hidden" name="PersonId" value="@ViewData["PersonId"]" />
+
+                    <div>
+                        <span class="control-label cursor-pointer" onclick="ShowFastHelp(this,'نوع ارتباط این فرد را با «@ViewData["PersonName"]» از لیست زیر انتخاب کنید. نوع ارتباط درجه اهمیت فرد را مشخص میکند و در گزارش گیری ها استفاده میشود')">نوع ارتباط</span>
+                        <select name="RoleCode" class="control-input">
+                            <option value="0">انتخاب کنید</option>
+                            <option value="1">همسر</option>
+                            <option value="2">فرزند</option>
+                            <option value="3">خواهر/برادر</option>
+                            <option value="4">پدر/مادر</option>
+                            <option value="5">فامیل</option>
+                            <option value="6">آشنا</option>
+                        </select>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'نام کامل فرد مرتبط را بنویسید')">نام کامل</label>
+                            <input type="text" name="FullName" class="control-input text-center" maxlength="50" />
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'تلفن ثابت یا شماره همراه فرد مرتبط را بنویسید')">شماره تماس</label>
+                            <input type="text" name="Phone" class="control-input text-center ltr" maxlength="12" />
+                        </div>
+                    </div>
+                    <div>
+                        <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'شرح و یا توضیح مناسبی در رابطه با این فرد بنویسید')">توضیح</label>
+                        <input type="text" name="Sharh" class="control-input text-center" maxlength="100" />
+                    </div>
+
+                    <div class="text-end p-3">
+                        <button type="submit" id="UpdateSabtRelationBtn" class="btn_Icon Icon_Blue2 icofont-2x icofont-checked" title="ثبت شود"><span>ثبت شود</span></button>
+                    </div>
+
+                </form>
+            </div>
+        </section>
+
+        break;
+
+
+
+    case "FormAsnad":
+        <section class="container p-1">
+            <div class="secondArea p-2 w-min-330">
+                <form method="get" data-ajax="true" data-ajax-method="get"
+                      data-ajax-begin="MsgFormSpinner('B','ثبت سند جدید', 'چند لحظه صبر کنید');"
+                      data-ajax-url="?handler=FormSabtAsnad"
+                      data-ajax-update="#MsgFormMATN_B">
+                    <input type="hidden" name="PersonName" value="@ViewData["PersonName"]" />
+                    <input type="hidden" name="PersonId" value="@ViewData["PersonId"]" />
+                    <div class="p-2 text-end">
+                        <button type="submit" class="BTN btn_Pill btn_Blue2"><span>افزودن سند جدید</span><i class="icofont-00x icofont-plus float-end"></i></button>
+                    </div>
+                </form>
+
+                <div id="D_ResAsnad">
+                    @if (Model.ListAsnad.Rows.Count == 0)
+                    {
+                        <div class="alert alert-danger">
+                            <h5>هنوز برای «@ViewData["PersonName"]»  هیچ سندی را آپلود نکرده اید</h5>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="d-flex flex-wrap justify-content-between">
+                            <div class="Area_Count w-fix-200">
+                                <span>تعداد : </span><span>@Model.ListAsnad.Rows.Count </span>
+                            </div>
+                        </div>
+
+                        <div class="header_Table">
+                            <button type="button" class="btn_Icon footer_Right Icon_Red icofont-00x icofont-curved-double-right" title="اسکرول به راست" onclick="ScrollRight('@ViewData["Switch"]_FT');"></button>
+                            <button type="button" class="btn_Icon footer_Left Icon_Red icofont-00x icofont-curved-double-left" title="اسکرول به چپ" onclick="ScrollLeft('@ViewData["Switch"]_FT');"></button>
+                            <div id="@ViewData["Switch"]_FT" class="overflow-hidden" onscroll="ScrollSlave(this, '@ViewData["Switch"]_MS');">
+                                <table class="table grid-table">
+                                    <thead>
+                                        <tr>
+                                            <th><span>#</span></th>
+                                            <th><span class="w-fix-200">دسته بندی</span></th>
+                                            <th><span class="w-fix-100">نوع سند</span></th>
+                                            <th><span class="w-fix-50">دانلود</span></th>
+                                            <th><span class="w-fix-250">توضیح</span></th>
+                                            <th><span class="w-fix-50">حذف</span></th>
+                                            <th><span class="w-fix-180">زمان ثبت</span></th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="overflow-auto" id="@ViewData["Switch"]_MS" onscroll="ScrollSlave(this, '@ViewData["Switch"]_FT');">
+                            <table class="table grid-table">
+                                <thead class="header_Tablehiden">
+                                    <tr>
+                                        <th><span>#</span></th>
+                                        <th><span class="w-fix-200">دسته بندی</span></th>
+                                        <th><span class="w-fix-100">نوع سند</span></th>
+                                        <th><span class="w-fix-50">دانلود</span></th>
+                                        <th><span class="w-fix-250">توضیح</span></th>
+                                        <th><span class="w-fix-50">حذف</span></th>
+                                        <th><span class="w-fix-180">زمان ثبت</span></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (DataRow item in Model.ListAsnad.Rows)
+                                    {
+                                        { RJ++; }
+                                        <tr onclick="RowSelect(this);">
+                                            <td class="text-danger">@RJ</td>
+                                            <td><span class="w-fixC-200">@item["AsnadTitle"]</span></td>
+                                            <td><span class="w-fixC-100">@item["Ext"]</span></td>
+                                            <td>
+                                                <a href="/Uploads/Asnad/@item["NameFile"]" target="_blank" class="btn_Icon Icon_Mor icofont-00x icofont-download" title="دانلود"></a>
+                                            </td>
+                                            <td><span class="w-fixC-250">@item["Sharh"]</span></td>
+                                            <td>
+                                                <button type="button" class="btn_Icon Icon_Red icofont-00x icofont-delete" title="حذف" onclick="ClickBtnSimpl('DeleteAsnadBtn','@item["PersonAsnadId"]','DeleteAsnadNameFile','@item["NameFile"]')"></button>
+                                            </td>
+                                            <td><span class="w-fixC-180 text-start"><span>@item["EditorName"]</span><span class="text_line23 ltr">@item["TimeEdit"]</span></span></td>
+                                        </tr>
+                                    }
+
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                </div>
+            </div>
+        </section>
+
+        <form hidden asp-antiforgery="true" method="post" data-ajax-method="post" data-ajax="true"
+              data-ajax-confirm="آیا این مدرک را حذف می کنید؟"
+              data-ajax-Btn="DeleteAsnadBtn"
+              data-ajax-begin="SpinnerShowForm('چند لحظه صبر کنید');"
+              data-ajax-url="?handler=DeleteAsnad"
+              data-ajax-complete="JsonResultOK"
+              data-ajax-success="ClickBtn('FormAsnadBtn');">
+            <input type="hidden" name="PersonId" value="@ViewData["PersonId"]" />
+            <input type="hidden" name="NameFile"  id="DeleteAsnadNameFile" value="" />
+            <input type="submit" id="DeleteAsnadBtn" name="PersonAsnadId" hidden value="0" />
+        </form>
+
+        break;
+
+    case "FormSabtAsnad":
+        <section class="container p-1">
+            <div class="secondArea p-2">
+                <form asp-antiforgery="true" method="post" data-ajax="true"
+                      enctype="multipart/form-data"
+                      data-ajax-confirm="آیا فایل آپلود گردد؟"
+                      data-ajax-begin="SpinnerShowForm('در حال ذخیره سند...');"
+                      data-ajax-Btn="UpLoadFileBtn"
+                      data-ajax-url="?handler=UpLoadFile"
+                      data-ajax-complete="JsonClose_B"
+                      data-ajax-success="ClickBtn('FormAsnadBtn');">
+                    <input type="hidden" name="PersonId" value="@ViewData["PersonId"]" />
+                    <h5 class="text-primary text-center mb-3">آپلود سند جدید</h5>
+
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="mb-2 w-min-330">
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'از لیست زیر دسته بندی سند را انتخاب کنید. دسته بندی سندها در گزارشات استفاده میشود')">دسته بندی سند</label>
+                                <select class="control-input" name="AsnadId">
+                                    <option value="">انتخاب کنید...</option>
+                                    @foreach (DataRow item in Model.ListAsnad.Rows)
+                                    {
+                                        <option value="@item["AsnadId"]">@item["AsnadTitle"]</option>
+                                    }
+                                </select>
+                            </div>
+
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="mb-2 w-min-330  pt-4">
+                                <div class="d-flex">
+                                    <button type="button" id="FileKnd"
+                                            class="btn_Icon Icon_MorLight icofont-3x icofont-upload mx-2"
+                                            onclick="ClickBtn('FileUpload');"
+                                            title="انتخاب فایل"></button>
+                                    <div class="flex-fill pt-4">
+                                        <input class="d-none" type="file" id="FileUpload" name="FileUpload"
+                                                accept=".jpg,.png,.bmp,.jpeg,.pdf,.txt,.xls,.xlsx,.doc,.docx,.zip,.rar"
+                                                onchange="GetFile(this,'FileName','FileKnd');" />
+                                        <span id="FileName" class="control-text">فایل را پیوست کنید</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-2 text-start">
+                        <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'یک شرح در مورد سند بنویسید. این شرح در جستجوها و گزارشها برای شناسایی و پیدا کردن فایل بسیار به شما کمک میکند')">عنوان / شرح مناسب</label>
+                        <input type="text" class="control-input" name="Sharh" />
+                    </div>
+
+                    <div class="text-end p-3">
+                        <button type="submit" id="UpLoadFileBtn" class="btn_Icon Icon_Blue2 icofont-2x icofont-checked" title="سند/ فایل آپلود شود"><span>سند/ فایل آپلود شود</span></button>
+                    </div>
+
+                </form>
+            </div>
+        </section>
+        break;
+
+
+
+
+
+    case "ListKarbaran":
+        <div class="d-flex flex-wrap justify-content-between border-top border-secondary">
+            <div class="Area_Count w-fix-200">
+                <span>تعداد : </span><span>@Model.ListPersons.Rows.Count </span>
+            </div>
+        </div>
+
+        <div class="header_Table">
+            <button type="button" class="btn_Icon footer_Right Icon_Red icofont-00x icofont-curved-double-right" title="اسکرول به راست" onclick="ScrollRight('@ViewData["Switch"]_FT');"></button>
+            <button type="button" class="btn_Icon footer_Left Icon_Red icofont-00x icofont-curved-double-left" title="اسکرول به چپ" onclick="ScrollLeft('@ViewData["Switch"]_FT');"></button>
+            <div id="@ViewData["Switch"]_FT" class="overflow-hidden" onscroll="ScrollSlave(this, '@ViewData["Switch"]_MS');">
+                <table class="table grid-table">
+                    <thead>
+                        <tr>
+                            <th><span>#</span></th>
+                            <th><span class="w-fix-75"><span class="icofont icofont-2x icofont-waiter-alt"></span></span></th>
+                            <th><span class="w-fix-200">نام کاربر</span></th>
+                            <th><span class="w-fix-125">شماره همراه</span></th>
+                            <th><span class="w-fix-125">عنوان کاربری</span></th>
+                            <th><span class="w-fix-50">ویرایش</span></th>
+                            <th><span class="w-fix-50">فرمها</span></th>
+                            <th><span class="w-fix-50">حذف</span></th>
+                            <th><span class="w-fix-200">آخرین ورود</span></th>
+                            <th><span class="w-fix-90">فعال</span></th>
+                            <th><span class="w-fix-140">آی پی</span></th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+        <div class="overflow-auto" id="@ViewData["Switch"]_MS" onscroll="ScrollSlave(this, '@ViewData["Switch"]_FT');">
+            <table class="table grid-table">
+                <thead class="header_Tablehiden">
+                    <tr>
+                        <th><span>#</span></th>
+                        <th><span class="w-fix-75"><span class="icofont icofont-2x icofont-waiter-alt"></span></span></th>
+                        <th><span class="w-fix-200">نام کاربر</span></th>
+                        <th><span class="w-fix-125">شماره همراه</span></th>
+                        <th><span class="w-fix-125">عنوان کاربری</span></th>
+                        <th><span class="w-fix-50">ویرایش</span></th>
+                        <th><span class="w-fix-50">فرمها</span></th>
+                        <th><span class="w-fix-50">حذف</span></th>
+                        <th><span class="w-fix-200">آخرین ورود</span></th>
+                        <th><span class="w-fix-90">فعال</span></th>
+                        <th><span class="w-fix-140">آی پی</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (DataRow item in Model.ListPersons.Rows)
+                    {
+                        { RJ++; }
+                        <tr onclick="RowSelect(this);" id="User_@item["PersonId"]">
+                            <td class="text-danger">@RJ</td>
+                            <td><span class="w-fixC-75"><img src="/Uploads/Persons/@item["Pic"]" class="Area_Pill w-100" /></span></td>
+                            <td><span class="w-fixC-200 text-start"><span>@item["FullName"]</span><span class="text_line23">@item["PersonId"]</span></span></td>
+                            <td><span class="w-fixC-150 ltr">@item["Mobile"]</span></td>
+                            <td><span class="w-fixC-125">@item["UserName"]</span></td>
+                            <td><span class="w-fixC-50"><button type="button" class="btn_Icon Icon_Mor icofont-00x icofont-edit" title="ویرایش" onclick="ClickBtnSimpl('FormSabtKarbaranBtn', '@item["PersonId"]');"></button></span></td>
+                            <td><span class="w-fixC-50"><button type="button" class="btn_Icon Icon_Brown icofont-00x icofont-cubes" title="فرم های" onclick="ClickBtnSimpl('FormSabtFormsBtn','@item["PersonId"]');"></button></span></td>
+                            <td><span class="w-fixC-50"><button type="button" class="btn_Icon Icon_Red icofont-00x icofont-delete" title="حذف" onclick="ClickBtnSimpl('KarbarDeletBtn', '@item["PersonId"]');"></button></span></td>
+                            <td class="ltr"><span class="w-fixC-200">@item["LastLoginAt"]</span></td>
+                            <td>
+                                <span class="w-fixC-90">
+                                    <img class="w-fix-75" src="@item["IsActiveIcon"]" alt="Aparteman_YesNo" />
+                                </span>
+                            </td>
+                            <td><span class="w-fixC-140 ltr">@item["LastLoginIp"]</span></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div hidden>
+            <form hidden asp-antiforgery="true" method="post" data-ajax="true" data-ajax-method="post"
+                  data-ajax-confirm="آیا کاربری این شخص حذف گردد؟"
+                  data-ajax-Btn="KarbarDeletBtn"
+                  data-ajax-begin="SpinnerShowForm('چند لحظه صبر کنید');"
+                  data-ajax-url="?handler=DeleteKarbar"
+                  data-ajax-complete="JsonResult"
+                  data-ajax-success="AreaHide('User_'+EleValue('KarbarDeletBtn'))">
+                <input type="submit" hidden id="KarbarDeletBtn" name="PersonId" />
+            </form>
+
+            <form method="get" data-ajax="true" data-ajax-method="get"
+                  data-ajax-begin="MsgFormSpinner('A','لیست فرمهای کاربر', 'چند لحظه صبر کنید');"
+                  data-ajax-url="?handler=FormSabtForms"
+                  data-ajax-update="#MsgFormMATN_A">
+                <input type="submit" hidden id="FormSabtFormsBtn" name="PersonId" />
+            </form>
+        </div>
+
+        break;
+
+    case "FormSabtForms":
+        <div class="secondArea p-2 w-min-330" id="listFormsArea">
+            <div class="row">
+                <div class="col-6">
+                    <div class="alert alert-primary w-min-250">فرمهای بدون دسترسی</div>
+                    @foreach (DataRow item in Model.ListForms.Rows)
+                    {
+                        { RJ++; ZF = (ZF == "Fard") ? "Zoj" : "Fard"; }
+                        <button class="@ZF d-flex p-2 cursor-pointer btn_Pill w-fix-250 my-1" id="FRM_@item["FormId"]" title="اجازه دسترسی به @item["FormTitle"]" onclick="ClickBtnSimpl('UpdateAccessFormBtn', '@item["FormId"]');">
+                            <span class="text-danger mx-2 ">@RJ -</span>
+                            <span>@item["FormTitle"]</span>
+                            <div class="flex-fill text-end">
+                                <span class="icofont icofont-verification-check text-primary"></span>
+                            </div>
+                        </button>
+                    }
+                </div>
+                <div class="col-6">
+                    <div class="alert alert-success w-min-250">فرمهای فعال کاربر</div>
+                    @foreach (DataRow item in Model.ListData.Rows)
+                    {
+                        { RJ++; ZF = (ZF == "Fard") ? "Zoj" : "Fard"; }
+                        <button class="@ZF d-flex p-2 cursor-pointer btn_Pill w-fix-250 my-1" id="FRM_@item["FormId"]" title="حذف دسترسی از  @item["FormTitle"]" onclick="ClickBtnSimpl('UpdateAccessFormBtn', '@item["FormId"]');">
+                            <span class="text-danger mx-2 ">@RJ -</span>
+                            <span>@item["FormTitle"]</span>
+                            <div class="flex-fill text-end">
+                                <span class="icofont icofont-close-circled text-danger"></span>
+                            </div>
+                        </button>
+                    }
+
+                </div>
+            </div>
+        </div>
+        <div hidden>
+            <form hidden asp-antiforgery="true" method="post" data-ajax-method="post" data-ajax="true"
+                  data-ajax-confirm="آیا دسترسی به فرمها آپدیت شود؟"
+                  data-ajax-Btn="UpdateAccessFormBtn"
+                  data-ajax-begin="SpinnerShow('listFormsArea','چند لحظه صبر کنید. ...');"
+                  data-ajax-url="?handler=UpdateAccessForm"
+                  data-ajax-update="#listFormsArea">
+                <input type="hidden" name="PersonId" value="@ViewData["PersonId"]" />
+                <input type="submit" id="UpdateAccessFormBtn" name="FFormId" hidden value="0" />
+            </form>
+
+        </div>
+
+       break;
+
+    case "listForms":
+        <div class="row">
+            <div class="col-6">
+                <div class="alert alert-primary w-min-250">فرمهای بدون دسترسی</div>
+                @foreach (DataRow item in Model.ListForms.Rows)
+                {
+                    { RJ++; ZF = (ZF == "Fard") ? "Zoj" : "Fard"; }
+                    <button class="@ZF d-flex p-2 cursor-pointer btn_Pill w-fix-250 my-1" id="FRM_@item["FormId"]" title="اجازه دسترسی به @item["FormTitle"]" onclick="ClickBtnSimpl('UpdateAccessFormBtn', '@item["FormId"]');">
+                        <span class="text-danger mx-2 ">@RJ -</span>
+                        <span>@item["FormTitle"]</span>
+                        <div class="flex-fill text-end">
+                            <span class="icofont icofont-verification-check text-primary"></span>
+                        </div>
+                    </button>
+                }
+            </div>
+            <div class="col-6">
+                <div class="alert alert-success w-min-250">فرمهای فعال کاربر</div>
+                @foreach (DataRow item in Model.ListData.Rows)
+                {
+                    { RJ++; ZF = (ZF == "Fard") ? "Zoj" : "Fard"; }
+                    <button class="@ZF d-flex p-2 cursor-pointer btn_Pill w-fix-250 my-1" id="FRM_@item["FormId"]" title="حذف دسترسی از  @item["FormTitle"]" onclick="ClickBtnSimpl('UpdateAccessFormBtn', '@item["FormId"]');">
+                        <span class="text-danger mx-2 ">@RJ -</span>
+                        <span>@item["FormTitle"]</span>
+                        <div class="flex-fill text-end">
+                            <span class="icofont icofont-close-circled text-danger"></span>
+                        </div>
+                    </button>
+                }
+
+            </div>
+        </div>
+
+        break;
+
+
+
+    case "FormSabtKarbaran":
+        <section class="container p-1">
+            <div class="secondArea">
+                <form asp-antiforgery="true" method="post" data-ajax-method="post" data-ajax="true"
+                        data-ajax-confirm="اطلاعات کاربر ذخیره گردد؟"
+                        data-ajax-Btn="UpdateKarbarBtn"
+                        data-ajax-begin="SpinnerShowForm('چند لحظه صبر کنید');"
+                        data-ajax-url="?handler=UpdateKarbar"
+                        data-ajax-complete="JsonClose_A">
+                    <div class="row">
+                        <div class="col-12 col-sm-6">
+                            <div class="mb-2">
+                                <span class="control-label">نام کاربر</span>
+                                <span class="control-text text-center">@Model.RowData["FullName"]</span>
+                                <input type="hidden" name="PersonId" value="@Model.RowData["PersonId"]" />
+                            </div>
+                            <div class="mb-2">
+                                <span class="control-label">نام کاربری</span>
+                                <input type="text" name="UserName" class="control-input ltr text-center" maxlength="50" value="@Model.RowData["UserName"]" />
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-sm-6">
+                            <div class="p-1 border-bottom border-info">
+                                <span class="control-label">فعال است؟</span>
+                                <img class="w-fix-75 cursor-pointer" src="@Model.RowData["IsActiveIcon"]" onclick="ToggelYesNo(this,'IsActiveKarbar');" alt="Aparteman_YesNo" />
+                                <input id="IsActiveKarbar" type="hidden" name="IsActive" value="@Model.RowData["IsActive"]" />
+                            </div>
+                            <div class="m-2">
+                                <span class="btn_Right">تغییر رمز ورود</span>
+                                <div class="d-flex">
+                                    <input class="control-input ltr text-center" type="text" id="UserPass" name="Pass" value="" onkeyup="AreaShow('BtnSavePass')" />
+                                    <button type="button" id="BtnSavePass" class="BTN btn_Pill btn_Selected w-fix-200 h-fix-35 dis-none" onclick="ClickBtnValue('UpdatePassBtn', 'UserPass');">ذخیره پسورد</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr />
+                    <div class="d-flex justify-content-between px-3">
+                        <div class="flex-fill text-Panevis">
+                            <span>@Model.RowData["Editor"]</span><span class="w-fix-150 ltr mx-3">@Model.RowData["TimeEdit"]</span>
+                        </div>
+                        <button type="submit" id="UpdateKarbarBtn" class="btn_Icon Icon_Blue2 icofont-2x icofont-checked" title="ثبت شود"></button>
+                    </div>
+
+                </form>
+                <div hidden>
+                    <form method="post" data-ajax="true" data-ajax-method="post"
+                            data-ajax-confirm="پسورد کاربر ذخیره گردد؟"
+                            data-ajax-Btn="UpdatePassBtn"
+                            data-ajax-begin="SpinnerShowForm('چند لحظه صبر کنید');"
+                            data-ajax-url="?handler=UpdatePass"
+                            data-ajax-complete="JsonResult">
+                        <input type="hidden" name="PersonId" value="@Model.RowData["PersonId"]" />
+                        <input type="submit" hidden id="UpdatePassBtn" name="PASS" />
+                    </form>
+                </div>
+            </div>
+
+            <div id="ResUpdateKarbar"></div>
+        </section>
+
+
+        break;
+
+
+
+}

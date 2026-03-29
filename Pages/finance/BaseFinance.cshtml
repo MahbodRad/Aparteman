@@ -1,0 +1,562 @@
+﻿@page
+@model Aparteman.Pages.finance.BaseFinanceModel
+@using System.Data;
+@using System.Web
+@{
+    DataRow pagesitem;
+}
+
+<div class="tab-content">
+
+    <!-- ✅ داشبورد -->
+    <div class="tab-pane fade active show" id="tab_A">
+        @{
+            pagesitem = Model.formData.Pages.Select("RJ = 1").First();
+        }
+        <div class="OnvanSafhe">
+            <h6 class="shadow">@pagesitem["OnvanPage"]</h6>
+        </div>
+
+        @if (!string.IsNullOrEmpty(pagesitem["HeaderPage"].ToString()))
+        {
+            <div class="alert alert-secondary">
+                @Html.Raw(HttpUtility.HtmlDecode(pagesitem["HeaderPage"].ToString()))
+            </div>
+        }
+        <h3>در اینجا داشبوردی از آیتمهای شارژ و وضعیت شان نمایش داده میشود</h3>
+
+        <div class="alert alert-primary text-start gap-4">
+            🎯 هدف داشبورد این تب
+
+            👉 پاسخ سریع به این سوال‌ها:
+
+            چه آیتم‌هایی داریم؟
+
+            وضعیتشون چطوره؟
+
+            کدوم‌ها مهم‌ترن یا مشکل‌دارن؟
+            <br />
+            ✅ ایده‌های کاربردی برای Dashboard آیتم‌های شارژ
+            1️⃣ خلاصه آماری (KPI Cards) — واجب 🔥
+
+            📌 به صورت کارت‌های کوچک بالا:
+
+            تعداد کل آیتم‌ها
+
+            آیتم‌های فعال
+
+            آیتم‌های غیرفعال
+
+            آیتم‌های جدید (مثلاً در ۳۰ روز اخیر)
+
+            🎯 خیلی سریع وضعیت سیستم رو نشون میده
+
+            <br />
+            2️⃣ توزیع بر اساس روش محاسبه
+
+            📊 مثلا:
+
+            متراژ: 5
+
+            نفرات: 3
+
+            مساوی: 7
+
+            مصرف: 2
+
+            🎯 کاربرد:
+
+            بفهمی سیستم بیشتر به چه سمت استفاده میشه
+
+            کمک برای تصمیم‌گیری
+
+            <br />
+            3️⃣ تفکیک بر اساس پرداخت‌کننده
+
+            📊
+
+            ساکن پرداخت می‌کند
+
+            مالک پرداخت می‌کند
+
+            🎯 insight مهم:
+
+            بار هزینه روی چه کسی است؟
+
+            <br />
+            4️⃣ لیست «آخرین آیتم‌های ایجاد شده»
+
+            📋 مثلا ۵ مورد آخر:
+
+            عنوان
+
+            تاریخ ایجاد
+
+            روش
+
+            🎯 کاربرد:
+
+            فعالیت اخیر سیستم
+
+            سریع دسترسی برای ویرایش
+
+            <br />
+            5️⃣ آیتم‌های غیرفعال (هشدار UX عالی) 🔥
+
+            📋 لیستی از آیتم‌هایی که:
+
+            غیرفعال هستند
+
+            🎯 کاربرد:
+
+            جلوگیری از فراموشی
+
+            پاکسازی سیستم
+
+            <br />
+            6️⃣ آیتم‌های بدون استفاده (خیلی حرفه‌ای)
+
+            📌 آیتم‌هایی که:
+
+            تعریف شدند
+
+            ولی در هیچ دوره‌ای استفاده نشدند
+
+            🎯 این خیلی ارزشمنده:
+
+            نشان‌دهنده طراحی اشتباه یا بلااستفاده بودن
+
+            <br />
+            7️⃣ آیتم‌های پرتکرار در استفاده (اگر بعداً اضافه کنی)
+
+            📊
+
+            کدام آیتم‌ها بیشتر در شارژها استفاده شدند
+
+            🎯 کمک به:
+
+            ساخت Template
+
+            بهینه‌سازی سیستم
+
+            <br />
+            8️⃣ وضعیت تکمیل اطلاعات
+
+            📊 مثلا:
+
+            آیتم‌هایی که:
+
+            طرف حساب ندارند ❗
+
+            شرح ندارند
+
+            🎯 این خیلی مهمه برای کیفیت دیتا
+
+            <br />
+            9️⃣ میانگین تعداد آیتم در هر دوره (نسخه پیشرفته)
+
+            📊
+
+            هر ماه چند آیتم استفاده میشه
+
+            🎯 برای تحلیل رفتار مالی ساختمان
+
+            🔟 Quick Actions (خیلی مهم برای UX)
+
+            در داشبورد فقط گزارش نذار 👇
+
+            👉 این دکمه‌ها رو هم اضافه کن:
+
+            ➕ ایجاد آیتم جدید
+
+            📋 مشاهده همه آیتم‌ها
+
+            🔍 جستجوی پیشرفته
+
+            <br />
+            🧠 پیشنهاد چیدمان (خیلی مهم)
+            <br />
+            🔷 ردیف 1:
+
+            KPI Cards
+
+            <br />
+            🔷 ردیف 2:
+
+            نمودار روش محاسبه
+
+            نمودار پرداخت‌کننده
+
+            <br />
+            🔷 ردیف 3:
+
+            آخرین آیتم‌ها
+
+            آیتم‌های غیرفعال
+
+            💡 برای MVP چی بذاری؟
+
+            اگر بخوای سبک و سریع باشه:
+
+            حداقل اینا رو بزن:
+
+            KPI (تعداد کل + فعال)
+
+            توزیع MethodCode
+
+            آخرین آیتم‌ها
+
+            <br />
+            👉 همین 3 تا هم خیلی حرفه‌ایه
+
+            <br />
+            🔥 یک ایده خیلی خفن (تمایز محصول)
+            «پیشنهاد هوشمند»
+
+            مثلاً:
+
+            بیشتر آیتم‌های شما از نوع "مساوی" هستند، آیا می‌خواهید یک قالب آماده بسازید؟
+
+            یا:
+
+            ۳ آیتم غیرفعال دارید — بررسی کنید
+
+            <br />
+            🎯 این میشه:
+
+            Smart UX (سطح SaaS)
+
+            <br />
+            🎯 جمع‌بندی
+
+            Dashboard خوب برای این تب:
+
+            ✔ خلاصه (KPI)
+            ✔ توزیع (Charts)
+            ✔ لیست‌های مهم (Recent / Issues)
+            ✔ Action سریع
+
+            💬 نظر واقعی
+
+            اگر این Dashboard رو درست پیاده‌سازی کنی:
+
+            👉 پروژه‌ات از یک CRUD ساده
+            👉 تبدیل میشه به یک سیستم مدیریتی واقعی 💥
+
+        </div>
+
+
+    </div>
+
+
+
+
+    <!-- ✅ مدیریت حسابها-->
+    <div class="tab-pane fade" id="tab_B">
+        @{
+            pagesitem = Model.formData.Pages.Select("RJ = 2").First();
+        }
+        <div class="OnvanSafhe">
+            <h6 class="shadow">@pagesitem["OnvanPage"]</h6>
+        </div>
+
+        @if (!string.IsNullOrEmpty(pagesitem["HeaderPage"].ToString()))
+        {
+            <div class="alert alert-secondary">
+                @Html.Raw(HttpUtility.HtmlDecode(pagesitem["HeaderPage"].ToString()))
+            </div>
+        }
+
+        <div class="container">
+
+            <form method="get" data-ajax="true" data-ajax-method="get"
+                  data-ajax-begin="MsgFormSpinner('A','ثبت حساب', 'چند لحظه صبر کنید');"
+                  data-ajax-url="?handler=FormSabtAccount"
+                  data-ajax-update="#MsgFormMATN_A">
+                <input type="hidden" name="Complex" value="@Model.userInfo.Complex" />
+                <input type="submit" hidden id="FormSabtAccountBtn" name="ID" />
+                <div class="px-2 text-end">
+                    <button type="button" class="BTN btn_Pill btn_Blue2" onclick="ClickBtnSimpl('FormSabtAccountBtn','0');"><span>افزدون حساب جدید</span><i class="icofont-00x icofont-plus"></i></button>
+                </div>
+            </form>
+
+
+            <div class="filterArea">
+                <form asp-antiforgery="true" method="get" data-ajax-method="get" data-ajax="true"
+                      data-ajax-begin="SpinnerShow('RepListAccounts', 'در حال بارگذاری لیست حساب ها');"
+                      data-ajax-url="?handler=RepListAccounts"
+                      data-ajax-update="#RepListAccounts">
+
+                    <div class="row">
+                        <div class="col-6 col-sm-4">
+                            <span class="control-label">عنوان</span>
+                            <input class="control-text" name="AccountTitle" value="" />
+                        </div>
+                        <div class="col-6 col-sm-2">
+                            <span class="control-label">نوع حساب</span>
+                            <select class="control-input" name="AccountType">
+                                <option value="0">همه</option>
+                                <option value="1">دارایی</option>
+                                <option value="2">بدهی</option>
+                                <option value="3">درآمد</option>
+                                <option value="4">هزینه</option>
+                            </select>
+                        </div>
+
+                        <div class="col-6 col-sm-2">
+                            <span class="control-label">تفصیلی</span>
+                            <select class="control-input" name="DetailCode">
+                                <option value="0">همه</option>
+                                <option value="4">ندارد</option>
+                                <option value="1">اشخاص</option>
+                                <option value="2">واحد</option>
+                                <option value="3">قرارداد</option>
+                            </select>
+                        </div>
+                        <div class="col-6 col-sm-2">
+                            <span class="control-label">وضعیت</span>
+                            <select class="control-input" name="IsActive">
+                                <option value="2">همه</option>
+                                <option value="1">فعال است</option>
+                                <option value="0">غیرفعال است</option>
+                            </select>
+                        </div>
+                        <div class="col-6 col-sm-2">
+                            <span class="control-label">مرتب سازی</span>
+                            <select class="control-input" name="Sort">
+                                <option value="A">کد حساب</option>
+                                <option value="B">نام حساب</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="p-3 text-end">
+                        <button type="submit" id="RepListAccountsBtn" class="BTN btn_Pill btn_Blue2"><span>جستجوی حساب</span><i class="icofont-2x icofont-search-2"></i></button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+
+        <div class="container-xl">
+            <div class="mt-3" id="RepListAccounts">
+                <div class="alert alert-info w-max-400 mx-auto cursor-pointer" onclick="ClickBtn('RepListAccountsBtn')">
+                    <i class="icofont-search-2" style="font-size:40px;"></i>
+                    <h6 class="mt-3">هنوز جستجویی انجام نشده</h6>
+                    <p class="text-muted">برای مشاهده همه حسابها کلیک کنید، و یا از فیلترهای بالا استفاده کنید</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+
+    <!-- ✅ مدیریت آیتمهای شارژ-->
+    <div class="tab-pane fade" id="tab_C">
+        @{
+            pagesitem = Model.formData.Pages.Select("RJ = 3").First();
+        }
+        <div class="OnvanSafhe">
+            <h6 class="shadow">@pagesitem["OnvanPage"]</h6>
+        </div>
+
+        @if (!string.IsNullOrEmpty(pagesitem["HeaderPage"].ToString()))
+        {
+            <div class="alert alert-secondary">
+                @Html.Raw(HttpUtility.HtmlDecode(pagesitem["HeaderPage"].ToString()))
+            </div>
+        }
+
+        <div class="container">
+
+            <form method="get" data-ajax="true" data-ajax-method="get"
+                    data-ajax-begin="MsgFormSpinner('A','ثبت مشخصات آیتم', 'چند لحظه صبر کنید');"
+                    data-ajax-url="?handler=FormSabtItem"
+                    data-ajax-update="#MsgFormMATN_A">
+                <input type="hidden" name="Complex" value="@Model.userInfo.Complex" />
+                <input type="submit" hidden id="FormSabtItemBtn" name="ID" />
+                <div class="px-2 text-end">
+                    <button type="button" class="BTN btn_Pill btn_Blue2" onclick="ClickBtnSimpl('FormSabtItemBtn','0');"><span>افزدون آیتم جدید</span><i class="icofont-00x icofont-plus"></i></button>
+                </div>
+            </form>
+
+
+            <div class="filterArea">
+                <form asp-antiforgery="true" method="get" data-ajax-method="get" data-ajax="true"
+                      data-ajax-begin="SpinnerShow('RepListItems', 'در حال بارگذاری لیست آیتمهای شارژ');"
+                      data-ajax-url="?handler=RepListItems"
+                      data-ajax-update="#RepListItems">
+
+                    <div class="row">
+                        <div class="col-6 col-sm-2">
+                            <span class="control-label">عنوان</span>
+                            <input class="control-text" name="ItemTitle" value="" />
+                        </div>
+                        <div class="col-6 col-sm-2">
+                            <span class="control-label">روش تقسیم</span>
+                            <select class="control-input" name="MethodCode">
+                                <option value="0">همه</option>
+                                <option value="1">براساس متراژ</option>
+                                <option value="2">تعداد نفرات </option>
+                                <option value="3">مساوی</option>
+                                <option value="4">مصرف</option>
+                            </select>
+                        </div>
+                        <div class="col-6 col-sm-2">
+                            <span class="control-label">طرف حساب</span>
+                            <input class="control-text" name="AccountTitle" value="" />
+                        </div>
+
+                        <div class="col-6 col-sm-2">
+                            <span class="control-label">پرداخت کننده</span>
+                            <select class="control-input" name="PayerCode">
+                                <option value="0">همه</option>
+                                <option value="1">ساکن است</option>
+                                <option value="2">مالک است</option>
+                            </select>
+                        </div>
+                        <div class="col-6 col-sm-2">
+                            <span class="control-label">وضعیت</span>
+                            <select class="control-input" name="IsActive">
+                                <option value="2">همه</option>
+                                <option value="1">فعال است</option>
+                                <option value="0">غیرفعال است</option>
+                            </select>
+                        </div>
+                        <div class="col-6 col-sm-2">
+                            <span class="control-label">مرتب سازی</span>
+                            <select class="control-input" name="Sort">
+                                <option value="A">عنوان</option>
+                                <option value="B">روش تقسیم</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="p-3 text-end">
+                        <button type="submit" id="RepListItemsBtn" class="BTN btn_Pill btn_Blue2"><span>جستجوی آیتم</span><i class="icofont-2x icofont-search-2"></i></button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+
+        <div class="container-fluid">
+            <div class="mt-3" id="RepListItems">
+                <div class="alert alert-info w-max-400 mx-auto cursor-pointer" onclick="ClickBtn('RepListItemsBtn')">
+                    <i class="icofont-search-2" style="font-size:40px;"></i>
+                    <h6 class="mt-3">هنوز جستجویی انجام نشده</h6>
+                    <p class="text-muted">برای مشاهده همه آیتمها کلیک کنید، و یا از فیلترهای بالا استفاده کنید</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ✅ مدیریت دوره مالی -->
+    <div class="tab-pane fade" id="tab_D">
+        @{
+            pagesitem = Model.formData.Pages.Select("RJ = 4").First();
+        }
+        <div class="OnvanSafhe">
+            <h6 class="shadow">@pagesitem["OnvanPage"]</h6>
+        </div>
+
+        @if (!string.IsNullOrEmpty(pagesitem["HeaderPage"].ToString()))
+        {
+            <div class="alert alert-secondary">
+                @Html.Raw(HttpUtility.HtmlDecode(pagesitem["HeaderPage"].ToString()))
+            </div>
+        }
+
+        <div class="container">
+
+            <form method="get" data-ajax="true" data-ajax-method="get"
+                  data-ajax-begin="MsgFormSpinner('A','ثبت دوره مالی', 'چند لحظه صبر کنید');"
+                  data-ajax-url="?handler=FormSabtPeriod"
+                  data-ajax-update="#MsgFormMATN_A">
+                <input type="hidden" name="Complex" value="@Model.userInfo.Complex" />
+                <input type="submit" hidden id="FormSabtPeriodBtn" name="ID" />
+                <div class="px-2 text-end">
+                    <button type="button" class="BTN btn_Pill btn_Blue2" onclick="ClickBtnSimpl('FormSabtPeriodBtn','0');"><span>افزدون دوره مالی جدید</span><i class="icofont-00x icofont-plus"></i></button>
+                </div>
+            </form>
+
+
+            <div class="filterArea">
+                <form asp-antiforgery="true" method="get" data-ajax-method="get" data-ajax="true"
+                      data-ajax-begin="SpinnerShow('RepListPeriods', 'در حال بارگذاری لیست دوره های مالی');"
+                      data-ajax-url="?handler=RepListPeriods"
+                      data-ajax-update="#RepListPeriods">
+
+                    <div class="row">
+                        <div class="col-6 col-sm-4">
+                            <span class="control-label">عنوان</span>
+                            <input class="control-text" name="PeriodTitle" value="" />
+                        </div>
+                        <div class="col-6 col-sm-4">
+                            <span class="control-label">محدوده تاریخ</span>
+                            <input type="text" class="control-text" name="PeriodDate" value="" />
+                        </div>
+                        <div class="col-6 col-sm-4">
+                            <span class="control-label">وضعیت</span>
+                            <select class="control-input" name="Situation">
+                                <option value="0">همه</option>
+                                <option value="1">فعال است</option>
+                                <option value="2">بسته شده است</option>
+                                <option value="3">ثبت نهایی شده است</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="p-3 text-end">
+                        <button type="submit" id="RepListPeriodsBtn" class="BTN btn_Pill btn_Blue2"><span>جستجوی دوره مالی</span><i class="icofont-2x icofont-search-2"></i></button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="mt-3" id="RepListPeriods">
+                <div class="alert alert-info w-max-400 mx-auto cursor-pointer" onclick="ClickBtn('RepListPeriodsBtn')">
+                    <i class="icofont-search-2" style="font-size:40px;"></i>
+                    <h6 class="mt-3">هنوز جستجویی انجام نشده</h6>
+                    <p class="text-muted">برای مشاهده همه دوره ها کلیک کنید، و یا از فیلترهای بالا استفاده کنید</p>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+</div>
+
+<footer-page class="nav nav-tabs border-top border-light">
+    <div class="w-inline">
+        <div id="menu-page-btn">
+            <menu-page data-bs-toggle="tab" data-bs-target="#tab_A" class="active">داشبورد</menu-page><point></point>
+            <menu-page data-bs-toggle="tab" data-bs-target="#tab_B">حسابها</menu-page><point></point>
+            <menu-page data-bs-toggle="tab" data-bs-target="#tab_C">آیتمهای شارژ</menu-page><point></point>
+            <menu-page data-bs-toggle="tab" data-bs-target="#tab_D">مدیریت دوره مالی</menu-page><point></point>
+            <menu-page class="w-min-50" onclick="HelpAjax(@Model.FormId);" data-bs-toggle="tooltip" data-bs-title="راهنما">
+                <span class="menu-firuze icofont-00x icofont-learn"></span>
+            </menu-page>
+            <menu-page class="w-min-50" onclick="ToggleFullscreen();" data-bs-toggle="tooltip" data-bs-title="تمام صفحه">
+                <span class="menu-firuze icofont-00x icofont-expand"></span>
+            </menu-page>
+            <menu-page onclick="GoToTop();" class="w-min-50" data-bs-toggle="tooltip" data-bs-title="برگشت به بالا">
+                <span class="menu-firuze icofont-00x icofont-stylish-up"></span>
+            </menu-page>
+            <menu-page class="bg-secondary" data-bs-toggle="tooltip" data-bs-title="برگشت به صفحه قبل">
+                <select class="text-start bg-secondary text-light" onchange="GoToUrl(this.value);">
+                    @foreach (DataRow item in Model.formData.lastForms.Rows)
+                    {
+                        <option value="/@item["Route"]">@item["FormTitle"]</option>
+                    }
+                </select>
+            </menu-page><point></point>
+            <button type="button" class="pos-Right btn_Icon Icon_Red icofont-2x icofont-curved-double-right d-md-none"
+                    data-bs-title="اسکرول به راست" onclick="ScrollRight('menu-page-btn');"></button>
+            <button type="button" class="pos-Left btn_Icon Icon_Red icofont-2x icofont-curved-double-left d-md-none"
+                    data-bs-title="اسکرول به چپ" onclick="ScrollLeft('menu-page-btn');"></button>
+        </div>
+    </div>
+</footer-page>

@@ -1,0 +1,343 @@
+﻿@page
+@model Aparteman.Pages.basedata.BuildingModel
+@using System.Data;
+@using System.Web
+@{
+    DataRow pagesitem;
+}
+<div>
+    <footer-page class="nav nav-tabs border-top border-light">
+        <div class="w-inline">
+            <div id="menu-page-btn">
+                <menu-page data-bs-toggle="tab" data-bs-target="#tab_A" class="active">مجتمع ها</menu-page><point></point>
+                <menu-page data-bs-toggle="tab" data-bs-target="#tab_B">ساختمان ها</menu-page><point></point>
+                <menu-page data-bs-toggle="tab" data-bs-target="#tab_C">طبقات ساختمان</menu-page><point></point>
+                <menu-page class="w-min-50" onclick="HelpAjax(@Model.FormId);" data-bs-toggle="tooltip" data-bs-title="راهنما">
+                    <span class="menu-firuze icofont-00x icofont-learn"></span>
+                </menu-page>
+                <menu-page class="w-min-50" onclick="ToggleFullscreen();" data-bs-toggle="tooltip" data-bs-title="تمام صفحه">
+                    <span class="menu-firuze icofont-00x icofont-expand"></span>
+                </menu-page>
+                <menu-page onclick="GoToTop();" class="w-min-50" data-bs-toggle="tooltip" data-bs-title="برگشت به بالا">
+                    <span class="menu-firuze icofont-00x icofont-stylish-up"></span>
+                </menu-page>
+                <menu-page class="bg-secondary" data-bs-toggle="tooltip" data-bs-title="برگشت به صفحه قبل">
+                    <select class="text-start bg-secondary text-light" onchange="GoToUrl(this.value);">
+                        @foreach (DataRow item in Model.formData.lastForms.Rows)
+                        {
+                            <option value="/@item["Route"]">@item["FormTitle"]</option>
+                        }
+                    </select>
+                </menu-page><point></point>
+                <button type="button" class="pos-Right btn_Icon Icon_Red icofont-2x icofont-curved-double-right d-md-none"
+                data-bs-title="اسکرول به راست" onclick="ScrollRight('menu-page-btn');"></button>
+                <button type="button" class="pos-Left btn_Icon Icon_Red icofont-2x icofont-curved-double-left d-md-none"
+                data-bs-title="اسکرول به چپ" onclick="ScrollLeft('menu-page-btn');"></button>
+            </div>
+        </div>
+    </footer-page>
+
+    <div class="tab-content">
+
+        <!-- ✅ تب مجتمع ها -->
+        <div class="tab-pane fade active show" id="tab_A">
+            @{
+                pagesitem = Model.formData.Pages.Select("RJ = 1").First();
+            }
+            <div class="OnvanSafhe">
+                <h6 class="shadow">@pagesitem["OnvanPage"]</h6>
+            </div>
+
+            @if (!string.IsNullOrEmpty(pagesitem["HeaderPage"].ToString()))
+            {
+                <div class="alert alert-secondary">
+                    @Html.Raw(HttpUtility.HtmlDecode(pagesitem["HeaderPage"].ToString()))
+                </div>
+            }
+
+            <div class="w-max-500 mx-auto">
+                <form method="get" data-ajax="true" data-ajax-method="get"
+                data-ajax-begin="MsgFormSpinner('A','ثبت اطلاعات مجتمع', 'چند لحظه صبر کنید');"
+                data-ajax-url="?handler=FormSabtComplex"
+                data-ajax-update="#MsgFormMATN_A">
+                    <input type="submit" hidden id="FormSabtComplexBtn" name="ID" />
+                    <div class="px-2 text-end">
+                        <button type="button" class="BTN btn_Pill btn_Blue2" onclick="ClickBtnSimpl('FormSabtComplexBtn','0');"><span>افزدون مجتمع جدید</span><i class="icofont-00x icofont-plus float-end"></i></button>
+                    </div>
+                </form>
+            </div>
+            <div class="mt-3 d-flex flex-wrap justify-content-center" id="ListComplex">
+                @foreach (DataRow item in Model.ListComplex.Rows)
+                {
+                    <div class="alert alert-primary m-2 w-max-450">
+                        <h5 class="text-center p-3">
+                            <span>@item["ComplexName"]</span>
+                        </h5>
+                        <div>
+                            <span class="control-label">آدرس: </span>
+                            <div class="alert alert-secondary">
+                                @item["Adress"]
+                            </div>
+                        </div>
+                        <div class="p-2">
+                            <span class="control-label">تعداد ساختمان: </span>
+                            <div class="d-flex">
+                                <span class="control-text w-fix-100" id="BULNQ_@item["ComplexId"]">@item["NumberBuilging"]</span>
+                                <button type="button" class="BTN btn_Pill btn_Blue2 flex-fill mx-2" onclick="ClickBtnSimpl('FormSabtBuildingBtn','0','FormSabtBuildingCompId','@item["ComplexId"]','FormSabtBuildingCompName','@item["ComplexName"]');"><span>افزدون ساختمان جدید</span><span class="icofont-00x icofont-plus float-end"></span></button>
+                            </div>
+                        </div>
+                        <div class="p-2">
+                            <span class="control-label">وضعیت: </span>
+                            <span class="control-text">@item["Active"]</span>
+                        </div>
+                        <div class="p-2">
+                            <span class="control-label">تاریخ ایجاد: </span>
+                            <span class="control-text">@item["CreatedAt"]</span>
+                        </div>
+                        <hr />
+                        <div class="d-flex justify-content-between text-Panevis">
+                            <span>@item["EditorName"]</span>
+                            <span class="ltr">@item["TimeEdit"]</span>
+                        </div>
+                        <div class="text-end p-2">
+                            <button type="button" class="btn_Icon Icon_Brown icofont-2x icofont-edit" onclick="ClickBtnSimpl('FormSabtComplexBtn','@item["ComplexId"]');"><span>ویرایش شود</span></button>
+                        </div>
+                    </div>
+                }
+            </div>
+
+        </div>
+
+        <!-- ✅ تب ساختمان ها -->
+        <div class="tab-pane fade" id="tab_B">
+            @{
+                pagesitem = Model.formData.Pages.Select("RJ = 2").First();
+            }
+            <div class="OnvanSafhe">
+                <h6 class="shadow">@pagesitem["OnvanPage"]</h6>
+            </div>
+
+            @if (!string.IsNullOrEmpty(pagesitem["HeaderPage"].ToString()))
+            {
+                <div class="alert alert-secondary">
+                    @Html.Raw(HttpUtility.HtmlDecode(pagesitem["HeaderPage"].ToString()))
+                </div>
+            }
+
+            <div class="w-max-700 mx-auto">
+                <form hidden method="get" data-ajax="true" data-ajax-method="get"
+                data-ajax-begin="MsgFormSpinner('A','ثبت اطلاعات ساختمان', 'چند لحظه صبر کنید');"
+                data-ajax-url="?handler=FormSabtBuilding"
+                data-ajax-update="#MsgFormMATN_A">
+                    <input type="submit" hidden id="FormSabtBuildingBtn" name="ID" />
+                    <input type="hidden" hidden id="FormSabtBuildingCompId" name="CompId" />
+                    <input type="hidden" hidden id="FormSabtBuildingCompName" name="CompName" />
+                </form>
+
+                <div class="filterArea">
+                    <form asp-antiforgery="true" method="get" data-ajax-method="get" data-ajax="true"
+                        data-ajax-begin="SpinnerShow('ListBuildings', 'در حال بارگذاری لیست ساختمانها');"
+                          data-ajax-url="?handler=ListBuildings"
+                        data-ajax-update="#ListBuildings">
+                        <input type="submit" id="ListBuildingsBtn" hidden />
+
+                        <div class="d-flex justify-content-around">
+                            <div class="flex-fill">
+                                <span class="control-label">مجتمع</span>
+                                <select name="ComplexId" class="control-input" onchange="ClickBtn('ListBuildingsBtn')">
+                                    @if (Model.ListComplex.Rows.Count > 1){
+                                        <option value="0">انتخاب کنید</option>
+                                    }
+                                    @foreach (DataRow item in Model.ListComplex.Rows){
+                                        <option value="@item["ComplexId"]">@item["ComplexName"]</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="mt-3 d-flex flex-wrap justify-content-center" id="ListBuildings">
+                @if (Model.ListBuilding.Rows.Count == 0){
+                    <h3 class="text-danger">شما هنوز هیچ ساختمانی تعریف نکرده اید. لطفا شروع کنید و اولین ساختمان را تعریف کنید</h3>
+                }
+                else{
+                    @foreach (DataRow item in Model.ListBuilding.Rows)
+                    {
+                        <div class="alert alert-primary m-2 w-max-450">
+                            <h5 class="text-center p-3 text-Panevis font-32">
+                                <span>@item["ComplexName"]</span>
+                            </h5>
+                            <h5 class="text-center p-1">
+                                <span>@item["BuildingName"]</span>
+                            </h5>
+                            <div class="p-1">
+                                <span class="control-label">کد: </span>
+                                <span class="control-text">@item["BuildingCode"]</span>
+                            </div>
+                            <div class="p-1">
+                                <span class="control-label">تعداد طبقه: </span>
+                                <div class="d-flex">
+                                    <span class="control-text w-fix-100" id="FLONQ_@item["BuildingId"]">@item["NumberOfFloors"]</span>
+                                    <button type="button" class="BTN btn_Pill btn_Blue2 flex-fill mx-2" onclick="ClickBtnSimpl('FormSabtFloorBtn','0','FormSabtFloorBuilId','@item["BuildingId"]','FormSabtFloorBuilName','@item["BuildingName"]');"><span>افزدون طبقه جدید</span><span class="icofont-00x icofont-plus float-end"></span></button>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6 p-1">
+                                    <span class="control-label">تعداد واحد: </span>
+                                    <span class="control-text">@item["NumberOfUnits"]</span>
+                                </div>
+                                <div class="col-6 p-1">
+                                    <span class="control-label">وضعیت: </span>
+                                    <span class="control-text">@item["Active"]</span>
+                                </div>
+                            </div>
+                            <hr />
+                            <div class="d-flex justify-content-between text-Panevis">
+                                <span>@item["EditorName"]</span>
+                                <span class="ltr">@item["TimeEdit"]</span>
+                            </div>
+                            <div class="text-end p-2">
+                                <button type="button" class="btn_Icon Icon_Brown icofont-2x icofont-edit" onclick="ClickBtnSimpl('FormSabtBuildingBtn','@item["BuildingId"]');"><span>ویرایش شود</span></button>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+
+
+        <!-- ✅ تب طبقات -->
+        <div class="tab-pane fade" id="tab_C">
+            @{
+                pagesitem = Model.formData.Pages.Select("RJ = 2").First();
+            }
+            <div class="OnvanSafhe">
+                <h6 class="shadow">@pagesitem["OnvanPage"]</h6>
+            </div>
+
+            @if (!string.IsNullOrEmpty(pagesitem["HeaderPage"].ToString()))
+            {
+                <div class="alert alert-secondary">
+                    @Html.Raw(HttpUtility.HtmlDecode(pagesitem["HeaderPage"].ToString()))
+                </div>
+            }
+
+            <div class="w-max-700 mx-auto">
+                <form hidden method="get" data-ajax="true" data-ajax-method="get"
+                data-ajax-begin="MsgFormSpinner('A','ثبت اطلاعات طبقات', 'چند لحظه صبر کنید');"
+                data-ajax-url="?handler=FormSabtFloor"
+                data-ajax-update="#MsgFormMATN_A">
+                    <input type="submit" hidden id="FormSabtFloorBtn" name="ID" />
+                    <input type="hidden" id="FormSabtFloorBuilId" name="BuildID" />
+                    <input type="hidden" id="FormSabtFloorBuilName" name="BuildName" />
+                </form>
+
+                <div class="filterArea">
+                    <form asp-antiforgery="true" method="get" data-ajax-method="get" data-ajax="true"
+                          data-ajax-begin="SpinnerShow('ListFloors', 'در حال بارگذاری لیست طبقات');"
+                          data-ajax-url="?handler=ListFloors"
+                          data-ajax-update="#ListFloors">
+                        <input type="submit" id="ListFloorsBtn" hidden />
+        
+                        <div class="d-flex justify-content-around">
+                            <div class="flex-fill">
+                                <span class="control-label">ساختمان</span>
+                                <select name="BuildingId" class="control-input" onchange="ClickBtn('ListFloorsBtn')">
+                                    <option value="0">انتخاب کنید</option>
+                                    @foreach (DataRow item in Model.ListBuilding.Rows)
+                                    {
+                                        <option value="@item["BuildingId"]">@item["ComplexName"] - @item["BuildingName"]</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="mt-3 container" id="ListFloors">
+                @if (Model.ListFloor.Rows.Count == 0)
+                {
+                    <h3 class="text-danger">شما هنوز هیچ طبقه ای برای ساختمانها تعریف نکرده اید. لطفا شروع کنید و اولین ساختمان و طبقه را تعریف کنید</h3>
+                }
+                else
+                {
+
+                    <div class="d-flex flex-wrap justify-content-between border-top border-secondary">
+                        <div class="Area_Count w-fix-200">
+                            <span>تعداد : </span><span>@Model.ListFloor.Rows.Count </span>
+                        </div>
+                    </div>
+
+
+                    <div class="header_Table">
+                        <button type="button" class="btn_Icon footer_Right Icon_Red icofont-00x icofont-curved-double-right" title="اسکرول به راست" onclick="ScrollRight('ListFloor_FT');"></button>
+                        <button type="button" class="btn_Icon footer_Left Icon_Red icofont-00x icofont-curved-double-left" title="اسکرول به چپ" onclick="ScrollLeft('ListFloor_FT');"></button>
+                        <div id="ListFloor_FT" class="overflow-hidden" onscroll="ScrollSlave(this, 'ListFloor_MS');">
+                            <table class="table grid-table">
+                                <thead>
+                                    <tr>
+                                        <th><span>#</span></th>
+                                        <th><span class="w-fix-200">مجتمع</span></th>
+                                        <th><span class="w-fix-100">کد ساختمان</span></th>
+                                        <th><span class="w-fix-200">نام ساختمان</span></th>
+                                        <th><span class="w-fix-100">شماره طبقه</span></th>
+                                        <th><span class="w-fix-150">عنوان طبقه</span></th>
+                                        <th><span class="w-fix-100">وضعیت</span></th>
+                                        <th><span class="w-fix-50">ویرایش</span></th>
+                                        <th><span class="w-fix-50">حذف</span></th>
+                                        <th><span class="w-fix-180"><span>ویرایشگر</span> / <span>زمان</span></span></th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="overflow-auto" id="ListFloor_MS" onscroll="ScrollSlave(this, 'ListFloor_FT');">
+                        <table class="table grid-table">
+                            <thead class="header_Tablehiden">
+                                <tr>
+                                    <th><span>#</span></th>
+                                    <th><span class="w-fix-200">مجتمع</span></th>
+                                    <th><span class="w-fix-100">کد ساختمان</span></th>
+                                    <th><span class="w-fix-200">نام ساختمان</span></th>
+                                    <th><span class="w-fix-100">شماره طبقه</span></th>
+                                    <th><span class="w-fix-150">عنوان طبقه</span></th>
+                                    <th><span class="w-fix-100">وضعیت</span></th>
+                                    <th><span class="w-fix-50">ویرایش</span></th>
+                                    <th><span class="w-fix-50">حذف</span></th>
+                                    <th><span class="w-fix-180"><span>ویرایشگر</span> / <span>زمان</span></span></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{ var RJ = 0;}
+                                @foreach (DataRow item in Model.ListFloor.Rows)
+                                {
+                                    { RJ++; }
+                                    <tr onclick="RowSelect(this);">
+                                        <td class="text-danger">@RJ</td>
+                                        <td><span class="w-fixC-200">@item["ComplexName"]</span></td>
+                                        <td><span class="w-fixC-100">@item["BuildingCode"]</span></td>
+                                        <td><span class="w-fixC-200">@item["BuildingName"]</span></td>
+                                        <td><span class="w-fixC-100">@item["FloorNumber"]</span></td>
+                                        <td><span class="w-fixC-150">@item["FloorTitle"]</span></td>
+                                        <td><span class="w-fixC-100">@item["Active"]</span></td>
+                                        <td>
+                                            <button type="button" class="btn_Icon Icon_Mor icofont-00x icofont-edit" title="ویرایش" onclick="ClickBtnSimpl('FormSabtFloorBtn', '@item["FloorId"]');"></button>
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn_Icon Icon_Red icofont-00x icofont-delete" title="حذف" onclick="ClickBtnSimpl('DeleteFloorBtn', '@item["FloorId"]');"></button>
+                                        </td>
+                                        <td><span class="w-fixC-180 text-start"><span>@item["EditorName"]</span><span class="text_line23 ltr">@item["TimeEdit"]</span></span></td>
+                                    </tr>
+                                }
+
+                            </tbody>
+                        </table>
+                    </div>
+
+                }
+            </div>
+        </div>
+
+    </div>
+</div>

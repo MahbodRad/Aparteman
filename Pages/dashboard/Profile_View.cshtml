@@ -1,0 +1,124 @@
+﻿@model Aparteman.Pages.dashboard.ProfileModel
+@using System.Data;
+@using Aparteman.Services;
+@{
+    var RJ = 0;
+}
+@switch (@ViewData["Switch"])
+{
+    case "ListAsnad":
+        <div class="d-flex flex-wrap justify-content-between">
+            <div class="Area_Count w-fix-200">
+                <span>تعداد : </span><span>@Model.ListAsnad.Rows.Count </span>
+            </div>
+        </div>
+
+        <div class="header_Table">
+            <button type="button" class="btn_Icon footer_Right Icon_Red icofont-00x icofont-curved-double-right" title="اسکرول به راست" onclick="ScrollRight('@ViewData["Switch"]_FT');"></button>
+            <button type="button" class="btn_Icon footer_Left Icon_Red icofont-00x icofont-curved-double-left" title="اسکرول به چپ" onclick="ScrollLeft('@ViewData["Switch"]_FT');"></button>
+            <div id="@ViewData["Switch"]_FT" class="overflow-hidden" onscroll="ScrollSlave(this, '@ViewData["Switch"]_MS');">
+                <table class="table grid-table">
+                    <thead>
+                        <tr>
+                            <th><span>#</span></th>
+                            <th><span class="w-fix-200">دسته بندی</span></th>
+                            <th><span class="w-fix-100">نوع سند</span></th>
+                            <th><span class="w-fix-50">دانلود</span></th>
+                            <th><span class="w-fix-250">توضیح</span></th>
+                            <th><span class="w-fix-180">زمان ثبت</span></th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+        <div class="overflow-auto" id="@ViewData["Switch"]_MS" onscroll="ScrollSlave(this, '@ViewData["Switch"]_FT');">
+            <table class="table grid-table">
+                <thead class="header_Tablehiden">
+                    <tr>
+                        <th><span>#</span></th>
+                        <th><span class="w-fix-200">دسته بندی</span></th>
+                        <th><span class="w-fix-100">نوع سند</span></th>
+                        <th><span class="w-fix-50">دانلود</span></th>
+                        <th><span class="w-fix-250">توضیح</span></th>
+                        <th><span class="w-fix-180">زمان ثبت</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (DataRow item in Model.ListAsnad.Rows)
+                    {
+                        { RJ++; }
+                        <tr onclick="RowSelect(this);">
+                            <td class="text-danger">@RJ</td>
+                            <td><span class="w-fixC-200">@item["AsnadTitle"]</span></td>
+                            <td><span class="w-fixC-100">@item["Ext"]</span></td>
+                            <td>
+                                <a href="/Uploads/Asnad/@item["NameFile"]" target="_blank" class="btn_Icon Icon_Mor icofont-00x icofont-download" title="دانلود"></a>
+                            </td>
+                            <td><span class="w-fixC-250">@item["Sharh"]</span></td>
+                            <td><span class="w-fixC-180 text-start"><span>@item["EditorName"]</span><span class="text_line23 ltr">@item["TimeEdit"]</span></span></td>
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+        </div>
+        break;
+
+    case "FormSabtAsnad":
+        <section class="container p-1">
+            <div class="secondArea p-2">
+                <form asp-antiforgery="true" method="post" data-ajax="true"
+                      enctype="multipart/form-data"
+                      data-ajax-confirm="آیا فایل آپلود گردد؟"
+                      data-ajax-begin="SpinnerShowForm('در حال ذخیره سند...');"
+                      data-ajax-Btn="UpLoadFileBtn"
+                      data-ajax-url="?handler=UpLoadFile"
+                      data-ajax-complete="JsonClose_B"
+                      data-ajax-success="ClickBtn('ListAsnadBtn');">
+                    <h5 class="text-primary text-center mb-3">آپلود سند جدید</h5>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="mb-2 w-min-330">
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'از لیست زیر دسته بندی سند را انتخاب کنید. ')">دسته بندی سند</label>
+                                <select class="control-input" name="AsnadId">
+                                    <option value="">انتخاب کنید...</option>
+                                    @foreach (DataRow item in Model.ListAsnad.Rows)
+                                    {
+                                        <option value="@item["AsnadId"]">@item["AsnadTitle"]</option>
+                                    }
+                                </select>
+                            </div>
+
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="mb-2 w-min-330  pt-4">
+                                <div class="d-flex">
+                                    <button type="button" id="FileKnd"
+                                            class="btn_Icon Icon_MorLight icofont-3x icofont-upload mx-2"
+                                            onclick="ClickBtn('FileUpload');"
+                                            title="انتخاب فایل"></button>
+                                    <div class="flex-fill pt-4">
+                                        <input class="d-none" type="file" id="FileUpload" name="FileUpload"
+                                               accept=".jpg,.png,.bmp,.jpeg,.pdf,.txt,.xls,.xlsx,.doc,.docx,.zip,.rar"
+                                               onchange="GetFile(this,'FileName','FileKnd');" />
+                                        <span id="FileName" class="control-text">فایل را پیوست کنید</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-2 text-start">
+                        <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'یک شرح در مورد سند بنویسید. این شرح در جستجوها و گزارشها برای شناسایی و پیدا کردن فایل بسیار به شما کمک میکند')">عنوان / شرح مناسب</label>
+                        <input type="text" class="control-input" name="Sharh" />
+                    </div>
+
+                    <div class="text-end p-3">
+                        <button type="submit" id="UpLoadFileBtn" class="btn_Icon Icon_Blue2 icofont-2x icofont-checked" title="سند/ فایل آپلود شود"><span>سند/ فایل آپلود شود</span></button>
+                    </div>
+
+                </form>
+            </div>
+        </section>
+        break;
+
+}

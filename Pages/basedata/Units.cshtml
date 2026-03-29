@@ -1,0 +1,398 @@
+﻿@page
+@model Aparteman.Pages.basedata.UnitsModel
+@using System.Data;
+@using System.Web
+@{
+    DataRow pagesitem;
+}
+<div>
+    <footer-page class="nav nav-tabs border-top border-light">
+        <div class="w-inline">
+            <div id="menu-page-btn">
+                <menu-page data-bs-toggle="tab" data-bs-target="#tab_A" class="active">داشبورد</menu-page><point></point>
+                <menu-page data-bs-toggle="tab" data-bs-target="#tab_B">واحدها</menu-page><point></point>
+                <menu-page class="w-min-50" onclick="HelpAjax(@Model.FormId);" data-bs-toggle="tooltip" data-bs-title="راهنما">
+                    <span class="menu-firuze icofont-00x icofont-learn"></span>
+                </menu-page>
+                <menu-page class="w-min-50" onclick="ToggleFullscreen();" data-bs-toggle="tooltip" data-bs-title="تمام صفحه">
+                    <span class="menu-firuze icofont-00x icofont-expand"></span>
+                </menu-page>
+                <menu-page onclick="GoToTop();" class="w-min-50" data-bs-toggle="tooltip" data-bs-title="برگشت به بالا">
+                    <span class="menu-firuze icofont-00x icofont-stylish-up"></span>
+                </menu-page>
+                <menu-page class="bg-secondary" data-bs-toggle="tooltip" data-bs-title="برگشت به صفحه قبل">
+                    <select class="text-start bg-secondary text-light" onchange="GoToUrl(this.value);">
+                        @foreach (DataRow item in Model.formData.lastForms.Rows)
+                        {
+                            <option value="/@item["Route"]">@item["FormTitle"]</option>
+                        }
+                    </select>
+                </menu-page><point></point>
+                <button type="button" class="pos-Right btn_Icon Icon_Red icofont-2x icofont-curved-double-right d-md-none"
+                data-bs-title="اسکرول به راست" onclick="ScrollRight('menu-page-btn');"></button>
+                <button type="button" class="pos-Left btn_Icon Icon_Red icofont-2x icofont-curved-double-left d-md-none"
+                data-bs-title="اسکرول به چپ" onclick="ScrollLeft('menu-page-btn');"></button>
+            </div>
+        </div>
+    </footer-page>
+
+    <div class="tab-content">
+
+        <!-- ✅ تب داشبود -->
+        <div class="tab-pane fade active show" id="tab_A">
+            @{
+                pagesitem = Model.formData.Pages.Select("RJ = 1").First();
+            }
+            <div class="OnvanSafhe">
+                <h6 class="shadow">@pagesitem["OnvanPage"]</h6>
+            </div>
+
+            @if (!string.IsNullOrEmpty(pagesitem["HeaderPage"].ToString()))
+            {
+                <div class="alert alert-secondary">
+                    @Html.Raw(HttpUtility.HtmlDecode(pagesitem["HeaderPage"].ToString()))
+                </div>
+            }
+
+            <div class="container mt-2">
+                <div class="alert alert-primary">
+                    <h5>آخرین بروزرسانی : 1404/09/15   ساعت 18:32</h5>
+                    <div class="d-flex flex-wrap gap-3">
+                        <div class="w-fix-250">
+                            <label class="control-label">تعداد ساختمان</label>
+                            <span class="control-text"></span>
+                        </div>
+                        <div class="w-fix-250">
+                            <label class="control-label">تعداد واحدها</label>
+                            <span class="control-text"></span>
+                        </div>
+                        <div class="w-fix-250">
+                            <label class="control-label">تعداد واحدهای مالک ساکن</label>
+                            <span class="control-text"></span>
+                        </div>
+                        <div class="w-fix-250">
+                            <label class="control-label">تعداد واحدهای دارای مستاجر</label>
+                            <span class="control-text"></span>
+                        </div>
+                        <div class="w-fix-250">
+                            <label class="control-label">تعداد واحدهای خالی</label>
+                            <span class="control-text"></span>
+                        </div>
+                        <div class="w-fix-250">
+                            <label class="control-label">تعداد کل ساکنین</label>
+                            <span class="control-text"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-6">
+                    2️⃣ نمودار وضعیت سکونت واحدها
+
+                    📊 Pie Chart یا Donut Chart
+
+                    تقسیم‌بندی واحدها:
+
+                    مالک ساکن
+
+                    مستاجر
+
+                    خالی
+
+                    مثال:
+
+                    مالک ساکن     40%
+                    مستاجر        45%
+                    خالی          15%
+
+                    این یکی از بهترین نمودارهای داشبورد است.
+                </div>
+
+                <div class="col-sm-6">
+                    4️⃣ نمودار واحدهای هر ساختمان
+
+                    اگر مجتمع چند ساختمان دارد.
+
+                    📊 Column Chart
+
+                    ساختمان A   20 واحد
+                    ساختمان B   16 واحد
+                    ساختمان C   12 واحد
+                </div>
+            </div>
+            <hr />
+            <div>
+                3️⃣ نمودار تعداد ساکنین هر طبقه
+
+                📊 Bar Chart
+
+                طبقه 5  ██████ 18 نفر
+                طبقه 4  █████  14 نفر
+                طبقه 3  ███████ 21 نفر
+                طبقه 2  ████   11 نفر
+                طبقه 1  █████  15 نفر
+
+                کاربرد:
+
+                مدیریت مصرف آب
+
+                مدیریت آسانسور
+
+                تصمیم‌های مدیریتی
+            </div>
+            <hr />
+
+            <div>
+                5️⃣ گزارش واحدهای بدون ساکن
+
+                📋 جدول ساده
+
+                واحد  طبقه  ساختمان
+                101   1      A
+                305   3      B
+                402   4      A
+
+                این برای مدیر خیلی کاربردی است.
+            </div>
+
+            <hr />
+
+            <div>
+                6️⃣ گزارش تعداد ساکنین هر واحد
+
+                📊 Top List
+
+                واحد   تعداد ساکن
+                302    6
+                405    5
+                101    4
+
+                برای کنترل ازدحام یا مصرف شارژ مهم است.
+            </div>
+
+            <hr />
+
+            <div>
+                7️⃣ نمودار تغییر مالک / مستاجر
+
+                📊 Line Chart
+
+                در طول زمان:
+
+                ماه      نقل و انتقال
+                فروردین      2
+                اردیبهشت     5
+                خرداد        3
+
+                نشان می‌دهد چقدر جابجایی در مجتمع وجود دارد.
+            </div>
+
+            <hr />
+
+            <div>
+                8️⃣ میانگین ساکنین هر واحد
+
+                یک شاخص مدیریتی جالب:
+
+                میانگین ساکن هر واحد = 2.7 نفر
+
+                برای تصمیمات مدیریت مفید است.
+            </div>
+
+            <hr />
+
+            <div>
+                9️⃣ توزیع تعداد ساکنین
+
+                📊 Histogram
+
+                1 نفر   ███
+                2 نفر   ███████
+                3 نفر   █████
+                4 نفر   ███
+                5+ نفر  █
+            </div>
+
+            <hr />
+
+            <div>
+                🔟 وضعیت واحدها در هر طبقه
+
+                📊 Stacked Bar
+
+                طبقه 5
+                مالک   ███
+                مستاجر ████
+                خالی   █
+
+            </div>
+
+        </div>
+
+
+
+        <!-- ✅ تب واحدها -->
+        <div class="tab-pane fade" id="tab_B">
+            @{
+                pagesitem = Model.formData.Pages.Select("RJ = 2").First();
+            }
+            <div class="OnvanSafhe">
+                <h6 class="shadow">@pagesitem["OnvanPage"]</h6>
+            </div>
+
+            @if (!string.IsNullOrEmpty(pagesitem["HeaderPage"].ToString()))
+            {
+                <div class="alert alert-secondary">
+                    @Html.Raw(HttpUtility.HtmlDecode(pagesitem["HeaderPage"].ToString()))
+                </div>
+            }
+
+            <div class="container">
+                <form method="get" data-ajax="true" data-ajax-method="get"
+                        data-ajax-begin="MsgFormSpinner('A','ثبت اطلاعات واحد', 'چند لحظه صبر کنید');"
+                        data-ajax-url="?handler=FormSabtUnit"
+                        data-ajax-update="#MsgFormMATN_A">
+                    <input type="submit" hidden id="FormSabtUnitBtn" name="ID" />
+                    <div class="px-2 text-end">
+                        <button type="button" class="BTN btn_Pill btn_Blue2 " onclick="ClickBtnSimpl('FormSabtUnitBtn','0');"><span>افزدون واحد جدید</span><i class="icofont-00x icofont-plus "></i></button>
+                    </div>
+                </form>
+
+                <div class="filterArea">
+                    <form asp-antiforgery="true" method="get" data-ajax-method="get" data-ajax="true"
+                          data-ajax-begin="SpinnerShow('ListUnits', 'در حال بارگذاری لیست واحدها');"
+                          data-ajax-url="?handler=ListUnits"
+                          data-ajax-update="#ListUnits">
+
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <span class="control-label">ساختمان</span>
+                                <select name="BuildingId" class="control-input" onchange="FindListFloorAjax('FloorIdRep',this, 'All')">
+                                    @if (Model.ListBuilding.Rows.Count > 1)
+                                    {
+                                        <option value="0">انتخاب کنید/همه</option>
+                                    }
+                                    @foreach (DataRow item in Model.ListBuilding.Rows)
+                                    {
+                                        <option value="@item["BuildingId"]">@item["BuildingName"]</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-sm-6">
+                                <span class="control-label">طبقه</span>
+                                <select id="FloorIdRep" name="FloorId" class="control-input">
+                                    @if (Model.ListBuilding.Rows.Count > 1)
+                                    {
+                                        <option value="">ابتدا ساختمان را انتخاب کنید/همه</option>
+                                    }
+                                    else{
+                                        <option value="">همه</option>
+                                        @foreach (DataRow item in Model.ListFloor.Rows)
+                                        {
+                                            <option value="@item["FloorId"]">@item["FloorTitle"]</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+
+                        </div>
+                        <div class=" d-flex flex-wrap gap-3">
+                            <div class="w-min-150 flex-fill">
+                                <span class="control-label">شماره واحد</span>
+                                <input class="control-text" name="unitNumber" value="" />
+                            </div>
+                            <div class="w-min-150 flex-fill">
+                                <span class="control-label">نام مالک/ساکن</span>
+                                <input class="control-text" name="PersonName" value="" />
+                            </div>
+                            <div class="w-min-180 flex-fill">
+                                <span class="control-label">آیا شارژ مالک فعال است؟</span>
+                                <select class="control-input" name="IsActiveMalek">
+                                    <option value="2">همه</option>
+                                    <option value="1">بله - فعال است</option>
+                                    <option value="0">خیر - فعال نیست</option>
+                                </select>
+                            </div>
+                            <div class="w-min-180 flex-fill">
+                                <span class="control-label">آیا شارژ ساکن فعال است؟</span>
+                                <select class="control-input" name="IsActiveSaken">
+                                    <option value="2">همه</option>
+                                    <option value="1">بله - فعال است</option>
+                                    <option value="0">خیر - فعال نیست</option>
+                                </select>
+                            </div>
+                            <div class="w-min-180 flex-fill">
+                                <span class="control-label">وضعیت واحد</span>
+                                <select class="control-input" name="SitCode">
+                                    <option value="0">همه</option>
+                                    <option value="1">خالی</option>
+                                    <option value="2">مالک ساکن</option>
+                                    <option value="3">مستاجر ساکن</option>
+                                    <option value="4">در حال تعمیر</option>
+                                    <option value="5">برای اجاره</option>
+                                    <option value="6">برای فروش</option>
+                                    <option value="7">رزرو شده</option>
+                                    <option value="8">در اختیار کارکنان</option>
+                                    <option value="9">غیرقابل استفاده</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class=" d-flex flex-wrap gap-3">
+                            <div class="w-min-150 flex-fill">
+                                <span class="control-label">شماره پارکینگ</span>
+                                <input class="control-text" name="NumberPark" value="" />
+                            </div>
+                            <div class="w-min-150 flex-fill">
+                                <span class="control-label">شماره انبار</span>
+                                <input class="control-text" name="NumberStor" value="" />
+                            </div>
+                            <div class="w-min-150 flex-fill">
+                                <span class="control-label">شماره کنتور آب</span>
+                                <input class="control-text" name="NumberWater" value="" />
+                            </div>
+                            <div class="w-min-150 flex-fill">
+                                <span class="control-label">شماره کنتور برق</span>
+                                <input class="control-text" name="NumberBarg" value="" />
+                            </div>
+                            <div class="w-min-150 flex-fill">
+                                <span class="control-label">شماره کنتور گاز</span>
+                                <input class="control-text" name="NumBerGaz" value="" />
+                            </div>
+                        </div>
+                        <div class="p-2 text-end">
+                            <button type="submit" class="BTN btn_Pill btn_Blue2"><span>جستجوی واحد</span><i class="icofont-2x icofont-search-2"></i></button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="container-fluid">
+                <div class="mt-3" id="ListUnits">
+                </div>
+            </div>
+
+        </div>
+
+
+    </div>
+</div>
+<form hidden method="get" data-ajax-method="get" data-ajax="true"
+      data-ajax-begin="SpinnerShow('ListBuildings', ' لحظه صبر کنید');"
+      data-ajax-url="?handler=RefreshFloor"
+      data-ajax-update="#ListBuildings">
+    <button type="submit" id="RefreshFloorBtn" hidden></button>
+</form>
+
+<form asp-antiforgery="true" method="post" data-ajax-method="post" data-ajax="true"
+      data-ajax-confirm="آیا این واحد حذف گردد؟"
+      data-ajax-Btn="DeleteUnitBtn"
+      data-ajax-begin="SpinnerShowForm('چند لحظه صبر کنید');"
+      data-ajax-url="?handler=DeleteUnit"
+      data-ajax-complete="JsonResultOK"
+      data-ajax-success="AreaHide('RowUnit_'+EleValue('DeleteUnitBtn'))">
+    <input type="hidden" id="DeleteUnitTp" value="All" />
+    <input type="submit" id="DeleteUnitBtn" name="UnitId" hidden />
+</form>
+

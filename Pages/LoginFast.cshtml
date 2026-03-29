@@ -1,0 +1,33 @@
+﻿@page 
+@model Aparteman.Pages.LoginFastModel
+@{
+    Layout = null;
+}
+<div id="RESLoginFastMSG">
+    <div style="direction:rtl" class="container">
+        <div class="mt-5 mt-5 text-center">
+            <div class="w-max-350 border alert alert-danger rounded border-info p-3">
+                <form asp-antiforgery="true" asp-page-handler="Login" method="post" data-ajax-method="post" data-ajax="true"
+                      data-ajax-begin="SpinnerShow('RESLoginFast')"
+                      data-ajax-url="?handler=
+                      data-ajax-complete="LoginFastComp">
+                    <div class="text-center">
+                        <h5>برای امنیت بیشتر لازم است رمز ورود خود را تائید کنید</h5>
+                    </div>
+                    <hr class="bg-warning" />
+                    <div class="mb-2 ">
+                        <span class="control-label">رمز ورود به سیستم</span>
+                        <input type="password" name="Password" class="control-input text-center ltr" value="" />
+                    </div>
+                    <div class="mt-4 d-flex flex-wrap justify-content-around">
+                        <button type="submit" class="btn_Icon Icon_Blue">تائید  رمز ورود <span class="icofont-00x icofont-checked"></span> </button>
+                        <button type="button" class="btn_Icon Icon_Red" onclick="GoToUrl('/index');">خروج از برنامه <span class="icofont-00x icofont-logout icofont-rotate-180"></span> </button>
+                    </div>
+                    <hr />
+                    <div class="text-center text-brown" id="RESLoginFast"></div>
+                </form>
+            </div>
+        </div>
+        <div id="HelpArea" class="text-center"></div>
+    </div>
+</div>

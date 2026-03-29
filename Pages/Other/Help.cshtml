@@ -1,0 +1,139 @@
+﻿@page
+@using System.Data;
+@using System.Web
+@model Aparteman.Pages.Other.HelpModel
+@{
+    DataRow pagesitem;
+    var RJ = 0;
+    var ZF = "";
+}
+<footer-page class="nav nav-tabs border-top border-light">
+    <div class="w-inline">
+        <div id="menu-page-btn">
+            <menu-page id="FastAlarm" class="dis-none" data-bs-toggle="tooltip" data-bs-title="گزارش پیام جدید" onclick="$('#waitbody').css('display', 'flex'); GoToUrl('/Other/MsgCenter');">
+                <span class="text-danger icofont-00x icofont-bell-alt"></span>
+                <span id="FastAlarmMsg">10 تا پیام جدید داری</span>
+            </menu-page>
+            <menu-page class="w-min-50" data-bs-toggle="tooltip" data-bs-title="منو" onclick="MenuToggel();">
+                <span class="menu-firuze icofont-00x icofont-listine-dots icofont-rotate-180"></span>
+            </menu-page><point></point>
+            <menu-page class="active" data-bs-toggle="tab" data-bs-target="#tab_A">لیست فرمها</menu-page><point></point>
+            <menu-page id="Btntab_B" data-bs-toggle="tab" data-bs-target="#tab_B">راهنما و مستندات فرم</menu-page><point></point>
+            <menu-page class="w-min-50" onclick="HelpAjax(@Model.FormId);" data-bs-toggle="tooltip" data-bs-title="راهنما"><span class="menu-firuze icofont-00x icofont-learn"></span></menu-page>
+            <menu-page class="w-min-50" onclick="ToggleFullscreen();" data-bs-toggle="tooltip" data-bs-title="تمام صفحه"><span class="menu-firuze icofont-00x icofont-expand"></span></menu-page>
+            <menu-page onclick="GoToTop();" class="w-min-50" data-bs-toggle="tooltip" data-bs-title="برگشت به بالا" data-toggle="tooltip"><span class="menu-firuze icofont-00x icofont-stylish-up"></span></menu-page>
+            <menu-page class="bg-secondary" data-bs-toggle="tooltip" data-bs-title="برگشت به صفحه قبل" data-toggle="tooltip">
+                <select class="text-start bg-secondary text-light" onchange="GoToUrl(this.value);">
+                    @foreach (DataRow item in Model.formData.lastForms.Rows)
+                    {
+                        <option value="/@item["NameForm"]">@item["Onvan"]</option>
+                    }
+                </select>
+            </menu-page><point></point>
+            <button type="button" class="pos-Right btn_Icon Icon_Red icofont-2x icofont-curved-double-right d-md-none" data-bs-toggle="tooltip" data-bs-title="اسکرول به راست" onclick="ScrollRight('menu-page-btn');"></button>
+            <button type="button" class="pos-Left btn_Icon Icon_Red icofont-2x icofont-curved-double-left d-md-none" data-bs-toggle="tooltip" data-bs-title="اسکرول به چپ" onclick="ScrollLeft('menu-page-btn');"></button>
+        </div>
+    </div>
+</footer-page>
+
+<div class="tab-content">
+
+    <div class="tab-pane fade active show" id="tab_A">
+        @{
+            pagesitem = Model.formData.Pages.Select("RJ = 1").First();
+        }
+        <div class="OnvanSafhe">
+            <h6 class="shadow">@pagesitem["OnvanPage"]</h6>
+        </div>
+        @if (@pagesitem["HeaderPage"].ToString() != "")
+        {
+            <div class="alert alert-secondary">
+                @Html.Raw(HttpUtility.HtmlDecode(@pagesitem["HeaderPage"].ToString()))
+            </div>
+        }
+
+        <div class="w-max-450 mx-auto filterArea p-2">
+            <form method="get" data-ajax-method="get" data-ajax="true"
+                  data-ajax-begin="SpinnerShow('ListArea');"
+                  data-ajax-url="?handler=ListForm"
+                  data-ajax-update="#ListArea">
+                <input type="submit" id="ListFormBtn" class="d-none" value="جستجو" />
+
+                <select class="control-input" name="Daste" onchange="ClickBtnSimpl('ListFormBtn', '');">
+                    <option value="">همه</option>
+                    <option value="M">مدیریتی</option>
+                    <option value="C">مشتری</option>
+                    <option value="P">پرسنلی</option>
+                    <option value="G">عمومی</option>
+                </select>
+                <div class="d-flex">
+                    <div class="flex-fill">
+                        <span class="control-label">فرم</span>
+                        <input type="text" class="control-input" name="FilterForm" value="" />
+                    </div>
+                    <div class="flex-fill">
+                        <span class="control-label">صفحه</span>
+                        <input type="text" class="control-input" name="FilterPage" value="" />
+                    </div>
+                    <button type="button" class="btn_Icon Icon_Orang icofont-00x icofont-filter mt-3" data-bs-toggle="tooltip" data-bs-title="محدوده اطلاعات" onclick="ClickBtn('ListFormBtn');"></button>
+                </div>
+            </form>
+        </div>
+        <div id="ListArea" class="d-flex flex-wrap justify-content-center">
+            @foreach (DataRow item in Model.ListForms.Rows)
+            {
+                { RJ++; ZF = (ZF == "Fard") ? "Zoj" : "Fard"; }
+                <button type="button" id="ROW_@item["Si"]" class="@ZF m-2 p-2 text-start cursor-pointer w-fix-200" onclick="ClickBtnSimpl('FindPageBtn', '@item["Si"]', 'FindPageName', '@item["Si"] - @item["Onvan"]'); ClickBtn('Btntab_B'); Btn_Select(this,'ListArea');">
+                    <span class="text-primary">@item["Si"] - @item["Onvan"]</span>
+                    <span class="control-label">@item["RJ"] - @item["Tp"]</span>
+                    <span class="control-label text-end">@item["NameForm"]</span>
+                </button>
+            }
+        </div>
+    </div>
+
+    <div class="tab-pane fade" id="tab_B">
+        @{
+            pagesitem = Model.formData.Pages.Select("RJ = 2").First();
+        }
+        <div class="OnvanSafhe">
+            <h6 class="shadow">@pagesitem["OnvanPage"]</h6>
+        </div>
+        @if (@pagesitem["HeaderPage"].ToString() != "")
+        {
+            <div class="alert alert-secondary">
+                @Html.Raw(HttpUtility.HtmlDecode(@pagesitem["HeaderPage"].ToString()))
+            </div>
+        }
+        <div id="HelpTpArea">
+            <h3 class="text-brown mt-5">ابتدا فرم را انتخاب کنید</h3>    
+        </div>
+    </div>
+
+</div>
+
+<div hidden>
+    
+    <form hidden method="get" data-ajax-method="get" data-ajax="true"
+          data-ajax-begin="SpinnerShow('HelpTpArea');"
+          data-ajax-url="?handler=FindPage"
+          data-ajax-update="#HelpTpArea">
+        <input type="hidden" id="FindPageName" name="FormName" value="" />
+        <input type="submit" id="FindPageBtn" name="FormId" hidden value="0" />
+    </form>
+
+    <form hidden method="get" data-ajax-method="get" data-ajax="true"
+          data-ajax-begin="SpinnerShow('AreaDoc');"
+          data-ajax-url="?handler=FindDoc"
+          data-ajax-update="#AreaDoc">
+        <input type="submit" id="FindDocBtn" name="ID" hidden value="0" />
+    </form>
+    <form hidden method="post" data-ajax-method="post" data-ajax="true"
+          data-ajax-begin="SpinnerShowForm('چند لحظه صبر کنید');"
+          data-ajax-url="?handler=ColumnUpdate"
+          data-ajax-complete="SpinnerHideForm()">
+        <input type="hidden" id="ColumnUpdateTP" name="TP" value="" />
+        <input type="submit" id="ColumnUpdateBtn" name="SI" hidden value="0" />
+    </form>
+
+</div>

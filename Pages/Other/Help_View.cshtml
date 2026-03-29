@@ -1,0 +1,393 @@
+﻿@using System.Data
+@using Aparteman.Services
+
+@model Aparteman.Pages.Other.HelpModel
+@{
+    var RJ = 0;
+    var ZF = "";
+}
+@switch (@ViewData["Switch"])
+{
+
+
+    case "Forms":
+        @foreach (DataRow item in Model.ListForms.Rows)
+        {
+            { RJ++; ZF = (ZF == "Fard") ? "Zoj" : "Fard"; }
+            <button type="button" id="ROW_@item["Si"]" class="@ZF m-2 p-2 text-start cursor-pointer w-fix-200" onclick="ClickBtnSimpl('FindPageBtn', '@item["Si"]', 'FindPageName', '@item["Si"] - @item["Onvan"]'); ClickBtn('Btntab_B'); Btn_Select(this,'ListArea');">
+                <span class="text-primary">@item["Si"] - @item["Onvan"]</span>
+                <span class="control-label">@item["RJ"] - @item["Tp"]</span>
+                <span class="control-label text-end">@item["NameForm"]</span>
+            </button>
+        }
+        break;
+
+
+    case "Pages":
+        <div id="AreaBtnPages">
+            <div class="Area_Top p-1 bg_Gray d-flex">
+                <a class="BTN btn_Pill Icon_Firuze2 icofont-2x icofont-sign-in" title="بازکردن فرم" target="_blank" href="../@ViewData["FormAdres"]"></a>
+                <div class="flex-fill text-center">
+                    <h4>راهنمای کاربران فرم: @ViewData["FormName"] </h4>
+                </div>
+                <button type="button" class="btn_Icon Icon_Brown icofont icofont-2x icofont-rounded-up" onclick="AreaToggel('AreaPage'); ChangIcon(this,'icofont-rounded-up','icofont-rounded-down')"></button>
+            </div>
+            <div class="Area_Bottom p-1 bg_Dark d-flex flex-wrap">
+                <form method="get" data-ajax-method="get" data-ajax="true"
+                    data-ajax-begin="SpinnerShow('AreaPage');"
+                    data-ajax-url="?handler=FindMainHelp"
+                    data-ajax-update="#AreaPage">
+                    <input type="hidden" name="FormId" value="@ViewData["FormId"]" />
+                    <button type="submit" class="BTN btn_Pill btn_Firuze my-2 w-min-75" onclick="Btn_Select(this, 'AreaBtnPages');">اصلی</button>
+                </form>
+                <form hidden method="get" data-ajax-method="get" data-ajax="true"
+                        data-ajax-begin="SpinnerShow('AreaPage');"
+                        data-ajax-url="?handler=FindPageHelp"
+                        data-ajax-update="#AreaPage">
+                    <input type="submit" id="FindPageHelpBtn" name="ID" hidden value="0" />
+                </form>
+                @foreach (DataRow item in Model.ListPages.Rows)
+                {
+                    <button type="button" class="BTN btn_Pill btn_Firuze my-2 w-min-75" onclick="Btn_Select(this, 'AreaBtnPages' ); ClickBtnSimpl('FindPageHelpBtn', '@item["Si"]' );">@item["OnvanPage"]</button>
+                }
+
+                <form class="" asp-antiforgery="true" method="post" data-ajax-method="post" data-ajax="true"
+                        data-ajax-confirm="آیا صفحه جدید اضافه شود؟"
+                        data-ajax-Btn="AddNewPageBtn"
+                        data-ajax-url="?handler=AddNewPage"
+                        data-ajax-complete="ClickBtn('FindPageBtn');">
+                    <input type="hidden" name="FormId" value="@ViewData["FormId"]" />
+                    <div class="d-flex p-2">
+                        <input type="text" placeholder="صفحه جدید" name="PageName" class="control-input w-max-100" />
+                        <button type="submit" id="AddNewPageBtn" class="btn_Icon Icon_Yellow icofont-2x icofont-checked" title="ثبت شود"></button>
+                    </div>
+                </form>
+            </div>
+
+            <div id="AreaPage"></div>
+
+        </div>
+        break;
+
+
+
+    case "PageSub":
+        <div class="filterArea p-2">
+            <form class="" asp-antiforgery="true" method="post" data-ajax-method="post" data-ajax="true"
+                  data-ajax-confirm="آیا نام فرم اصلاح شود؟"
+                  data-ajax-Btn="HelpNameSaveBtn"
+                  data-ajax-url="?handler=HelpNameSave"
+                  data-ajax-complete="ClickBtn('FindPageBtn');">
+                <input type="hidden" name="FormId" value="@Model.RowData["Si"]" />
+                <div class="d-flex flex-wrap justify-content-center">
+                    <div class="w-fix-50 m-1">
+                        <span class="control-label">ردیف</span>
+                        <input class="control-input text-center" type="text" name="Reg" value="@Model.RowData["RJ"]" />
+                    </div>
+                    <div class="w-max-250 m-1">
+                        <span class="control-label">عنوان</span>
+                        <input class="control-input" type="text" name="Onvan" value="@Model.RowData["Onvan"]" />
+                    </div>
+                    <div class="w-max-450 m-1">
+                        <span class="control-label">شرح</span>
+                        <input class="control-input" type="text" name="Tp" value="@Model.RowData["Tp"]" />
+                    </div>
+                    <button type="submit" id="HelpNameSaveBtn" class="btn_Icon Icon_Blue2 icofont-2x icofont-checked mt-4 cursor-pointer" title="ثبت شود" ></button>
+                </div>
+            </form>
+        </div>
+
+        <div class="card mt-3 card-Fard">
+            <div class="card-body">
+                <div class="mt-3">
+                    <div class="Area_Top bg_Brown p-1 d-flex justify-content-between" >
+                        <span class="control-label font-20">هدر فرم</span>
+                        <button type="button" class="btn_Icon Icon_Blue icofont icofont-2x icofont-rounded-down" onclick="AreaToggel('PageSubHeaderArea'); ChangIcon(this,'icofont-rounded-up','icofont-rounded-down')"></button>
+                    </div>
+                    <div id="PageSubHeaderArea" class="dis-none">
+                        <form class="" asp-antiforgery="true" method="post" data-ajax-method="post" data-ajax="true"
+                              data-ajax-confirm="پیام هدر فرم ذخیره گردد؟"
+                              data-ajax-begin="SpinnerShowForm('چند لحظه صبر کنید در حال ذخیره');"
+                              data-ajax-Btn="HelpSaveHeaderBtn"
+                              data-ajax-url="?handler=HelpSaveHeader"
+                              data-ajax-complete="CompleteResultOK">
+                            <input type="hidden" name="FormId" value="@Model.RowData["Si"]" />
+
+                            <textarea class="control-input-Area h-fix-100 ltr text-start" id="PageSubHeader" name="FormHeader">@Model.RowData["Header"]</textarea>
+
+                            <div class="border-top border-2 text-end">
+                                <button type="submit" id="HelpSaveHeaderBtn" class="BTN btn_Green w-fix-150">ذخیره هدر فرم</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="mt-3">
+                    <div class="Area_Top bg_Brown p-1 d-flex justify-content-between" >
+                        <span class="control-label font-20">متن راهنما</span>
+                        <button type="button" class="btn_Icon Icon_Blue icofont icofont-2x icofont-rounded-up" onclick="AreaToggel('PageSubHelpArea'); ChangIcon(this,'icofont-rounded-up','icofont-rounded-down')"></button>
+                    </div>
+                    <div id="PageSubHelpArea">
+                        <form class="" asp-antiforgery="true" method="post" data-ajax-method="post" data-ajax="true"
+                              data-ajax-confirm="متن راهنمای اصلی فرم ذخیره گردد؟"
+                              data-ajax-begin="SpinnerShowForm('چند لحظه صبر کنید در حال ذخیره');"
+                              data-ajax-Btn="HelpSaveTpBtn"
+                              data-ajax-url="?handler=HelpSaveTp"
+                              data-ajax-complete="SpinnerHideForm('متن راهنما','ذخیره شد');">
+                            <input type="hidden" name="FormId" value="@Model.RowData["Si"]" />
+
+                            <textarea class="control-input-Area font-15 h-fix-400 rtl text-start" id="PageSubHelp" name="FormTp">@Model.RowData["Help"]</textarea>
+
+                            <div class="border-top border-2 text-end">
+                                <button type="submit" id="HelpSaveTpBtn" class="BTN btn_Green w-fix-150">ذخیره راهنما</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="mt-3">
+                    <div class="Area_Top bg_Brown p-1 d-flex justify-content-between" >
+                        <span class="control-label font-20">فوتر فرم</span>
+                        <button type="button" class="btn_Icon Icon_Blue icofont icofont-2x icofont-rounded-down" onclick="AreaToggel('PageSubFooterArea'); ChangIcon(this,'icofont-rounded-up','icofont-rounded-down')"></button>
+                    </div>
+
+                    <div id="PageSubFooterArea" class="dis-none">
+                        <form class="" asp-antiforgery="true" method="post" data-ajax-method="post" data-ajax="true"
+                              data-ajax-confirm="پیام پائین فرم ذخیره گردد؟"
+                              data-ajax-begin="SpinnerShowForm('چند لحظه صبر کنید در حال ذخیره');"
+                              data-ajax-Btn="HelpSaveFooterBtn"
+                              data-ajax-url="?handler=HelpSaveFooter"
+                              data-ajax-complete="CompleteResultOK">
+                            <input type="hidden" name="FormId" value="@Model.RowData["Si"]" />
+
+                            <textarea class="control-input-Area h-fix-100 ltr text-start" id="PageSubFooter" name="FormFooter">@Model.RowData["Footer"]</textarea>
+
+                            <div class="border-top border-2 text-end">
+                                <button type="submit" id="HelpSaveFooterBtn" class="BTN btn_Green w-fix-150">ذخیره فوتر</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between p-2 border-top border-2 text-Panevis">
+                    <span>@Model.RowData["FullName"]</span>
+                    <span class="ltr">@Model.RowData["TimeEdit"]</span>
+                </div>
+
+                </div>
+            </div>
+        <script>
+            SetTiny('PageSubHeader');
+            SetTiny('PageSubHelp');
+            SetTiny('PageSubFooter');
+        </script>
+        break;
+
+
+    case "PageDetail":
+        <div class="filterArea p-2">
+            <div class="row">
+                <div class="col-12 col-sm-8">
+                    <div class="w-max-500">
+                        <form class="" asp-antiforgery="true" method="post" data-ajax-method="post" data-ajax="true"
+                              data-ajax-confirm="آیاعنوان و ترتیب نمایش صفحه اصلاح شود؟"
+                              data-ajax-Btn="UpdateOnvanRjBtn"
+                              data-ajax-url="?handler=UpdateOnvanRj"
+                              data-ajax-complete="ClickBtn('FindPageBtn');">
+                            <input type="hidden" name="PageId" value="@Model.RowData["Si"]" />
+                            <div class="d-flex flex-wrap justify-content-center">
+                                <div class="w-fix-100 m-1">
+                                    <span class="control-label">ترتیب نمایش</span>
+                                    <input type="tel" onkeyup="onlyNumber(this)" placeholder="ترتیب نمایش" name="PageRj" class="control-input text-center ltr" value="@Model.RowData["RJ"]" />
+                                </div>
+                                <div class="w-max-300 m-1">
+                                    <span class="control-label">عنوان</span>
+                                    <div class="d-flex">
+                                        <input type="text" placeholder="عنوان صفحه" name="PageOnvan" class="control-input" value="@Model.RowData["OnvanPage"]" />
+                                        <button type="submit" id="UpdateOnvanRjBtn" class="btn_Icon Icon_Blue2 icofont-2x icofont-checked" title="ثبت شود"></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-4">
+                    <div class="flex-fill d-flex justify-content-end pt-4">
+
+                        <form method="get" data-ajax-method="get" data-ajax="true"
+                              data-ajax-begin="MsgFormSpinner('A','لیست تصاویر', 'چند لحظه صبر کنید');"
+                              data-ajax-url="?handler=ListPics"
+                              data-ajax-update="#MsgFormMATN_A">
+                            <input type="hidden" name="PageId" value="@Model.RowData["Si"]" />
+                            <button type="submit" class="btn_Icon Icon_Mor icofont-2x icofont-image"><span>تصاویر</span></button>
+                        </form>
+
+                        <form method="post" data-ajax-method="post" data-ajax="true"
+                              data-ajax-confirm="آیا این صفحه حذف شود؟"
+                              data-ajax-Btn="PageDeleteBtn"
+                              data-ajax-url="?handler=PageDelete"
+                              data-ajax-complete="ClickBtn('FindPageBtn');">
+                            <input type="hidden" name="PageId" value="@Model.RowData["Si"]" />
+                            <button type="submit" id="PageDeleteBtn" class="btn_Icon Icon_Red icofont-2x icofont-delete" title="ثبت شود"><span>حذف شود</span></button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-3 card-Fard">
+            <div class="card-body">
+                <div class="mt-3">
+                    <div class="Area_Top bg_Brown p-1 d-flex justify-content-between">
+                        <span class="control-label font-20">هدر صفحه</span>
+                        <button type="button" class="btn_Icon Icon_Blue icofont icofont-2x icofont-rounded-down" onclick="AreaToggel('PageDetailHeaderArea'); ChangIcon(this,'icofont-rounded-up','icofont-rounded-down')"></button>
+                    </div>
+
+                    <div id="PageDetailHeaderArea" class="dis-none">
+                        <form class="" asp-antiforgery="true" method="post" data-ajax-method="post" data-ajax="true"
+                              data-ajax-confirm="پیام هدر صفحه ذخیره گردد؟"
+                              data-ajax-begin="SpinnerShowForm('چند لحظه صبر کنید در حال ذخیره');"
+                              data-ajax-Btn="PageSaveHeaderBtn"
+                              data-ajax-url="?handler=PageSaveHeader"
+                              data-ajax-complete="CompleteResultOK">
+                            <input type="hidden" name="PageId" value="@Model.RowData["Si"]" />
+                            <textarea class="control-input-Area h-fix-100 ltr text-start" id="PageDetailHeader" name="HeaderTp">@Model.RowData["HeaderPage"]</textarea>
+
+                            <div class="border-top border-2 text-end">
+                                <button type="submit" id="PageSaveHeaderBtn" class="BTN btn_Green w-fix-150">ذخیره هدر</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="mt-3">
+                    <div class="Area_Top bg_Brown p-1 d-flex justify-content-between">
+                        <span class="control-label font-20">متن راهنما</span>
+                        <button type="button" class="btn_Icon Icon_Blue icofont icofont-2x icofont-rounded-up" onclick="AreaToggel('PageDetailHelpArea'); ChangIcon(this,'icofont-rounded-up','icofont-rounded-down')"></button>
+                    </div>
+
+                    <div id="PageDetailHelpArea">
+                        <form class="" asp-antiforgery="true" method="post" data-ajax-method="post" data-ajax="true"
+                              data-ajax-confirm="متن راهنمای اصفحه ذخیره گردد؟"
+                              data-ajax-begin="SpinnerShowForm('چند لحظه صبر کنید در حال ذخیره');"
+                              data-ajax-Btn="PageSaveTpBtn"
+                              data-ajax-url="?handler=PageSaveTp"
+                              data-ajax-complete="SpinnerHideForm('متن راهنما','ذخیره شد');">
+                            <input type="hidden" name="PageId" value="@Model.RowData["Si"]" />
+                            <textarea class="control-input-Area font-15 h-fix-300 rtl text-start" id="PageDetailHelp" name="FormTp">@Model.RowData["HelpPage"]</textarea>
+
+                            <div class="border-top border-2 text-end">
+                                <button type="submit" id="PageSaveTpBtn" class="BTN btn_Green w-fix-150">ذخیره راهنما</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between p-2 border-top border-2 text-Panevis">
+                    <span>@Model.RowData["FullName"]</span>
+                    <span class="ltr">@Model.RowData["TimeEdit"]</span>
+                </div>
+            </div>
+        </div>
+        <script>
+            SetTiny('PageDetailHeader');
+            SetTiny('PageDetailHelp');
+        </script>
+
+        break;
+
+
+    case "Pictures":
+        <div class="card m-3 card-Fard">
+            <div class="card-header card-header-best">
+                <button type="button" class="BTN btn_Blue2 btn_Normal w-fix-80" onclick="AreaToggel('AreaAddPic');">
+                    <span>افزودن تصویر</span> <span class="icofont icofont-00x icofont-plus mx-2"></span>
+                </button>
+                
+            </div>
+
+            <div id="AreaAddPic" class="dis-none">
+                <div class="w-max-500 mx-auto border border-1 border-primary rounded-2 p-2">
+                    <form asp-antiforgery="true" method="post" data-ajax="true" data-ajax-method="post"
+                          enctype="multipart/form-data" 
+                          data-ajax-confirm="تصویر ذخیره گردد؟"
+                          data-ajax-Btn="SavePicturBtn"
+                          data-ajax-url="?handler=SavePictur"
+                          data-ajax-update="#AreaPicturs"
+                          data-ajax-complete="SetValueSimpl('FileUpload','','SavePicturTp',''); AreaUp('AreaAddPic'); SetSrc('PhotoPic','/Uploads/Help/Pic_0.jpg')">
+                        <input class="d-none" type="file" id="FileUpload" name="PhotoUpload" accept=".jpg, .png, .bmp, .jpeg" onchange="GetPhoto(this,'PicName', 'PhotoPic');" />
+                        <input type="hidden" name="PageId" value="@ViewData["Page"]" />
+
+                        <div class="d-flex justify-content-around">
+                            <button type="button" id="FileKnd" class="btn_Icon Icon_Mor icofont-3x icofont-upload" onclick="ClickBtn('FileUpload');" title="تصویر مرتبط را انتخاب کنید"></button>
+                            <span id="PicName" class="control-text mx-2 mt-3">تصویر را انتخاب کنید</span>
+                            <button type="submit" id="SavePicturBtn" class="btn btn-success w-fix-200 mt-3">ذخیره تصویر</button>
+                        </div>
+                        <input type="text" class="control-input" id="SavePicturTp" name="Tp" placeholder="شرح مناسب بنویسید" />
+                        <div class="flex-fill">
+                            <img class="rounded rounded-5 w-max-300 d-block mx-auto cursor-pointer" id="PhotoPic" src="/Uploads/Help/Pic_0.jpg" />
+                        </div>
+                    </form>
+                </div>
+
+                <hr />
+            </div>
+
+            <div>
+                <form method="post" data-ajax-method="post" data-ajax="true"
+                    data-ajax-confirm="آیا تصویر راهنما حذف شود؟"
+                    data-ajax-begin="SpinnerShowForm('چند لحظه صبر کنید');"
+                    data-ajax-Btn="PhotoDelete"
+                    data-ajax-url="?handler=PhotoDelete"
+                    data-ajax-complete="AreaHide('Pic_'+EleValue('PhotoDelete'));">
+                    <input type="submit" archive id="PhotoDelete" name="Id" hidden value="0" />
+                    <input type="hidden" id="PhotoExt " name="PhotoExt" hidden value=".jpg" />
+
+                    @if (Model.ListPics.Rows.Count > 0){
+                        <div class="d-flex flex-wrap justify-content-around" id="AreaPicturs">
+                            @foreach (DataRow item in Model.ListPics.Rows)
+                            {
+                                <div id="Pic_@item["Si"]" class="m-2 rounded rounded-1 border border-2 border-primary ">
+                                    <div class="py-2">@item["Tp"]</div>
+                                    <img class="rounded rounded-5 w-max-300 d-block mx-auto cursor-pointer" src="/Uploads/Help/Pic_@item["Si"]@item["Ext"]" onclick="copyToClipboard('@ViewData["FilePath"]_@item["Si"]@item["Ext"]','مسیر آدرس تصویر ذخیره شده');" />
+                                    <div class="d-flex justify-content-between">
+                                        <span class="text-secondary">برای انتخاب، روی تصویر کلیک کنید</span>
+                                        <button type="button" class="btn_Icon Icon_Red icofont-2x icofont-delete" title="حذف" onclick="ClickBtnSimpl('PhotoDelete','@item["Si"]','PhotoExt ','@item["Ext"]');"></button>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else{
+                        <div class="d-flex flex-wrap justify-content-around" id="AreaPicturs">
+                            <h3 class="text-danger">هنوز تصویری برای این صفحه آپلود نکرده اید</h3>
+                        </div>
+
+                    }
+                </form>
+            </div>
+
+
+
+        </div>
+
+        break;
+
+
+
+    case "ListPictures":
+        @foreach (DataRow item in Model.ListPics.Rows)
+        {
+            <div id="Pic_@item["Si"]" class="m-2 rounded rounded-1 border border-2 border-primary ">
+                <div class="py-2">@item["Tp"]</div>
+                <img class="rounded rounded-5 w-max-300 d-block mx-auto cursor-pointer" src="/Uploads/Help/Pic_@item["Si"]@item["Ext"]" title="برای انتخاب تصویر کلیک کنید" onclick="copyToClipboard('@ViewData["FilePath"]_@item["Si"]@item["Ext"]','مسیر آدرس تصویر ذخیره شده');" />
+                <div class="d-flex justify-content-between">
+                    <span class="text-secondary">برای انتخاب، روی تصویر کلیک کنید</span>
+                    <button type="button" class="btn_Icon Icon_Red icofont-2x icofont-delete" title="حذف" onclick="ClickBtnSimpl('PhotoDelete','@item["Si"]','PhotoExt ','@item["Ext"]');"></button>
+                </div>
+            </div>
+            }
+        break;
+
+
+}

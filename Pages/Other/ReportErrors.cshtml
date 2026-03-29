@@ -1,0 +1,151 @@
+﻿@page
+@using System.Data;
+@using System.Web
+@model Aparteman.Pages.Other.ReportErrorsModel
+@{
+    DataRow pagesitem;
+}
+
+<div>
+    <footer-page class="nav nav-tabs border-top border-light">
+        <div class="w-inline">
+            <div id="menu-page-btn">
+                <menu-page id="FastAlarm" class="dis-none" data-bs-toggle="tooltip" data-bs-title="گزارش پیام جدید" onclick="$('#waitbody').css('display', 'flex'); GoToUrl('/Other/MsgCenter');">
+                    <span class="text-danger icofont-00x icofont-bell-alt"></span>
+                    <span id="FastAlarmMsg">10 تا پیام جدید داری</span>
+                </menu-page>
+                <menu-page class="w-min-50" data-bs-toggle="tooltip" data-bs-title="منو" onclick="MenuToggel();">
+                    <span class="menu-firuze icofont-00x icofont-listine-dots icofont-rotate-180"></span>
+                </menu-page><point></point>
+                <menu-page class="active" data-bs-toggle="tab" data-bs-target="#tab_A">گزارش</menu-page><point></point>
+                <menu-page class="w-min-50" onclick="HelpAjax(@Model.FormId);" data-bs-toggle="tooltip" data-bs-title="راهنما"><span class="menu-firuze icofont-00x icofont-learn"></span></menu-page>
+                <menu-page class="w-min-50" onclick="ToggleFullscreen();" data-bs-toggle="tooltip" data-bs-title="تمام صفحه"><span class="menu-firuze icofont-00x icofont-expand"></span></menu-page>
+                <menu-page onclick="GoToTop();" class="w-min-50" data-bs-toggle="tooltip" data-bs-title="برگشت به بالا" data-toggle="tooltip"><span class="menu-firuze icofont-00x icofont-stylish-up"></span></menu-page>
+                <menu-page class="bg-secondary" data-bs-toggle="tooltip" data-bs-title="برگشت به صفحه قبل" data-toggle="tooltip">
+                    <select class="text-start bg-secondary text-light" onchange="GoToUrl(this.value);">
+                        @foreach (DataRow item in Model.formData.lastForms.Rows)
+                        {
+                            <option value="/@item["NameForm"]">@item["Onvan"]</option>
+                        }
+                    </select>
+                </menu-page><point></point>
+                <button type="button" class="pos-Right btn_Icon Icon_Red icofont-2x icofont-curved-double-right d-md-none" data-bs-toggle="tooltip" data-bs-title="اسکرول به راست" onclick="ScrollRight('menu-page-btn');"></button>
+                <button type="button" class="pos-Left btn_Icon Icon_Red icofont-2x icofont-curved-double-left d-md-none" data-bs-toggle="tooltip" data-bs-title="اسکرول به چپ" onclick="ScrollLeft('menu-page-btn');"></button>
+            </div>
+        </div>
+    </footer-page>
+
+    <div class="tab-content">
+        <!-- گزارش -->
+        <div class="tab-pane fade active show" id="tab_A">
+
+            @{
+                pagesitem = Model.formData.Pages.Select("RJ = 1").First();
+            }
+            <div class="OnvanSafhe">
+                <h6 class="shadow">@pagesitem["OnvanPage"]</h6>
+            </div>
+            @if (@pagesitem["HeaderPage"].ToString() != "")
+            {
+                <div class="alert alert-secondary">
+                    @Html.Raw(HttpUtility.HtmlDecode(@pagesitem["HeaderPage"].ToString()))
+                </div>
+            }
+            <div class="filterArea p-2 w-max-800 mx-auto">
+                <form method="get" data-ajax-method="get" data-ajax="true"
+                      data-ajax-begin="SpinnerShow('R_Report')"
+                      data-ajax-url="?handler=ListLogError"
+                      data-ajax-Update="#R_Report">
+                    <div class="p-1">
+                        <div id="AreaBtn">
+                            <button type="button" class="BTN btn_Pill btn_Firuze m-2 w-min-75" onclick="Btn_Select(this, 'AreaBtn'); FastReportAjax('TD', 'BtnReport', '', 'S_LimitDate');">امروز</button>
+                            <button type="button" class="BTN btn_Pill btn_Firuze m-2 w-min-75" onclick="Btn_Select(this, 'AreaBtn'); FastReportAjax('1W', 'BtnReport', '', 'S_LimitDate');">هفته</button>
+                            <button type="button" class="BTN btn_Pill btn_Firuze m-2 w-min-75" onclick="Btn_Select(this, 'AreaBtn'); FastReportAjax('2W', 'BtnReport', '', 'S_LimitDate');">دوهفته</button>
+                            <button type="button" class="BTN btn_Pill btn_Firuze m-2 w-min-75" onclick="Btn_Select(this, 'AreaBtn'); FastReportAjax('1M', 'BtnReport', '', 'S_LimitDate');">یک ماه</button>
+                            <button type="button" class="BTN btn_Pill btn_Firuze m-2 w-min-75" onclick="Btn_Select(this, 'AreaBtn'); FastReportAjax('3M', 'BtnReport', '', 'S_LimitDate');">سه ماه</button>
+                            <button type="button" class="BTN btn_Pill btn_Firuze m-2 w-min-75" onclick="Btn_Select(this, 'AreaBtn'); FastReportAjax('TM', 'BtnReport', '', 'S_LimitDate');">ماه جاری</button>
+                            <button type="button" class="BTN btn_Top btn_Light m-2 w-min-75" onclick="Btn_Select(this, 'AreaBtn'); AreaToggel('ReportSaz');">گزارش ساز <span class="text-primary icofont-00x icofont-cubes"></span></button>
+                        </div>
+                        <div id="ReportSaz" class="alert alert-info rounded p-3 dis-none border shadow">
+                            <div class="d-flex flex-wrap justify-content-around">
+                                <div class="w-fix-180 mx-1">
+                                    <span class="control-label">محدوده تاریخ</span>
+                                    <select class="control-input" id="S_LimitDate" onchange="LimitDateAjax(this,'');">
+                                        <option value="0" selected>انتخاب شود</option>
+                                        <option value="TD">امروز</option>
+                                        <option value="1W">یک هفته</option>
+                                        <option value="2W">دو هفته</option>
+                                        <option value="1M">یک ماه</option>
+                                        <option value="TM">ماه جاری</option>
+                                        <option value="LM">ماه قبل</option>
+                                        <option value="3M">سه ماه</option>
+                                        <option value="6M">شش ماه</option>
+                                        <option value="1Y">یکسال</option>
+                                        <option value="TY">امسال</option>
+                                        <option value="LY">پارسال</option>
+                                    </select>
+
+                                    <div id="waitLimitDate"></div>
+
+                                    <span class="control-label">از تاریخ</span>
+                                    <div class="control-Date">
+                                        <input placeholder="از تاریخ" id="FromDate" name="FromDate" maxlength="10" readonly class="usage control-input-plaintext" value="@ViewData["Today"]" />
+                                    </div>
+                                    <span class="control-label">تا تاریخ</span>
+                                    <div class="control-Date">
+                                        <input placeholder="از تاریخ" id="ToDate" name="ToDate" maxlength="10" readonly class="usage control-input-plaintext" value="@ViewData["Today"]" />
+                                    </div>
+                                </div>
+
+                                <div class="w-fix-200 mx-1">
+                                    <div>
+                                        <span class="control-label">فرم</span>
+                                        <input type="text" name="FrmName" class="control-input" value="" />
+                                    </div>
+
+                                    <div>
+                                        <span class="control-label">تابع</span>
+                                        <input type="text" name="FunName" class="control-input ltr" value="" />
+                                    </div>
+
+                                    <div>
+                                        <span class="control-label">دستور</span>
+                                        <input type="text" name="Command" class="control-input ltr" value="" />
+                                    </div>
+
+                                </div>
+
+                                <div class="w-fix-200 mx-1">
+                                    <div>
+                                        <span class="control-label">کاربر</span>
+                                        <input type="text" name="Karbar" class="control-input " value="" />
+                                    </div>
+
+                                    <div class="p-3 text-end">
+                                        <button type="submit" id="BtnReport" data-bs-toggle="tooltip" data-bs-title="گزارش" class="btn_Icon Icon_Green icofont-00x icofont-search-2" onclick="AreaUp('ReportSaz');"></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </form>
+            </div>
+
+            <div class="mt-3" id="R_Report">
+                <div class="text-center wrapword text-warning">برای تهیه گزارش از فیلتر مناسب انتخاب کنید.</div>
+            </div>
+        </div>
+
+    </div>
+    <div hidden>
+        <form hidden asp-antiforgery="true" method="get" data-ajax-method="get" data-ajax="true"
+              data-ajax-begin="SelectWait('RepKarbar', 'چند لحظه صبر کنید');"
+              data-ajax-url="?handler=FindKarbaran"
+              data-ajax-update="#RepKarbar"
+              data-ajax-complete="CheckErrorSelect('RepKarbar');">
+            <input type="submit" id="FindKarbaranBtn" name="KndKarbar" value="" hidden />
+        </form>
+    </div>
+</div>

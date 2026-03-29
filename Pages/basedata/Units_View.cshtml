@@ -1,0 +1,472 @@
+﻿@model Aparteman.Pages.basedata.UnitsModel
+@using System.Data;
+@using Aparteman.Services;
+@{
+}
+@switch (@ViewData["Switch"])
+{
+    case "FormSabtUnit":
+        <section class="container p-1">
+            <div class="secondArea">
+                @if (ViewData["ID"].ToString() == "0")
+                {
+                    <form asp-antiforgery="true" method="post" data-ajax-method="post" data-ajax="true"
+                    data-ajax-confirm="واحد جدید ذخیره گردد؟"
+                    data-ajax-Btn="UpdateUnitBtn"
+                    data-ajax-begin="SpinnerShowForm('چند لحظه صبر کنید');"
+                    data-ajax-url="?handler=UpdateUnit"
+                    data-ajax-complete="JsonResult">
+                        <input type="hidden" name="ID" value="0" />
+
+                        <div class="Area_Top bg-secondary text-white op-0-8">
+                            <span class="font-18">اطلاعات اصلی</span>
+                        </div>
+                        <div class="mb-3">
+                            <span class="control-label cursor-pointer" onclick="ShowFastHelp(this,'نامی که هر ساختمان با آن در سیستم شناخته می‌شود.این نام در گزارش‌ها و بخش‌های مدیریتی نمایش داده خواهد شد')">نام ساختمان</span>
+                            <select class="control-input" name="BuildingId" onchange="FindListFloorAjax('FloorId',this, 'Not')">
+                                @if (Model.ListBuilding.Rows.Count > 1)
+                                {
+                                    <option value="0">ابتدا ساختمان را انتخاب کنید</option>
+                                }
+                                @foreach (DataRow item in Model.ListBuilding.Rows)
+                                {
+                                    <option value="@item["BuildingId"]">@item["BuildingName"]</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-6 col-md-3 mb-3">
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'طبقه ای که این واحد در آن قرار گرفته است')">طبقه</label>
+                                <select class="control-input" id="FloorId" name="FloorId">
+                                    @if (Model.ListBuilding.Rows.Count > 1)
+                                    {
+                                        <option value="0">ابتدا ساختمان را انتخاب کنید</option>
+                                    }
+                                    else{
+                                        @foreach (DataRow item in Model.ListFloor.Rows)
+                                        {
+                                            <option value="@item["FloorId"]">@item["FloorTitle"]</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-6 col-md-3 mb-3">
+                                <div class="">
+                                    <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'شماره ای که به هر واحد داده میشود. این شماره می تواند یکتا باشد و یا اینکه برای هر طبقه از یک شروع شود. میتوانید شماره را بصورت کدینگ تعریف کنید مثلا واحد 101 اشاره به واحد یک در طبقه اول دارد ')">شماره واحد</label>
+                                    <input type="tel" class="control-input text-center" id="UnitNumber" name="UnitNumber">
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3 mb-3">
+                                <div class="">
+                                    <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'مساحت واحد را بنویسید. از این مساحت در تسهیم هزینه هایی که وابسته به مساحت واحدها میباشد استفاده میشود')">متراژ</label>
+                                    <input type="tel" class="control-input text-center" id="Area" name="Area">
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3 mb-3">
+                                <div class="">
+                                    <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'این گزینه اختیاری است. برای مواردی استفاده میشود که میخواهید تسهیم هزینه ها، صرف نظر از متراژی یا نفراتی یا واحدی، در ضریبی ضرب شود. مثلا در مجمع تصمیم گرفته میشود که بعضی از واحدها در شارژ تخفیف داشته باشند و یا بعضی دیگر شارژ بیشتری پرداخت کنند به عنوان مقال اگر این مفدار برای فردی 1.2 بنویسید، هر مبلغی که برای شارژ او حساب شود ضربدر عدد 1.2 میشود یعنی 20 درصد به هزینه شارژ او اضافه میشود تا پرداخت کند')">سهم شارژ</label>
+                                    <input type="tel" class="control-input text-center" id="SharePercent" name="SharePercent" value="1">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-6 col-md-3 mb-3">
+                                <div class="">
+                                    <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'نشان دهنده تعداد افرادی است که در واحد اقامت دائم دارند. با ثبت تعداد ساکنین هرواحد میتوانید گزارش بگیرید که در مجتمع چند نفر ساکن دارید')">تعداد ساکنین</label>
+                                    <input type="tel" class="control-input text-center" name="NqSaken" value="1">
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3 mb-3">
+                                <div class="">
+                                    <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'الزاما همه تعداد ساکنین یک واحد مشمول محاسبه شارژ برای هزینه های «تعداد نفرات» نمی شوند. به عنوان مثال ممکن است در مجمع تصمیم بگیرید که کودکان زیر 5 سال در محاسبات شارژ در نظر پرفته نشوند')">تعداد افراد مشمول شارژ</label>
+                                    <input type="tel" class="control-input text-center" name="NqCharge" value="1">
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3 mb-3">
+                            </div>
+                            <div class="col-6 col-md-3 mb-3">
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'ضریب آسانسور، برای هزینه های مرتبط با آسانسور در نظر گرفته شده است. هدف این استکه واحدها با توجه به طبقه، استفاده بیشتر یا کمتر از آسانسور دارند. برای طبقات بالاتر ضریب بیشتر و برای طبقات پانیتر ضریب کمتری بنویسید. مقدار ضریب بنا بر تصویب مجمع عمومی میباشد. پیش فرض این مقدار برای همه یکسان و یک می باشد')">ضریب آسانسور</label>
+                                <input type="tel" class="control-input text-center" id="ZaribAsan" name="ZaribAsan" value="1">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-6 col-md-3 mb-3">
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'در هزینه هایی که پرداخت آنها به عهده مالک واحد میباشد، در صورتی مالک بدهکار میشود که این گزینه فعال باشد. در غیر اینصورت تسهیم هزینه مالک برای این واحد انجام نمی شود')">آیا شارژ مالک فعال است؟</label>
+                                <img class="w-fix-75 cursor-pointer" src="/images/Btn_Yes.png" onclick="ToggelYesNo(this,'IsActiveMalek');" alt="Aparteman_YesNo" />
+                                <input id="IsActiveMalek" hidden name="IsActiveMalek" value="1" />
+                            </div>
+                            <div class="col-6 col-md-3 mb-3">
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'در هزینه هایی که پرداخت آنها به عهده ساکن واحد میباشد، در صورتی ساکن بدهکار میشود که این گزینه فعال باشد. در غیر اینصورت تسهیم هزینه ساکن برای این واحد انجام نمی شود')">آیا شارژ ساکن فعال است؟</label>
+                                <img class="w-fix-75 cursor-pointer" src="/images/Btn_Yes.png" onclick="ToggelYesNo(this,'IsActiveMalek');" alt="Aparteman_YesNo" />
+                                <input id="IsActiveSaken" hidden name="IsActiveSaken" value="1" />
+                            </div>
+                            <div class="col-6 col-md-3 mb-3">
+                            </div>
+                            <div class="col-6 col-md-3 mb-3">
+                                <span class="control-label cursor-pointer" onclick="ShowFastHelp(this,'وضعیت فعلی واحد از لحاظ سکونت را انتخاب کنید. این مورد در گزارشات دقیق از وضعیت واحدها بسیار کاربردی است')">وضعیت</span>
+                                <select class="control-input" id="RoleId" name="SitCode">
+                                    <option value="1">خالی</option>
+                                    <option value="2">مالک ساکن</option>
+                                    <option value="3">مستاجر ساکن</option>
+                                    <option value="4">در حال تعمیر</option>
+                                    <option value="5">برای اجاره</option>
+                                    <option value="6">برای فروش</option>
+                                    <option value="7">رزرو شده</option>
+                                    <option value="8">در اختیار کارکنان</option>
+                                    <option value="9">غیرقابل استفاده</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="Area_Top bg-secondary text-white op-0-8">
+                            <span class="font-18">سایر اطلاعات</span>
+                        </div>
+
+
+
+                        <div class="row">
+                            <div class="col-6 col-md-3 mb-3">
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'این گزینه فیلد اطلاعاتی است. و در محاسبات استفاده نمی شود')">دارای شومینه</label>
+                                <img class="w-fix-75 cursor-pointer" src="/images/Btn_No.png" onclick="ToggelYesNo(this,'Shomine');" alt="Aparteman_YesNo" />
+                                <input id="Shomine" hidden name="Shomine" value="0" />
+                            </div>
+                            <div class="col-6 col-md-3 mb-3">
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'این گزینه فیلد اطلاعاتی است. و در محاسبات استفاده نمی شود')">تعداد خواب</label>
+                                <input type="tel" class="control-input text-center" id="NqBed" name="NqBed" value="">
+                            </div>
+                            <div class="col-6 col-md-3 mb-3">
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'این گزینه فیلد اطلاعاتی است. و در محاسبات استفاده نمی شود')">شماره کنتور آب</label>
+                                <input type="tel" class="control-input text-center" id="NumberWater" name="NumberWater" value="">
+                            </div>
+                            <div class="col-6 col-md-3 mb-3">
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'این گزینه فیلد اطلاعاتی است. و در محاسبات استفاده نمی شود')">شماره کنتور برق</label>
+                                <input type="tel" class="control-input text-center" id="NumberBarg" name="NumberBarg" value="">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-6 col-md-3 mb-3">
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'این گزینه فیلد اطلاعاتی است. و در محاسبات استفاده نمی شود')">شماره کنتور گاز</label>
+                                <input type="tel" class="control-input text-center" id="NumBerGaz" name="NumBerGaz" value="">
+                            </div>
+                            <div class="col-6 col-md-3 mb-3">
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'این گزینه فیلد اطلاعاتی است. و در محاسبات استفاده نمی شود')">شماره پارکینگ</label>
+                                <input type="tel" class="control-input text-center" id="NumberPark" name="NumberPark" value="">
+                            </div>
+                            <div class="col-6 col-md-3 mb-3">
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'این گزینه فیلد اطلاعاتی است. و در محاسبات استفاده نمی شود')">شماره انباری</label>
+                                <input type="tel" class="control-input text-center" id="NumberStor" name="NumberStor" value="">
+                            </div>
+                            <div class="col-6 col-md-3 mb-3">
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'این گزینه فیلد اطلاعاتی است. و در محاسبات استفاده نمی شود')">مساحت انباری</label>
+                                <input type="tel" class="control-input text-center" id="AreaStore" name="AreaStore" value="">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'توضیحاتی در مورد این واحد. این توضیحات توسط مدیریت دیده می شود و توسط ساکن یا مالک دیده نمی شود')">شرح</label>
+                            <input type="text" class="control-input text-center" id="Sharh" name="Sharh" maxlength="255" value="">
+                        </div>
+                        <hr />
+                        <div class="text-end px-3">
+                            <button type="submit" id="UpdateUnitBtn" class="btn_Icon Icon_Blue2 icofont-2x icofont-checked" title="ثبت شود"><span>ثبت شود</span></button>
+                        </div>
+
+                    </form>
+                }
+                else
+                {
+                    <form asp-antiforgery="true" method="post" data-ajax-method="post" data-ajax="true"
+                    data-ajax-confirm="اطلاعات واحد اصلاح گردد؟"
+                    data-ajax-Btn="UpdateUnitBtn"
+                    data-ajax-begin="SpinnerShowForm('چند لحظه صبر کنید');"
+                    data-ajax-url="?handler=UpdateUnit"
+                          data-ajax-complete="JsonClose_A">
+                        <input type="hidden" name="ID" value="@ViewData["ID"]" />
+                        <div class="Area_Top bg-secondary text-white op-0-8">
+                            <span class="font-18">اطلاعات اصلی</span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'نامی که هر ساختمان با آن در سیستم شناخته می‌شود.این نام در گزارش‌ها و بخش‌های مدیریتی نمایش داده خواهد شد')">نام ساختمان</label>
+                            <div class="Area_Pill bg-white">
+                                <span>@Model.RowData["BuildingName"]</span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-6 col-md-3 mb-3">
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'طبقه ای که این واحد در آن قرار گرفته است')">طبقه</label>
+                                <select class="control-input" id="FloorId" name="FloorId">
+                                    @foreach (DataRow item in Model.ListFloor.Rows)
+                                    {
+                                        <option value="@item["FloorId"]">@item["FloorTitle"]</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-6 col-md-3 mb-3">
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'شماره ای که به هر واحد داده میشود. این شماره می تواند یکتا باشد و یا اینکه برای هر طبقه از یک شروع شود. میتوانید شماره را بصورت کدینگ تعریف کنید مثلا واحد 101 اشاره به واحد یک در طبقه اول دارد ')">شماره واحد</label>
+                                <input type="tel" class="control-input text-center" id="UnitNumber" name="UnitNumber" value="@Model.RowData["UnitNumber"]">
+                            </div>
+                            <div class="col-6 col-md-3 mb-3">
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'مساحت واحد را بنویسید. از این مساحت در تسهیم هزینه هایی که وابسته به مساحت واحدها میباشد استفاده میشود')">متراژ</label>
+                                <input type="tel" class="control-input text-center" id="Area" name="Area" value="@Model.RowData["Area"]">
+                            </div>
+                            <div class="col-6 col-md-3 mb-3">
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'این گزینه اختیاری است. برای مواردی استفاده میشود که میخواهید تسهیم هزینه ها، صرف نظر از متراژی یا نفراتی یا واحدی، در ضریبی ضرب شود. مثلا در مجمع تصمیم گرفته میشود که بعضی از واحدها در شارژ تخفیف داشته باشند و یا بعضی دیگر شارژ بیشتری پرداخت کنند به عنوان مقال اگر این مفدار برای فردی 1.2 بنویسید، هر مبلغی که برای شارژ او حساب شود ضربدر عدد 1.2 میشود یعنی 20 درصد به هزینه شارژ او اضافه میشود تا پرداخت کند')">سهم شارژ</label>
+                                <input type="tel" class="control-input text-center" id="SharePercent" name="SharePercent" value="@Model.RowData["SharePercent"]">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-6 col-md-3 mb-3">
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'نشان دهنده تعداد افرادی است که در واحد اقامت دائم دارند. با ثبت تعداد ساکنین هرواحد میتوانید گزارش بگیرید که در مجتمع چند نفر ساکن دارید')">تعداد ساکنین</label>
+                                <input type="tel" class="control-input text-center" name="NqSaken" value="@Model.RowData["NqSaken"]">
+                            </div>
+                            <div class="col-6 col-md-3 mb-3">
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'الزاما همه تعداد ساکنین یک واحد مشمول محاسبه شارژ برای هزینه های «تعداد نفرات» نمی شوند. به عنوان مثال ممکن است در مجمع تصمیم بگیرید که کودکان زیر 5 سال در محاسبات شارژ در نظر پرفته نشوند')">تعداد افراد مشمول شارژ</label>
+                                <input type="tel" class="control-input text-center" name="NqCharge" value="@Model.RowData["NqCharge"]">
+                            </div>
+                            <div class="col-6 col-md-3 mb-3">
+                            </div>
+                            <div class="col-6 col-md-3 mb-3">
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'ضریب آسانسور، برای هزینه های مرتبط با آسانسور در نظر گرفته شده است. هدف این استکه واحدها با توجه به طبقه، استفاده بیشتر یا کمتر از آسانسور دارند. برای طبقات بالاتر ضریب بیشتر و برای طبقات پانیتر ضریب کمتری بنویسید. مقدار ضریب بنا بر تصویب مجمع عمومی میباشد. پیش فرض این مقدار برای همه یکسان و یک می باشد')">ضریب آسانسور</label>
+                                <input type="tel" class="control-input text-center" id="ZaribAsan" name="ZaribAsan" value="@Model.RowData["ZaribAsan"]">
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-6 col-md-3 mb-3">
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'در هزینه هایی که پرداخت آنها به عهده مالک واحد میباشد، در صورتی مالک بدهکار میشود که این گزینه فعال باشد. در غیر اینصورت تسهیم هزینه مالک برای این واحد انجام نمی شود')">آیا شارژ مالک فعال است؟</label>
+                                <img class="w-fix-75 cursor-pointer" src="@Model.RowData["IsActiveMalekIcon"]" onclick="ToggelYesNo(this,'IsActiveMalek');" alt="Aparteman_YesNo" />
+                                <input id="IsActiveMalek" type="hidden" name="IsActiveMalek" value="@Model.RowData["IsActiveMalek"].ToYesNo()" />
+                            </div>
+                            <div class="col-6 col-md-3 mb-3">
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'در هزینه هایی که پرداخت آنها به عهده ساکن واحد میباشد، در صورتی ساکن بدهکار میشود که این گزینه فعال باشد. در غیر اینصورت تسهیم هزینه ساکن برای این واحد انجام نمی شود')">آیا شارژ ساکن فعال است؟</label>
+                                <img class="w-fix-75 cursor-pointer" src="@Model.RowData["IsActiveSakenIcon"]" onclick="ToggelYesNo(this,'IsActiveSaken');" alt="Aparteman_YesNo" />
+                                <input id="IsActiveSaken" type="hidden" name="IsActiveSaken" value="@Model.RowData["IsActiveSaken"].ToYesNo()" />
+                            </div>
+                            <div class="col-6 col-md-3 mb-3">
+                            </div>
+                            <div class="col-6 col-md-3 mb-3">
+                                <span class="control-label cursor-pointer" onclick="ShowFastHelp(this,'وضعیت فعلی واحد از لحاظ سکونت را انتخاب کنید. این مورد در گزارشات دقیق از وضعیت واحدها بسیار کاربردی است')">وضعیت</span>
+                                <select class="control-input" id="SitCode" name="SitCode">
+                                    <option value="1">خالی</option>
+                                    <option value="2">مالک ساکن</option>
+                                    <option value="3">مستاجر ساکن</option>
+                                    <option value="4">در حال تعمیر</option>
+                                    <option value="5">برای اجاره</option>
+                                    <option value="6">برای فروش</option>
+                                    <option value="7">رزرو شده</option>
+                                    <option value="8">در اختیار کارکنان</option>
+                                    <option value="9">غیرقابل استفاده</option>
+                                </select>
+                            </div>
+                        </div>
+
+
+                        <div class="Area_Top bg-secondary text-white op-0-8">
+                            <span class="font-18">سایر اطلاعات</span>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-6 col-md-3 mb-3">
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'این گزینه فیلد اطلاعاتی است. و در محاسبات استفاده نمی شود')">دارای شومینه</label>
+                                <img class="w-fix-75 cursor-pointer" src="@Model.RowData["ShomineIcon"]" onclick="ToggelYesNo(this,'Shomine');" alt="Aparteman_YesNo" />
+                                <input id="Shomine" type="hidden" name="Shomine" value="@Model.RowData["Shomine"].ToYesNo()" />
+                            </div>
+                            <div class="col-6 col-md-3 mb-3">
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'این گزینه فیلد اطلاعاتی است. و در محاسبات استفاده نمی شود')">تعداد خواب</label>
+                                <input type="tel" class="control-input text-center" id="NqBed" name="NqBed" value="@Model.RowData["NqBed"]">
+                            </div>
+                            <div class="col-6 col-md-3 mb-3">
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'این گزینه فیلد اطلاعاتی است. و در محاسبات استفاده نمی شود')">شماره کنتور آب</label>
+                                <input type="tel" class="control-input text-center" id="NumberWater" name="NumberWater" value="@Model.RowData["NumberWater"]">
+                            </div>
+                            <div class="col-6 col-md-3 mb-3">
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'این گزینه فیلد اطلاعاتی است. و در محاسبات استفاده نمی شود')">شماره کنتور برق</label>
+                                <input type="tel" class="control-input text-center" id="NumberBarg" name="NumberBarg" value="@Model.RowData["NumberBarg"]">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-6 col-md-3 mb-3">
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'این گزینه فیلد اطلاعاتی است. و در محاسبات استفاده نمی شود')">شماره کنتور گاز</label>
+                                <input type="tel" class="control-input text-center" id="NumBerGaz" name="NumBerGaz" value="@Model.RowData["NumBerGaz"]">
+                            </div>
+                            <div class="col-6 col-md-3 mb-3">
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'این گزینه فیلد اطلاعاتی است. و در محاسبات استفاده نمی شود')">شماره پارکینگ</label>
+                                <input type="tel" class="control-input text-center" id="NumberPark" name="NumberPark" value="@Model.RowData["NumberPark"]">
+                            </div>
+                            <div class="col-6 col-md-3 mb-3">
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'این گزینه فیلد اطلاعاتی است. و در محاسبات استفاده نمی شود')">شماره انباری</label>
+                                <input type="tel" class="control-input text-center" id="NumberStor" name="NumberStor" value="@Model.RowData["NumberStor"]">
+                            </div>
+                            <div class="col-6 col-md-3 mb-3">
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'این گزینه فیلد اطلاعاتی است. و در محاسبات استفاده نمی شود')">مساحت انباری</label>
+                                <input type="tel" class="control-input text-center" id="AreaStore" name="AreaStore" value="@Model.RowData["AreaStore"]">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'توضیحاتی در مورد این واحد. این توضیحات توسط مدیریت دیده می شود و توسط ساکن یا مالک دیده نمی شود')">شرح</label>
+                            <input type="text" class="control-input text-center" id="Sharh" name="Sharh" maxlength="255" value="@Model.RowData["Sharh"]">
+                        </div>
+                        <hr />
+                        <div class="text-end px-3">
+                            <button type="submit" id="UpdateUnitBtn" class="btn_Icon Icon_Blue2 icofont-2x icofont-checked" title="ثبت شود"><span>ثبت شود</span></button>
+                        </div>
+
+                    </form>
+                    <script>
+                        SetValueSimpl('FloorId', '@Model.RowData["FloorId"]','SitCode', '@Model.RowData["SitCode"]');
+                    </script>
+                }
+            </div>
+        </section>
+
+        break;
+
+    case "ListUnits":
+        <div class="d-flex flex-wrap justify-content-between border-top border-secondary">
+            <div class="Area_Count w-fix-200">
+                <span>تعداد : </span><span>@Model.ListUnit.Rows.Count </span>
+            </div>
+        </div>
+
+        <div class="header_Table">
+            <button type="button" class="btn_Icon footer_Right Icon_Red icofont-00x icofont-curved-double-right" title="اسکرول به راست" onclick="ScrollRight('ListFloor_FT');"></button>
+            <button type="button" class="btn_Icon footer_Left Icon_Red icofont-00x icofont-curved-double-left" title="اسکرول به چپ" onclick="ScrollLeft('ListFloor_FT');"></button>
+            <div id="ListFloor_FT" class="overflow-hidden" onscroll="ScrollSlave(this, 'ListFloor_MS');">
+                <table class="table mb-0  grid-table">
+                    <thead>
+                        <tr>
+                            <th><span>#</span></th>
+                            <th><span class="w-fix-200">ساختمان</span></th>
+                            <th><span class="w-fix-150">طبقه</span></th>
+                            <th><span class="w-fix-75">واحد</span></th>
+                            <th><span class="w-fix-100">مساحت</span></th>
+                            <th><span class="w-fix-50">ویرایش</span></th>
+                            <th><span class="w-fix-90">تعداد ساکنین</span></th>
+                            <th><span class="w-fix-90">تعداد شارژ</span></th>
+                            <th><span class="w-fix-90">شارژ مالک</span></th>
+                            <th><span class="w-fix-90">شارژ ساکن</span></th>
+                            <th><span class="w-fix-90">سهم اشتراک</span></th>
+                            <th><span class="w-fix-100">ضریب آسانسور</span></th>
+
+                            <th><span class="w-fix-150">وضعیت</span></th>
+                            <th><span class="w-fix-150">مالک</span></th>
+                            <th><span class="w-fix-150">ساکن</span></th>
+                            <th><span class="w-fix-90">شومینه</span></th>
+                            <th><span class="w-fix-90">خواب</span></th>
+                            <th><span class="w-fix-150">ش.آب</span></th>
+                            <th><span class="w-fix-150">ش. برق</span></th>
+                            <th><span class="w-fix-150">ش. گاز</span></th>
+                            <th><span class="w-fix-75">ش. پارکینگ</span></th>
+                            <th><span class="w-fix-75">ش. انباری</span></th>
+                            <th><span class="w-fix-100">مساحت انباری</span></th>
+                            <th><span class="w-fix-250">شرح</span></th>
+                            <th><span class="w-fix-50">حذف</span></th>
+                            <th><span class="w-fix-180"><span>ویرایشگر</span> / <span>زمان</span></span></th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+        <div class="overflow-auto" id="ListFloor_MS" onscroll="ScrollSlave(this, 'ListFloor_FT');">
+            <table class="table grid-table">
+                <thead class="header_Tablehiden">
+                    <tr>
+                        <th><span>#</span></th>
+                        <th><span class="w-fix-200">ساختمان</span></th>
+                        <th><span class="w-fix-150">طبقه</span></th>
+                        <th><span class="w-fix-75">واحد</span></th>
+                        <th><span class="w-fix-100">مساحت</span></th>
+                        <th><span class="w-fix-50">ویرایش</span></th>
+                        <th><span class="w-fix-90">تعداد ساکنین</span></th>
+                        <th><span class="w-fix-90">تعداد شارژ</span></th>
+                        <th><span class="w-fix-90">شارژ مالک</span></th>
+                        <th><span class="w-fix-90">شارژ ساکن</span></th>
+                        <th><span class="w-fix-90">سهم اشتراک</span></th>
+                        <th><span class="w-fix-100">ضریب آسانسور</span></th>
+
+                        <th><span class="w-fix-150">وضعیت</span></th>
+                        <th><span class="w-fix-150">مالک</span></th>
+                        <th><span class="w-fix-150">ساکن</span></th>
+                        <th><span class="w-fix-90">شومینه</span></th>
+                        <th><span class="w-fix-90">خواب</span></th>
+                        <th><span class="w-fix-150">ش.آب</span></th>
+                        <th><span class="w-fix-150">ش. برق</span></th>
+                        <th><span class="w-fix-150">ش. گاز</span></th>
+                        <th><span class="w-fix-75">ش. پارکینگ</span></th>
+                        <th><span class="w-fix-75">ش. انباری</span></th>
+                        <th><span class="w-fix-100">مساحت انباری</span></th>
+                        <th><span class="w-fix-250">شرح</span></th>
+                        <th><span class="w-fix-50">حذف</span></th>
+                        <th><span class="w-fix-180"><span>ویرایشگر</span> / <span>زمان</span></span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        var RJ = 0;
+                    }
+                    @foreach (DataRow item in Model.ListUnit.Rows)
+                    {
+                        { RJ++; }
+                        <tr onclick="RowSelect(this);" id="RowUnit_@item["UnitId"]">
+                            <td class="text-danger">@RJ</td>
+                            <td><span class="w-fixC-200 text-start"><span>@item["BuildingName"]</span><span class="text_line23">@item["BuildingCode"]</span></span></td>
+                            <td><span class="w-fixC-150 text-start"><span>@item["FloorTitle"]</span><span class="text_line23">@item["FloorNumber"]</span></span></td>
+                            <td><span class="w-fixC-75">@item["UnitNumber"]</span></td>
+                            <td><span class="w-fixC-100">@item["Area"]</span></td>
+                            <td>
+                                <button type="button" class="btn_Icon Icon_Mor icofont-2x icofont-edit" title="ویرایش" onclick="ClickBtnSimpl('FormSabtUnitBtn', '@item["UnitId"]');"></button>
+                            </td>
+                            <td><span class="w-fixC-90">@item["NqSaken"]</span></td>
+                            <td><span class="w-fixC-90">@item["NqCharge"]</span></td>
+                            <td>
+                                <span class="w-fixC-90">
+                                    <img class="w-fix-75" src="@item["IsActiveMalekIcon"]" alt="Aparteman_YesNo" />
+                                </span>
+                            </td>
+                            <td><span class="w-fixC-90">
+                                    <img class="w-fix-75" src="@item["IsActiveSakenIcon"]" alt="Aparteman_YesNo" />
+                                </span>
+                            </td>
+                            <td><span class="w-fixC-90">@item["SharePercent"]</span></td>
+                            <td><span class="w-fixC-100">@item["ZaribAsan"]</span></td>
+
+                            <td><span class="w-fixC-150">@item["SitTitle"]</span></td>
+                            <td><span class="w-fixC-150">@item["NameMalek"]</span></td>
+                            <td><span class="w-fixC-150">@item["NameSaken"]</span></td>
+                            <td><span class="w-fixC-90">
+                                    <img class="w-fix-75" src="@item["ShomineIcon"]" alt="Aparteman_YesNo" />
+                                </span>
+                            </td>
+                            <td><span class="w-fixC-90">@item["NqBed"]</span></td>
+                            <td><span class="w-fixC-150">@item["NumberWater"]</span></td>
+                            <td><span class="w-fixC-150">@item["NumberBarg"]</span></td>
+                            <td><span class="w-fixC-150">@item["NumBerGaz"]</span></td>
+                            <td><span class="w-fixC-75">@item["NumberPark"]</span></td>
+                            <td><span class="w-fixC-75">@item["NumberStor"]</span></td>
+                            <td><span class="w-fixC-100">@item["AreaStore"]</span></td>
+                            <td><span class="w-fixC-250">@item["Sharh"]</span></td>
+                            <td>
+                                <button type="button" class="btn_Icon Icon_Red icofont-2x icofont-delete" title="حذف واحد @item["UnitNumber"]" onclick="ClickBtnSimpl('DeleteUnitBtn', '@item["UnitId"]');"></button>
+                            </td>
+                            <td><span class="w-fixC-180 text-start"><span>@item["EditorName"]</span><span class="text_line23 ltr">@item["TimeEdit"]</span></span></td>
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+        </div>
+
+        break;
+
+}

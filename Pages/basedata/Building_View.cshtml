@@ -1,0 +1,524 @@
+﻿@model Aparteman.Pages.basedata.BuildingModel
+@using System.Data;
+@using Aparteman.Services;
+@{
+}
+@switch (@ViewData["Switch"])
+{
+    case "FormSabtComplex":
+        <section class="container p-1">
+            <div class="secondArea">
+                @if (@ViewData["ID"].ToString() == "0")
+                {
+                    <form asp-antiforgery="true" method="post" data-ajax-method="post" data-ajax="true"
+                          data-ajax-confirm="مجتمع جدید ذخیره گردد؟"
+                          data-ajax-Btn="UpdateComplexBtn"
+                          data-ajax-begin="SpinnerShowForm('چند لحظه صبر کنید');"
+                          data-ajax-url="?handler=UpdateComplex"
+                          data-ajax-complete="JsonResult"
+                          data-ajax-success="ClickBtn('RefreshComplexBtn')">
+                        <input type="hidden" name="ID" value="0" />
+                        <div class="row">
+
+                            <div class="mb-3">
+                                <div class="d-flex">
+                                    <label class="form-label">نام مجتمع</label>
+                                    <span class="ms-2 py-2 btn_IconPill Icon_Gray icofont-info-circle" onclick="ShowFastHelp(this,'نامی که مجتمع شما با آن در سیستم شناخته می‌شود.این نام در گزارش‌ها و بخش‌های مدیریتی نمایش داده خواهد شد')"></span>
+                                </div>
+                                <input type="text" class="form-control text-center" name="ComplexName" >
+                            </div>
+                            <div class="mb-3">
+                                <div class="d-flex">
+                                    <label class="form-label">آدرس</label>
+                                    <span class="ms-2 py-2 btn_IconPill Icon_Gray icofont-info-circle" onclick="ShowFastHelp(this,'آدرس مجتمع شما. در چاپ ها و مواردی که نیاز به اعلام آدرس باشد، نمایش داده خواهد شد')"></span>
+                                </div>
+                                <textarea class="form-control" name="Adress"></textarea>
+                            </div>
+
+                            <div class="col-12 col-sm-6">
+                                <div class="p-1 border-bottom border-info">
+                                    <span class="control-label">فعال است؟</span>
+                                    <img class="w-fix-75 cursor-pointer" src="/images/Btn_Yes.png" onclick="ToggelYesNo(this,'Active');" alt="Aparteman_YesNo" />
+                                    <input id="Active" hidden name="Active" value="1" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr />
+                        <div class="text-end px-3">
+                            <button type="submit" id="UpdateComplexBtn" class="btn_Icon Icon_Blue2 icofont-2x icofont-checked" title="ثبت شود"><span>ثبت شود</span></button>
+                        </div>
+
+                    </form>
+                }
+                else
+                {
+                    <form asp-antiforgery="true" method="post" data-ajax-method="post" data-ajax="true"
+                          data-ajax-confirm="مشخصات مجتمع ویرایش گردد؟"
+                          data-ajax-Btn="UpdateComplexBtn"
+                          data-ajax-begin="SpinnerShowForm('چند لحظه صبر کنید');"
+                          data-ajax-url="?handler=UpdateComplex"
+                          data-ajax-complete="JsonClose_A"
+                          data-ajax-success="ClickBtn('RefreshComplexBtn')">
+                        <input type="hidden" name="ID" value="@ViewData["ID"]" />
+                        <div class="row">
+                            <div class="mb-3">
+                                <div class="d-flex">
+                                    <label class="form-label">نام مجتمع</label>
+                                    <span class="ms-2 py-2 btn_IconPill Icon_Gray icofont-info-circle" onclick="ShowFastHelp(this,'نامی که مجتمع شما با آن در سیستم شناخته می‌شود.این نام در گزارش‌ها و بخش‌های مدیریتی نمایش داده خواهد شد')"></span>
+                                </div>
+                                <input type="text" class="form-control text-center" name="ComplexName"  value="@Model.RowData["ComplexName"]">
+                            </div>
+                            <div class="mb-3">
+                                <div class="d-flex">
+                                    <label class="form-label">آدرس</label>
+                                    <span class="ms-2 py-2 btn_IconPill Icon_Gray icofont-info-circle" onclick="ShowFastHelp(this,'آدرس مجتمع شما. در چاپ ها و مواردی که نیاز به اعلام آدرس باشد، نمایش داده خواهد شد')"></span>
+                                </div>
+                                <textarea class="form-control" name="Adress">@Model.RowData["Adress"]</textarea>
+                            </div>
+
+                            <div class="col-12 col-sm-6">
+                                <div class="p-1 border-bottom border-info">
+                                    <span class="control-label">فعال است؟</span>
+                                    @if(Model.RowData["IsActive"].ToString() == "True"){
+                                        <img class="w-fix-75 cursor-pointer" src="/images/Btn_Yes.png" onclick="ToggelYesNo(this,'Active');" alt="Aparteman_YesNo" />
+                                        <input id="Active" hidden name="Active" value="1" />
+                                    }
+                                    else{
+                                        <img class="w-fix-75 cursor-pointer" src="/images/Btn_No.png" onclick="ToggelYesNo(this,'Active');" alt="Aparteman_YesNo" />
+                                        <input id="Active" hidden name="Active" value="0" />
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr />
+                        <div class="d-flex justify-content-between px-3">
+                            <div class="flex-fill text-Panevis">
+                                <span>@Model.RowData["EditorName"]</span><span class="w-fix-150 ltr mx-3">@Model.RowData["TimeEdit"]</span>
+                            </div>
+                            <button type="submit" id="UpdateComplexBtn" class="btn_Icon Icon_Blue2 icofont-2x icofont-checked" title="ثبت شود"><span>ثبت شود</span></button>
+                        </div>
+  
+                    </form>
+                }
+            </div>
+        </section>
+        <form method="get" data-ajax-method="get" data-ajax="true"
+              data-ajax-begin="SpinnerShow('ListComplex', ' لحظه صبر کنید');"
+              data-ajax-url="?handler=RefreshComplex"
+              data-ajax-update="#ListComplex">
+            <button type="submit" id="RefreshComplexBtn" hidden></button>
+        </form>
+
+        break;
+
+
+    case "Complex":
+        @foreach (DataRow item in Model.ListComplex.Rows)
+        {
+            <div class="alert alert-primary m-2 w-max-450">
+                <h5 class="text-center p-3">
+                    <span>@item["ComplexName"]</span>
+                </h5>
+                <div>
+                    <span class="control-label">آدرس: </span>
+                    <div class="alert alert-secondary">
+                        @item["Adress"]
+                    </div>
+                </div>
+                <div class="p-2">
+                    <span class="control-label">تعداد ساختمان: </span>
+                    <div class="d-flex">
+                        <span class="control-text w-fix-100" id="BULNQ_@item["ComplexId"]">@item["NumberBuilging"]</span>
+                        <button type="button" class="BTN btn_Pill btn_Blue2 flex-fill mx-2" onclick="ClickBtnSimpl('FormSabtBuildingBtn','0','FormSabtBuildingCompId','@item["ComplexId"]','FormSabtBuildingCompName','@item["ComplexName"]');"><span>افزدون ساختمان جدید</span><span class="icofont-00x icofont-plus float-end"></span></button>
+                    </div>
+                </div>
+                <div class="p-2">
+                    <span class="control-label">وضعیت: </span>
+                    <span class="control-text">@item["Active"]</span>
+                </div>
+                <div class="p-2">
+                    <span class="control-label">تاریخ ایجاد: </span>
+                    <span class="control-text">@item["CreatedAt"]</span>
+                </div>
+                <hr />
+                <div class="d-flex justify-content-between text-Panevis">
+                    <span>@item["EditorName"]</span>
+                    <span class="ltr">@item["TimeEdit"]</span>
+                </div>
+                <div class="text-end p-2">
+                    <button type="button" class="btn_Icon Icon_Brown icofont-2x icofont-edit" onclick="ClickBtnSimpl('FormSabtComplexBtn','@item["ComplexId"]');"><span>ویرایش شود</span></button>
+                </div>
+            </div>
+        }
+        break;
+
+
+    case "FormSabtBuilding":
+        <section class="container p-1">
+            <div class="secondArea">
+                @if (@ViewData["ID"].ToString() == "0")
+                {
+                    <form asp-antiforgery="true" method="post" data-ajax-method="post" data-ajax="true"
+                          data-ajax-confirm="ساختمان جدید ذخیره گردد؟"
+                          data-ajax-Btn="UpdateBuildingBtn"
+                          data-ajax-begin="SpinnerShowForm('چند لحظه صبر کنید');"
+                          data-ajax-url="?handler=UpdateBuilding"
+                          data-ajax-complete="JsonResult"
+                          data-ajax-success="ClickBtn('RefreshBuildingBtn'); AddNumbertext('BULNQ_@ViewData["CompID"]',1)">
+                        <input type="hidden" name="ID" value="0" />
+                        <div class="row">
+                            <div class="mb-3">
+                                <span class="control-label">مجتمع</span>
+                                <span class="control-text">@ViewData["CompName"]</span>
+                                <input type="hidden" name="ComplexId" value="@ViewData["CompID"]" />
+                            </div>
+                            <div class="mb-3 row">
+                                <div class="col-6">
+                                    <div class="d-flex">
+                                        <label class="form-label">کد ساختمان</label>
+                                        <span class="ms-2 py-2 btn_IconPill Icon_Gray icofont-info-circle" onclick="ShowFastHelp(this,'کدی که هر ساختمان با آن در سیستم شناخته می‌شود.این کد در گزارش‌ها و بجای نام ساختمان استفاده میشود و در بخش‌های مدیریتی نمایش داده خواهد شد')"></span>
+                                    </div>
+                                    <input type="text" class="form-control text-center" id="BuildingCode" name="BuildingCode">
+                                </div>
+                                <div class="col-6">
+                                    <div class="p-1 border-bottom border-info">
+                                        <span class="control-label">فعال است؟</span>
+                                        <img class="w-fix-75 cursor-pointer" src="/images/Btn_Yes.png" onclick="ToggelYesNo(this,'Active');" alt="Aparteman_YesNo" />
+                                        <input id="Active" hidden name="Active" value="1" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <div class="d-flex">
+                                    <label class="form-label">نام ساختمان</label>
+                                    <span class="ms-2 py-2 btn_IconPill Icon_Gray icofont-info-circle" onclick="ShowFastHelp(this,'نامی که هر ساختمان با آن در سیستم شناخته می‌شود.این نام در گزارش‌ها و بخش‌های مدیریتی نمایش داده خواهد شد')"></span>
+                                </div>
+                                <input type="text" class="form-control text-center" id="BuildingName" name="BuildingName">
+                            </div>
+                        </div>
+
+                        <hr />
+                        <div class="text-end px-3">
+                            <button type="submit" id="UpdateBuildingBtn" class="btn_Icon Icon_Blue2 icofont-2x icofont-checked" title="ثبت شود"><span>ثبت شود</span></button>
+                        </div>
+
+                    </form>
+                }
+                else
+                {
+                    <form asp-antiforgery="true" method="post" data-ajax-method="post" data-ajax="true"
+                          data-ajax-confirm="مشخصات ساختمان ویرایش گردد؟"
+                          data-ajax-Btn="UpdateBuildingBtn"
+                          data-ajax-begin="SpinnerShowForm('چند لحظه صبر کنید');"
+                          data-ajax-url="?handler=UpdateBuilding"
+                          data-ajax-complete="JsonClose_A"
+                          data-ajax-success="ClickBtn('RefreshBuildingBtn'); AddNumbertext('BULNQ_@ViewData["CompID"]',1)">
+                        <input type="hidden" name="ID" value="@ViewData["ID"]" />
+                        <div class="row">
+                            <div class="mb-3">
+                                <span class="control-label">مجتمع</span>
+                                <span class="control-text">@Model.RowData["ComplexName"]</span>
+                                <input type="hidden" name="ComplexId" value="@Model.RowData["ComplexId"]" />
+                            </div>
+                            <div class="mb-3 row">
+                                <div class="col-6">
+                                    <div class="d-flex">
+                                        <label class="form-label">کد ساختمان</label>
+                                        <span class="ms-2 py-2 btn_IconPill Icon_Gray icofont-info-circle" onclick="ShowFastHelp(this,'کدی که هر ساختمان با آن در سیستم شناخته می‌شود.این کد در گزارش‌ها و بجای نام ساختمان استفاده میشود و در بخش‌های مدیریتی نمایش داده خواهد شد')"></span>
+                                    </div>
+                                    <input type="text" class="form-control text-center" id="BuildingCode" name="BuildingCode" value="@Model.RowData["BuildingCode"]">
+                                </div>
+                                <div class="col-6">
+                                    <div class="p-1 border-bottom border-info">
+                                        <span class="control-label">فعال است؟</span>
+                                        @if (@Model.RowData["IsActive"].ToString() == "True")
+                                        {
+                                            <img class="w-fix-75 cursor-pointer" src="/images/Btn_Yes.png" onclick="ToggelYesNo(this,'Active');" alt="Aparteman_YesNo" />
+                                            <input id="Active" hidden name="Active" value="1" />
+                                        }
+                                        else
+                                        {
+                                            <img class="w-fix-75 cursor-pointer" src="/images/Btn_No.png" onclick="ToggelYesNo(this,'Active');" alt="Aparteman_YesNo" />
+                                            <input id="Active" hidden name="Active" value="0" />
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <div class="d-flex">
+                                    <label class="form-label">نام ساختمان</label>
+                                    <span class="ms-2 py-2 btn_IconPill Icon_Gray icofont-info-circle" onclick="ShowFastHelp(this,'نامی که هر ساختمان با آن در سیستم شناخته می‌شود.این نام در گزارش‌ها و بخش‌های مدیریتی نمایش داده خواهد شد')"></span>
+                                </div>
+                                <input type="text" class="form-control text-center" id="BuildingName" name="BuildingName" value="@Model.RowData["BuildingName"]">
+                            </div>
+
+                        </div>
+
+                        <hr />
+                        <div class="d-flex justify-content-between px-3">
+                            <div class="flex-fill text-Panevis">
+                                <span>@Model.RowData["EditorName"]</span><span class="w-fix-150 ltr mx-3">@Model.RowData["TimeEdit"]</span>
+                            </div>
+                            <button type="submit" id="UpdateBuildingBtn" class="btn_Icon Icon_Blue2 icofont-2x icofont-checked" title="ثبت شود"><span>ثبت شود</span></button>
+                        </div>
+
+                    </form>
+                }
+            </div>
+        </section>
+        <form method="get" data-ajax-method="get" data-ajax="true"
+              data-ajax-begin="SpinnerShow('ListBuildings', ' لحظه صبر کنید');"
+              data-ajax-url="?handler=RefreshBuilding"
+              data-ajax-update="#ListBuildings">
+            <button type="submit" id="RefreshBuildingBtn" hidden></button>
+        </form>
+
+        break;
+
+
+    case "Building":
+        @foreach (DataRow item in Model.ListBuilding.Rows)
+        {
+            <div class="alert alert-primary m-2 w-max-450">
+                <h5 class="text-center p-3 text-Panevis font-32">
+                    <span>@item["ComplexName"]</span>
+                </h5>
+                <h5 class="text-center p-1">
+                    <span>@item["BuildingName"]</span>
+                </h5>
+                <div class="p-1">
+                    <span class="control-label">کد: </span>
+                    <span class="control-text">@item["BuildingCode"]</span>
+                </div>
+                <div class="p-1">
+                    <span class="control-label">تعداد طبقه: </span>
+                    <div class="d-flex">
+                        <span class="control-text w-fix-100" id="FLONQ_@item["BuildingId"]">@item["NumberOfFloors"]</span>
+                        <button type="button" class="BTN btn_Pill btn_Blue2 flex-fill mx-2" onclick="ClickBtnSimpl('FormSabtFloorBtn','0','FormSabtFloorBuilId','@item["BuildingId"]','FormSabtFloorBuilName','@item["BuildingName"]');"><span>افزدون طبقه جدید</span><span class="icofont-00x icofont-plus float-end"></span></button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6 p-1">
+                        <span class="control-label">تعداد واحد: </span>
+                        <span class="control-text">@item["NumberOfUnits"]</span>
+                    </div>
+                    <div class="col-6 p-1">
+                        <span class="control-label">وضعیت: </span>
+                        <span class="control-text">@item["Active"]</span>
+                    </div>
+                </div>
+                <hr />
+                <div class="d-flex justify-content-between text-Panevis">
+                    <span>@item["EditorName"]</span>
+                    <span class="ltr">@item["TimeEdit"]</span>
+                </div>
+                <div class="text-end p-2">
+                    <button type="button" class="btn_Icon Icon_Brown icofont-2x icofont-edit" onclick="ClickBtnSimpl('FormSabtBuildingBtn','@item["BuildingId"]');"><span>ویرایش شود</span></button>
+                </div>
+            </div>
+        }
+        break;
+
+
+    case "FormSabtFloor":
+        <section class="container p-1">
+            <div class="secondArea">
+                @if (ViewData["ID"].ToString() == "0")
+                {
+                    <form asp-antiforgery="true" method="post" data-ajax-method="post" data-ajax="true"
+                          data-ajax-confirm="طبقه جدید در ساختمان ذخیره گردد؟"
+                          data-ajax-Btn="UpdateFloorBtn"
+                          data-ajax-begin="SpinnerShowForm('چند لحظه صبر کنید');"
+                          data-ajax-url="?handler=UpdateFloor"
+                          data-ajax-complete="JsonResult"
+                          data-ajax-success="ClickBtn('RefreshFloorBtn'); AddNumbertext('FLONQ_@ViewData["BuildID"]',1)">
+                        <input type="hidden" name="ID" value="0" />
+                        <div class="row">
+                            <div class="mb-3">
+                                <span class="control-label">ساختمان</span>
+                                <span class="control-text">@ViewData["BuildName"]</span>
+                                <input type="hidden" name="BuildingId" value="@ViewData["BuildID"]" />
+                            </div>
+                            <div class="mb-3 row">
+                                <div class="col-6">
+                                    <div class="d-flex">
+                                        <label class="form-label">شماره طبقه</label>
+                                        <span class="ms-2 py-2 btn_IconPill Icon_Gray icofont-info-circle" onclick="ShowFastHelp(this,'شماره ای که به هر طبقه در ساختمان تخصیص میدهید.این شماره در گزارش‌ها و بجای نام طبقه استفاده میشود و در بخش‌های مدیریتی نمایش داده خواهد شد')"></span>
+                                    </div>
+                                    <input type="text" class="form-control text-center ltr" id="FloorNumber" name="FloorNumber">
+                                </div>
+                                <div class="col-6">
+                                    <div class="p-1 border-bottom border-info">
+                                        <span class="control-label">فعال است؟</span>
+                                        <img class="w-fix-75 cursor-pointer" src="/images/Btn_Yes.png" onclick="ToggelYesNo(this,'Active');" alt="Aparteman_YesNo" />
+                                        <input id="Active" hidden name="Active" value="1" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <div class="d-flex">
+                                    <label class="form-label">عنوان طبقه</label>
+                                    <span class="ms-2 py-2 btn_IconPill Icon_Gray icofont-info-circle" onclick="ShowFastHelp(this,'عنوانی که به هر  طبقه در ساختمان میدهید. مثلا طبقه همکف یا طبقه سوم و با آن نام در سیستم شناخته می‌شود.این نام در گزارش‌ها و بخش‌های مدیریتی نمایش داده خواهد شد')"></span>
+                                </div>
+                                <input type="text" class="form-control text-center" name="FloorTitle">
+                            </div>
+                        </div>
+
+                        <hr />
+                        <div class="text-end px-3">
+                            <button type="submit" id="UpdateFloorBtn" class="btn_Icon Icon_Blue2 icofont-2x icofont-checked" title="ثبت شود"><span>ثبت شود</span></button>
+                        </div>
+
+                    </form>
+                }
+                else
+                {
+                    <form asp-antiforgery="true" method="post" data-ajax-method="post" data-ajax="true"
+                          data-ajax-confirm="مشخصات طبقه ویرایش گردد؟"
+                          data-ajax-Btn="UpdateFloorBtn"
+                          data-ajax-begin="SpinnerShowForm('چند لحظه صبر کنید');"
+                          data-ajax-url="?handler=UpdateFloor"
+                          data-ajax-complete="JsonClose_A"
+                          data-ajax-success="ClickBtn('RefreshFloorBtn'); AddNumbertext('FLONQ_@Model.RowData["BuildingId"]',1)">
+                        <input type="hidden" name="ID" value="@ViewData["ID"]" />
+                        <div class="row">
+                            <div class="mb-3">
+                                <span class="control-label">ساختمان</span>
+                                <span class="control-text">@Model.RowData["BuildingName"]</span>
+                                <input type="hidden" name="BuildingId" value="@Model.RowData["BuildingId"]" />
+                            </div>
+                            <div class="mb-3 row">
+                                <div class="col-6">
+                                    <div class="d-flex">
+                                        <label class="form-label">شماره طبقه</label>
+                                        <span class="ms-2 py-2 btn_IconPill Icon_Gray icofont-info-circle" onclick="ShowFastHelp(this,'شماره ای که به هر طبقه در ساختمان تخصیص میدهید.این شماره در گزارش‌ها و بجای نام طبقه استفاده میشود و در بخش‌های مدیریتی نمایش داده خواهد شد')"></span>
+                                    </div>
+                                    <input type="text" class="form-control text-center ltr" id="FloorNumber" name="FloorNumber" value="@Model.RowData["FloorNumber"]">
+                                </div>
+                                <div class="col-6">
+                                    <div class="p-1 border-bottom border-info">
+                                        <span class="control-label">فعال است؟</span>
+                                        @if (@Model.RowData["IsActive"].ToString() == "True")
+                                        {
+                                            <img class="w-fix-75 cursor-pointer" src="/images/Btn_Yes.png" onclick="ToggelYesNo(this,'Active');" alt="Aparteman_YesNo" />
+                                            <input id="Active" hidden name="Active" value="1" />
+                                        }
+                                        else
+                                        {
+                                            <img class="w-fix-75 cursor-pointer" src="/images/Btn_No.png" onclick="ToggelYesNo(this,'Active');" alt="Aparteman_YesNo" />
+                                            <input id="Active" hidden name="Active" value="0" />
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <div class="d-flex">
+                                    <label class="form-label">عنوان طبقه</label>
+                                    <span class="ms-2 py-2 btn_IconPill Icon_Gray icofont-info-circle" onclick="ShowFastHelp(this,'عنوانی که به هر  طبقه در ساختمان میدهید. مثلا طبقه همکف یا طبقه سوم و با آن نام در سیستم شناخته می‌شود.این نام در گزارش‌ها و بخش‌های مدیریتی نمایش داده خواهد شد')"></span>
+                                </div>
+                                <input type="text" class="form-control text-center" name="FloorTitle" value="@Model.RowData["FloorTitle"]">
+                            </div>
+                        </div>
+
+
+                        <hr />
+                        <div class="d-flex justify-content-between px-3">
+                            <div class="flex-fill text-Panevis">
+                                <span>@Model.RowData["EditorName"]</span><span class="w-fix-150 ltr mx-3">@Model.RowData["TimeEdit"]</span>
+                            </div>
+                            <button type="submit" id="UpdateFloorBtn" class="btn_Icon Icon_Blue2 icofont-2x icofont-checked" title="ثبت شود"><span>ثبت شود</span></button>
+                        </div>
+
+                    </form>
+                }
+            </div>
+        </section>
+        <form method="get" data-ajax-method="get" data-ajax="true"
+              data-ajax-begin="SpinnerShow('ListFloor', ' لحظه صبر کنید');"
+              data-ajax-url="?handler=RefreshFloor"
+              data-ajax-update="#ListFloor">
+            <button type="submit" id="RefreshFloorBtn" hidden></button>
+        </form>
+
+        break;
+
+
+    case "Floor":
+        <div class="d-flex flex-wrap justify-content-between border-top border-secondary">
+            <div class="Area_Count w-fix-200">
+                <span>تعداد : </span><span>@Model.ListFloor.Rows.Count </span>
+            </div>
+        </div>
+
+
+        <div class="header_Table">
+            <button type="button" class="btn_Icon footer_Right Icon_Red icofont-00x icofont-curved-double-right" title="اسکرول به راست" onclick="ScrollRight('ListFloor_FT');"></button>
+            <button type="button" class="btn_Icon footer_Left Icon_Red icofont-00x icofont-curved-double-left" title="اسکرول به چپ" onclick="ScrollLeft('ListFloor_FT');"></button>
+            <div id="ListFloor_FT" class="overflow-hidden" onscroll="ScrollSlave(this, 'ListFloor_MS');">
+                <table class="table grid-table">
+                    <thead>
+                        <tr>
+                            <th><span>#</span></th>
+                            <th><span class="w-fix-200">مجتمع</span></th>
+                            <th><span class="w-fix-100">کد ساختمان</span></th>
+                            <th><span class="w-fix-200">نام ساختمان</span></th>
+                            <th><span class="w-fix-100">شماره طبقه</span></th>
+                            <th><span class="w-fix-150">عنوان طبقه</span></th>
+                            <th><span class="w-fix-100">وضعیت</span></th>
+                            <th><span class="w-fix-50">ویرایش</span></th>
+                            <th><span class="w-fix-50">حذف</span></th>
+                            <th><span class="w-fix-180"><span>ویرایشگر</span> / <span>زمان</span></span></th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+        <div class="overflow-auto" id="ListFloor_MS" onscroll="ScrollSlave(this, 'ListFloor_FT');">
+            <table class="table grid-table">
+                <thead class="header_Tablehiden">
+                    <tr>
+                        <th><span>#</span></th>
+                        <th><span class="w-fix-200">مجتمع</span></th>
+                        <th><span class="w-fix-100">کد ساختمان</span></th>
+                        <th><span class="w-fix-200">نام ساختمان</span></th>
+                        <th><span class="w-fix-100">شماره طبقه</span></th>
+                        <th><span class="w-fix-150">عنوان طبقه</span></th>
+                        <th><span class="w-fix-100">وضعیت</span></th>
+                        <th><span class="w-fix-50">ویرایش</span></th>
+                        <th><span class="w-fix-50">حذف</span></th>
+                        <th><span class="w-fix-180"><span>ویرایشگر</span> / <span>زمان</span></span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        var RJ = 0;
+                    }
+                    @foreach (DataRow item in Model.ListFloor.Rows)
+                    {
+                        { RJ++; }
+                        <tr onclick="RowSelect(this);">
+                            <td class="text-danger">@RJ</td>
+                            <td><span class="w-fixC-200">@item["ComplexName"]</span></td>
+                            <td><span class="w-fixC-100">@item["BuildingCode"]</span></td>
+                            <td><span class="w-fixC-200">@item["BuildingName"]</span></td>
+                            <td><span class="w-fixC-100 ltr">@item["FloorNumber"]</span></td>
+                            <td><span class="w-fixC-150">@item["FloorTitle"]</span></td>
+                            <td><span class="w-fixC-100">@item["Active"]</span></td>
+                            <td>
+                                <button type="button" class="btn_Icon Icon_Mor icofont-2x icofont-edit" title="ویرایش" onclick="ClickBtnSimpl('FormSabtFloorBtn', '@item["FloorId"]');"></button>
+                            </td>
+                            <td>
+                                <button type="button" class="btn_Icon Icon_Red icofont-2x icofont-delete" title="حذف" onclick="ClickBtnSimpl('DeleteFloorBtn', '@item["FloorId"]');"></button>
+                            </td>
+                            <td><span class="w-fixC-180 text-start"><span>@item["EditorName"]</span><span class="text_line23 ltr">@item["TimeEdit"]</span></span></td>
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+        </div>
+        break;
+
+}

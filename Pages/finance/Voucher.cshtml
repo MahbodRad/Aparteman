@@ -1,0 +1,683 @@
+﻿@page
+@model Aparteman.Pages.finance.VoucherModel
+@using System.Data;
+@using System.Web
+@{
+    DataRow pagesitem;
+}
+<div class="tab-content">
+
+    <!-- ✅ داشبورد -->
+    <div class="tab-pane fade active show" id="tab_A">
+        @{
+            pagesitem = Model.formData.Pages.Select("RJ = 1").First();
+        }
+        <div class="OnvanSafhe">
+            <h6 class="shadow">@pagesitem["OnvanPage"]</h6>
+        </div>
+
+        @if (!string.IsNullOrEmpty(pagesitem["HeaderPage"].ToString()))
+        {
+            <div class="alert alert-secondary">
+                @Html.Raw(HttpUtility.HtmlDecode(pagesitem["HeaderPage"].ToString()))
+            </div>
+        }
+        <h3>در اینجا داشبوردی از آیتمهای شارژ و وضعیت شان نمایش داده میشود</h3>
+    </div>
+
+
+    <!-- ✅ اسناد حسابداری -->
+    <div class="tab-pane fade" id="tab_B">
+        @{
+            pagesitem = Model.formData.Pages.Select("RJ = 2").First();
+        }
+        <div class="OnvanSafhe">
+            <h6 class="shadow">@pagesitem["OnvanPage"]</h6>
+        </div>
+
+        @if (!string.IsNullOrEmpty(pagesitem["HeaderPage"].ToString()))
+        {
+            <div class="alert alert-secondary">
+                @Html.Raw(HttpUtility.HtmlDecode(pagesitem["HeaderPage"].ToString()))
+            </div>
+        }
+
+        <div class="container">
+
+            <div class="text-end">
+                <form method="get" data-ajax="true" data-ajax-method="get"
+                      data-ajax-begin="MsgFormSpinner('A','ثبت سند حسابداری', 'چند لحظه صبر کنید');"
+                      data-ajax-url="?handler=FormSabtVoucher"
+                      data-ajax-update="#MsgFormMATN_A">
+                    <input type="submit" hidden id="FormSabtVoucherBtn" name="ID" />
+                    <div class="px-2 text-end">
+                        <button type="button" class="BTN btn_Pill btn_Blue2" onclick="ClickBtnSimpl('FormSabtVoucherBtn','0');"><span>ثبت سند جدید</span><i class="icofont-00x icofont-plus"></i></button>
+                    </div>
+                </form>
+            </div>
+
+
+            <div class="filterArea">
+                <form asp-antiforgery="true" method="get" data-ajax-method="get" data-ajax="true"
+                      data-ajax-begin="SpinnerShow('RepListVouchers', 'در حال بارگذاری لیست آیتمهای شارژ');"
+                      data-ajax-url="?handler=RepListVouchers"
+                      data-ajax-update="#RepListVouchers">
+
+                    <div class="row">
+                        <div class="col-6 col-sm-2">
+                            <span class="control-label">شرح سند</span>
+                            <input class="control-text" name="ItemTitle" value="" />
+                        </div>
+                        <div class="col-6 col-sm-2">
+                            <span class="control-label">نوع سند</span>
+                            <select class="control-input" name="MethodCode">
+                                <option value="0">همه</option>
+                                <option value="1">براساس متراژ</option>
+                                <option value="2">تعداد نفرات </option>
+                                <option value="3">مساوی</option>
+                                <option value="4">مصرف</option>
+                            </select>
+                        </div>
+                        <div class="col-6 col-sm-2">
+                            <span class="control-label">طرف حساب</span>
+                            <input class="control-text" name="AccountTitle" value="" />
+                        </div>
+
+                        <div class="col-6 col-sm-2">
+                            <span class="control-label">پرداخت کننده</span>
+                            <select class="control-input" name="PayerCode">
+                                <option value="0">همه</option>
+                                <option value="1">ساکن است</option>
+                                <option value="2">مالک است</option>
+                            </select>
+                        </div>
+                        <div class="col-6 col-sm-2">
+                            <span class="control-label">وضعیت</span>
+                            <select class="control-input" name="IsActive">
+                                <option value="2">همه</option>
+                                <option value="1">فعال است</option>
+                                <option value="0">غیرفعال است</option>
+                            </select>
+                        </div>
+                        <div class="col-6 col-sm-2">
+                            <span class="control-label">مرتب سازی</span>
+                            <select class="control-input" name="Sort">
+                                <option value="A">عنوان</option>
+                                <option value="B">روش تقسیم</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="p-3 text-end">
+                        <button type="submit" id="RepListVouchersBtn" class="BTN btn_Pill btn_Blue2"><span>جستجوی سندها</span><i class="icofont-2x icofont-search-2"></i></button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+
+        <div class="container-fluid">
+            <div class="mt-3" id="RepListVouchers">
+                <div class="alert alert-info w-max-400 mx-auto cursor-pointer" onclick="ClickBtn('RepListVouchersBtn')">
+                    <i class="icofont-search-2" style="font-size:40px;"></i>
+                    <h6 class="mt-3">هنوز جستجویی انجام نشده</h6>
+                    <p class="text-muted">برای مشاهده 1000 سند اخیر کلیک کنید، و یا از فیلترهای بالا استفاده کنید</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ✅ ثبت هزینه -->
+    <div class="tab-pane fade" id="tab_C">
+        @{
+            pagesitem = Model.formData.Pages.Select("RJ = 3").First();
+        }
+        <div class="OnvanSafhe">
+            <h6 class="shadow">@pagesitem["OnvanPage"]</h6>
+        </div>
+
+        @if (!string.IsNullOrEmpty(pagesitem["HeaderPage"].ToString()))
+        {
+            <div class="alert alert-secondary">
+                @Html.Raw(HttpUtility.HtmlDecode(pagesitem["HeaderPage"].ToString()))
+            </div>
+        }
+
+        <div class="container">
+
+            <form method="get" data-ajax="true" data-ajax-method="get"
+                    data-ajax-begin="MsgFormSpinner('A','ثبت هزینه', 'چند لحظه صبر کنید');"
+                    data-ajax-url="?handler=FormSabtCost"
+                    data-ajax-update="#MsgFormMATN_A">
+                <input type="submit" hidden id="FormSabttCostBtn" name="ID" />
+                <div class="px-2 text-end">
+                    <button type="button" class="BTN btn_Pill btn_Blue2" onclick="ClickBtnSimpl('FormSabttCostBtn','0');"><span>ثبت هزینه جدید</span><i class="icofont-00x icofont-plus"></i></button>
+                </div>
+            </form>
+
+
+            <div class="filterArea">
+
+                <form asp-antiforgery="true" method="get" data-ajax-method="get" data-ajax="true"
+                      data-ajax-begin="SpinnerShow('RepListCost', 'در حال بارگذاری لیست هزینه ها');"
+                      data-ajax-url="?handler=RepListCost"
+                      data-ajax-update="#RepListCost">
+                    <div class="p-1">
+                        <div id="AreaBtn">
+                            <button type="button" class="BTN btn_Pill btn_Firuze m-2 w-min-75" onclick="Btn_Select(this, 'AreaBtn'); FastReportAjax('TD', 'BtnRepCost', 'CST', 'CST_LimitDate');">امروز</button>
+                            <button type="button" class="BTN btn_Pill btn_Firuze m-2 w-min-75" onclick="Btn_Select(this, 'AreaBtn'); FastReportAjax('1W', 'BtnRepCost', 'CST', 'CST_LimitDate');">هفته</button>
+                            <button type="button" class="BTN btn_Pill btn_Firuze m-2 w-min-75" onclick="Btn_Select(this, 'AreaBtn'); FastReportAjax('2W', 'BtnRepCost', 'CST', 'CST_LimitDate');">دوهفته</button>
+                            <button type="button" class="BTN btn_Pill btn_Firuze m-2 w-min-75" onclick="Btn_Select(this, 'AreaBtn'); FastReportAjax('1M', 'BtnRepCost', 'CST', 'CST_LimitDate');">یک ماه</button>
+                            <button type="button" class="BTN btn_Pill btn_Firuze m-2 w-min-75" onclick="Btn_Select(this, 'AreaBtn'); FastReportAjax('3M', 'BtnRepCost', 'CST', 'CST_LimitDate');">سه ماه</button>
+                            <button type="button" class="BTN btn_Pill btn_Firuze m-2 w-min-75" onclick="Btn_Select(this, 'AreaBtn'); FastReportAjax('TM', 'BtnRepCost', 'CST', 'CST_LimitDate');">ماه جاری</button>
+                            <button type="button" class="BTN btn_Top btn_Light m-2 w-min-75" onclick="Btn_Select(this, 'AreaBtn'); AreaToggel('ReportSazCost');">گزارش ساز <span class="text-primary icofont-00x icofont-cubes"></span></button>
+                        </div>
+                        <div id="ReportSazCost" class="alert alert-info rounded p-3 dis-none border shadow">
+                            <div class="row">
+                                <div class="col-12 col-sm-3">
+                                    <div class="w-fix-180 mx-1">
+                                        <span class="control-label">محدوده تاریخ</span>
+                                        <select class="control-input" id="CST_LimitDate" onchange="LimitDateAjax(this,'CST');">
+                                            <option value="0" selected>انتخاب شود</option>
+                                            <option value="TD">امروز</option>
+                                            <option value="1W">یک هفته</option>
+                                            <option value="2W">دو هفته</option>
+                                            <option value="1M">یک ماه</option>
+                                            <option value="TM">ماه جاری</option>
+                                            <option value="LM">ماه قبل</option>
+                                            <option value="3M">سه ماه</option>
+                                            <option value="6M">شش ماه</option>
+                                            <option value="1Y">یکسال</option>
+                                            <option value="TY">امسال</option>
+                                            <option value="LY">پارسال</option>
+                                        </select>
+
+                                        <div id="waitLimitDateCST"></div>
+
+                                        <span class="control-label">از تاریخ</span>
+                                        <div class="control-Date">
+                                            <input placeholder="از تاریخ" id="FromDateCST" name="FromDate" maxlength="10" readonly class="usage control-input-plaintext" value="@ViewData["Today"]" />
+                                        </div>
+                                        <span class="control-label">تا تاریخ</span>
+                                        <div class="control-Date">
+                                            <input placeholder="از تاریخ" id="ToDateCST" name="ToDate" maxlength="10" readonly class="usage control-input-plaintext" value="@ViewData["Today"]" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-sm-3">
+                                    <span class="control-label">نوع هزینه</span>
+                                    <select class="control-input" name="ItemId" onchange="DissectionItemRep(this)">
+                                        <option value="0" data-Sharh="" data-Methode="" data-Payer="">انتخاب کنید</option>
+                                        @foreach (DataRow item in Model.ListItems.Rows)
+                                        {
+                                            <option value="@item["ItemId"]" data-Sharh="@item["Sharh"]" data-Methode="@item["MethodTitle"]" data-Payer="@item["PayerTitle"]">@item["ItemTitle"]</option>
+                                        }
+                                    </select>
+                                    <div class="text-start">
+                                        <div>
+                                            <span class="text-secondary font-14">روش تقسیم هزینه:</span> <span id="ItemMethodRep"></span>
+                                        </div>
+                                        <div>
+                                            <span class="text-secondary font-14">پرداخت کننده: </span><span id="ItemPayerRep"></span>
+                                        </div>
+                                        <div>
+                                            <span class="text-secondary font-14">شرح: </span><span id="ItemSharhRep"></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-sm-6">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <span class="control-label">نوع روش تقسیم</span>
+                                            <select class="control-input" name="MethodCode">
+                                                <option value="0">همه</option>
+                                                <option value="1">براساس متراژ</option>
+                                                <option value="2">تعداد نفرات </option>
+                                                <option value="3">مساوی</option>
+                                                <option value="4">مصرف</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="col-6">
+                                            <span class="control-label">شرح</span>
+                                            <input class="control-input" name="Sharh" value="" />
+                                        </div>
+                                        <div class="col-6">
+                                            <span class="control-label">پرداخت کننده</span>
+                                            <select class="control-input" name="PayerCode">
+                                                <option value="0">همه</option>
+                                                <option value="1">ساکن است</option>
+                                                <option value="2">مالک است</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-6">
+                                            <span class="control-label">مرتب سازی</span>
+                                            <select class="control-input" name="Sort">
+                                                <option value="A">تاریخ</option>
+                                                <option value="B">تاریخ کاهشی</option>
+                                                <option value="C">عنوان</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="p-3 text-end">
+                                                <button type="submit" id="BtnRepCost" class="BTN btn_Pill btn_Blue2" onclick="AreaUp('ReportSazCoost')"><span>جستجوی سندهای هزینه</span><i class="icofont-2x icofont-search-2"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </form>
+
+            </div>
+
+        </div>
+
+        <div class="container-fluid">
+            <div class="mt-3" id="RepListCost">
+                <div class="alert alert-info w-max-400 mx-auto cursor-pointer" onclick="FastReportAjax('1M', 'BtnRepCost', 'CST', 'CST_LimitDate');">
+                    <i class="icofont-search-2" style="font-size:40px;"></i>
+                    <h6 class="mt-3">هنوز جستجویی انجام نشده</h6>
+                    <p class="text-muted">برای مشاهده هزینه های یک ماه اخیر کلیک کنید، و یا از فیلترهای بالا استفاده کنید</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- ✅ ثبت دریافت -->
+    <div class="tab-pane fade" id="tab_D">
+        @{
+            pagesitem = Model.formData.Pages.Select("RJ = 4").First();
+        }
+        <div class="OnvanSafhe">
+            <h6 class="shadow">@pagesitem["OnvanPage"]</h6>
+        </div>
+
+        @if (!string.IsNullOrEmpty(pagesitem["HeaderPage"].ToString()))
+        {
+            <div class="alert alert-secondary">
+                @Html.Raw(HttpUtility.HtmlDecode(pagesitem["HeaderPage"].ToString()))
+            </div>
+        }
+
+        <div class="container">
+
+            <form method="get" data-ajax="true" data-ajax-method="get"
+                  data-ajax-begin="MsgFormSpinner('A','ثبت دریافت', 'چند لحظه صبر کنید');"
+                  data-ajax-url="?handler=FormSabtDaryaft"
+                  data-ajax-update="#MsgFormMATN_A">
+                <input type="submit" hidden id="FormSabttDaryaftBtn" name="ID" />
+                <div class="px-2 text-end">
+                    <button type="button" class="BTN btn_Pill btn_Blue2" onclick="ClickBtnSimpl('FormSabttDaryaftBtn','0');"><span>ثبت دریافت جدید</span><i class="icofont-00x icofont-plus"></i></button>
+                </div>
+            </form>
+
+
+            <div class="filterArea">
+
+                <form asp-antiforgery="true" method="get" data-ajax-method="get" data-ajax="true"
+                      data-ajax-begin="SpinnerShow('RepListDaryaft', 'در حال بارگذاری لیست دریافت ها');"
+                      data-ajax-url="?handler=RepListDaryaft"
+                      data-ajax-update="#RepListDaryaft">
+                    <div class="p-1">
+                        <div id="AreaBtnDaryaft">
+                            <button type="button" class="BTN btn_Pill btn_Firuze m-2 w-min-75" onclick="Btn_Select(this, 'AreaBtnDaryaft'); FastReportAjax('TD', 'BtnRepDaryaft', 'DRF', 'DRF_LimitDate');">امروز</button>
+                            <button type="button" class="BTN btn_Pill btn_Firuze m-2 w-min-75" onclick="Btn_Select(this, 'AreaBtnDaryaft'); FastReportAjax('1W', 'BtnRepDaryaft', 'DRF', 'DRF_LimitDate');">هفته</button>
+                            <button type="button" class="BTN btn_Pill btn_Firuze m-2 w-min-75" onclick="Btn_Select(this, 'AreaBtnDaryaft'); FastReportAjax('2W', 'BtnRepDaryaft', 'DRF', 'DRF_LimitDate');">دوهفته</button>
+                            <button type="button" class="BTN btn_Pill btn_Firuze m-2 w-min-75" onclick="Btn_Select(this, 'AreaBtnDaryaft'); FastReportAjax('1M', 'BtnRepDaryaft', 'DRF', 'DRF_LimitDate');">یک ماه</button>
+                            <button type="button" class="BTN btn_Pill btn_Firuze m-2 w-min-75" onclick="Btn_Select(this, 'AreaBtnDaryaft'); FastReportAjax('3M', 'BtnRepDaryaft', 'DRF', 'DRF_LimitDate');">سه ماه</button>
+                            <button type="button" class="BTN btn_Pill btn_Firuze m-2 w-min-75" onclick="Btn_Select(this, 'AreaBtnDaryaft'); FastReportAjax('TM', 'BtnRepDaryaft', 'DRF', 'DRF_LimitDate');">ماه جاری</button>
+                            <button type="button" class="BTN btn_Top btn_Light m-2 w-min-75" onclick="Btn_Select(this, 'AreaBtnDaryaft'); AreaToggel('ReportSazDaryaft');">گزارش ساز <span class="text-primary icofont-00x icofont-cubes"></span></button>
+                        </div>
+                        <div id="ReportSazDaryaft" class="alert alert-info rounded p-3 dis-none border shadow">
+                            <div class="row">
+                                <div class="col-12 col-sm-3">
+                                    <div class="w-fix-180 mx-1">
+                                        <span class="control-label">محدوده تاریخ</span>
+                                        <select class="control-input" id="DRF_LimitDate" onchange="LimitDateAjax(this,'DRF');">
+                                            <option value="0" selected>انتخاب شود</option>
+                                            <option value="TD">امروز</option>
+                                            <option value="1W">یک هفته</option>
+                                            <option value="2W">دو هفته</option>
+                                            <option value="1M">یک ماه</option>
+                                            <option value="TM">ماه جاری</option>
+                                            <option value="LM">ماه قبل</option>
+                                            <option value="3M">سه ماه</option>
+                                            <option value="6M">شش ماه</option>
+                                            <option value="1Y">یکسال</option>
+                                            <option value="TY">امسال</option>
+                                            <option value="LY">پارسال</option>
+                                        </select>
+
+                                        <div id="waitLimitDateDRF"></div>
+
+                                        <span class="control-label">از تاریخ</span>
+                                        <div class="control-Date">
+                                            <input placeholder="از تاریخ" id="FromDateDRF" name="FromDate" maxlength="10" readonly class="usage control-input-plaintext" value="@ViewData["Today"]" />
+                                        </div>
+                                        <span class="control-label">تا تاریخ</span>
+                                        <div class="control-Date">
+                                            <input placeholder="از تاریخ" id="ToDateDRF" name="ToDate" maxlength="10" readonly class="usage control-input-plaintext" value="@ViewData["Today"]" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-sm-9">
+                                    <div class="row">
+                                        <div class="col-12 col-sm-4">
+                                            <span class="control-label">حساب / </span>
+                                            <select class="control-input" name="AccountId" onchange="ShowTafziliRep(this)">
+                                                <option value="0" data-Detail="4">همه حساب ها</option>
+                                                @foreach (DataRow item in Model.ListAccount.Rows)
+                                                {
+                                                   <option value="@item["AccountId"]" data-Detail="@item["DetailCode"]">@item["AccountCode"] -> @item["AccountTitle"]</option>
+                                                }
+                                            </select>
+                                            <div id="tafziliRepArea" class="dis-none">
+                                                <div id="tafziliRep_1" class="dis-none">
+                                                    <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'شخصی که از او این مبلغ را دریافت کرده اید انتخاب کنید. برای اینکار ابتدا با فیلتر گذاری در زیر منوکشی اشخاص را پر کنید. سپس از منو کشویی شخص مورد نظر را انتخاب کنید .')">انتخاب شخص</label>
+                                                </div>
+                                                <div id="tafziliRep_2" class="dis-none">
+                                                    <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'واحدی که از او این مبلغ را دریافت کرده اید انتخاب کنید. برای اینکار ابتدا با فیلتر گذاری در زیر منوکشی واحدها را پر کنید. سپس از منو کشویی واحد مورد نظر را انتخاب کنید .')">انتخاب واحد</label>
+                                                </div>
+                                                <div id="tafziliRep_3" class="dis-none">
+                                                    <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'قرادادی که طبق آن این مبلغ را دریافت کرده اید انتخاب کنید. برای اینکار ابتدا با فیلتر گذاری در زیر منوکشی قراردادها را پر کنید. سپس از منو کشویی قرارداد مورد نظر را انتخاب کنید .')">انتخاب قرارداد</label>
+                                                </div>
+                                                <div class="d-flex">
+                                                    <input type="text" Id="filterTafziliRep" class="control-input text-center" value="" />
+                                                    <button type="button" class="btn_Icon Icon_Blue icofont-2x icofont-search" onclick="ClickBtnValue('ListFindTafziliRepBtn','filterTafziliRep')"></button>
+                                                </div>
+                                                <select class="control-input" id="ListFindTafziliRep" name="TafziliId">
+                                                    <option value="0">در محدوده بالا جستجو کنید</option>
+                                                </select>
+
+                                            </div>
+
+                                        </div>
+                                        <div class="col-12 col-sm-4">
+                                            <span class="control-label">مرتب سازی</span>
+                                            <select class="control-input" name="Sort">
+                                                <option value="A">تاریخ</option>
+                                                <option value="B">تاریخ کاهشی</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-12 col-sm-4">
+                                            <span class="control-label">شرح</span>
+                                            <input class="control-input" name="Sharh" value="" />
+                                        </div>
+                                    </div>
+
+                                    <div class="pt-4 text-end">
+                                        <button type="submit" id="BtnRepDaryaft" class="BTN btn_Pill btn_Blue2" onclick="AreaUp('ReportSazDaryaft')"><span>جستجوی سندهای دریافت</span><i class="icofont-2x icofont-search-2"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </form>
+
+            </div>
+
+        </div>
+
+        <div class="container-fluid">
+            <div class="mt-3" id="RepListDaryaft">
+                <div class="alert alert-info w-max-400 mx-auto cursor-pointer" onclick="FastReportAjax('1M', 'BtnRepDaryaft', 'DRF', 'DRF_LimitDate');">
+                    <i class="icofont-search-2" style="font-size:40px;"></i>
+                    <h6 class="mt-3">هنوز جستجویی انجام نشده</h6>
+                    <p class="text-muted">برای مشاهده دریافت های یک ماه اخیر کلیک کنید، و یا از فیلترهای بالا استفاده کنید</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- ✅ ثبت پرداخت -->
+    <div class="tab-pane fade" id="tab_E">
+        @{
+            pagesitem = Model.formData.Pages.Select("RJ = 5").First();
+        }
+        <div class="OnvanSafhe">
+            <h6 class="shadow">@pagesitem["OnvanPage"]</h6>
+        </div>
+
+        @if (!string.IsNullOrEmpty(pagesitem["HeaderPage"].ToString()))
+        {
+            <div class="alert alert-secondary">
+                @Html.Raw(HttpUtility.HtmlDecode(pagesitem["HeaderPage"].ToString()))
+            </div>
+        }
+
+        <div class="container">
+
+            <form method="get" data-ajax="true" data-ajax-method="get"
+                  data-ajax-begin="MsgFormSpinner('A','ثبت پرداخت', 'چند لحظه صبر کنید');"
+                  data-ajax-url="?handler=FormSabtPardakht"
+                  data-ajax-update="#MsgFormMATN_A">
+                <input type="submit" hidden id="FormSabtPardakhtBtn" name="ID" />
+                <div class="px-2 text-end">
+                    <button type="button" class="BTN btn_Pill btn_Blue2" onclick="ClickBtnSimpl('FormSabtPardakhtBtn','0');"><span>ثبت پرداخت جدید</span><i class="icofont-00x icofont-plus"></i></button>
+                </div>
+            </form>
+
+
+            <div class="filterArea">
+
+                <form asp-antiforgery="true" method="get" data-ajax-method="get" data-ajax="true"
+                      data-ajax-begin="SpinnerShow('RepListPardakht', 'در حال بارگذاری لیست پرداخت ها');"
+                      data-ajax-url="?handler=RepListPardakht"
+                      data-ajax-update="#RepListPardakht">
+                    <div class="p-1">
+                        <div id="AreaBtnPardakht">
+                            <button type="button" class="BTN btn_Pill btn_Firuze m-2 w-min-75" onclick="Btn_Select(this, 'AreaBtnPardakht'); FastReportAjax('TD', 'BtnRepPardakht', 'PRD', 'PRD_LimitDate');">امروز</button>
+                            <button type="button" class="BTN btn_Pill btn_Firuze m-2 w-min-75" onclick="Btn_Select(this, 'AreaBtnPardakht'); FastReportAjax('1W', 'BtnRepPardakht', 'PRD', 'PRD_LimitDate');">هفته</button>
+                            <button type="button" class="BTN btn_Pill btn_Firuze m-2 w-min-75" onclick="Btn_Select(this, 'AreaBtnPardakht'); FastReportAjax('2W', 'BtnRepPardakht', 'PRD', 'PRD_LimitDate');">دوهفته</button>
+                            <button type="button" class="BTN btn_Pill btn_Firuze m-2 w-min-75" onclick="Btn_Select(this, 'AreaBtnPardakht'); FastReportAjax('1M', 'BtnRepPardakht', 'PRD', 'PRD_LimitDate');">یک ماه</button>
+                            <button type="button" class="BTN btn_Pill btn_Firuze m-2 w-min-75" onclick="Btn_Select(this, 'AreaBtnPardakht'); FastReportAjax('3M', 'BtnRepPardakht', 'PRD', 'PRD_LimitDate');">سه ماه</button>
+                            <button type="button" class="BTN btn_Pill btn_Firuze m-2 w-min-75" onclick="Btn_Select(this, 'AreaBtnPardakht'); FastReportAjax('TM', 'BtnRepPardakht', 'PRD', 'PRD_LimitDate');">ماه جاری</button>
+                            <button type="button" class="BTN btn_Top btn_Light m-2 w-min-75" onclick="Btn_Select(this, 'AreaBtnPardakht'); AreaToggel('ReportSazPardakht');">گزارش ساز <span class="text-primary icofont-00x icofont-cubes"></span></button>
+                        </div>
+                        <div id="ReportSazPardakht" class="alert alert-info rounded p-3 dis-none border shadow">
+                            <div class="row">
+                                <div class="col-12 col-sm-3">
+                                    <div class="w-fix-180 mx-1">
+                                        <span class="control-label">محدوده تاریخ</span>
+                                        <select class="control-input" id="PRD_LimitDate" onchange="LimitDateAjax(this,'PRD');">
+                                            <option value="0" selected>انتخاب شود</option>
+                                            <option value="TD">امروز</option>
+                                            <option value="1W">یک هفته</option>
+                                            <option value="2W">دو هفته</option>
+                                            <option value="1M">یک ماه</option>
+                                            <option value="TM">ماه جاری</option>
+                                            <option value="LM">ماه قبل</option>
+                                            <option value="3M">سه ماه</option>
+                                            <option value="6M">شش ماه</option>
+                                            <option value="1Y">یکسال</option>
+                                            <option value="TY">امسال</option>
+                                            <option value="LY">پارسال</option>
+                                        </select>
+
+                                        <div id="waitLimitDatePRD"></div>
+
+                                        <span class="control-label">از تاریخ</span>
+                                        <div class="control-Date">
+                                            <input placeholder="از تاریخ" id="FromDatePRD" name="FromDate" maxlength="10" readonly class="usage control-input-plaintext" value="@ViewData["Today"]" />
+                                        </div>
+                                        <span class="control-label">تا تاریخ</span>
+                                        <div class="control-Date">
+                                            <input placeholder="از تاریخ" id="ToDatePRD" name="ToDate" maxlength="10" readonly class="usage control-input-plaintext" value="@ViewData["Today"]" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-sm-9">
+                                    <div class="row">
+                                        <div class="col-12 col-sm-4">
+                                            <span class="control-label">حساب / </span>
+                                            <select class="control-input" name="AccountId" onchange="ShowTafziliRep(this)">
+                                                <option value="0" data-Detail="4">همه حساب ها</option>
+                                                @foreach (DataRow item in Model.ListAccount.Rows)
+                                                {
+                                                    <option value="@item["AccountId"]" data-Detail="@item["DetailCode"]">@item["AccountCode"] -> @item["AccountTitle"]</option>
+                                                }
+                                            </select>
+                                            <div id="tafziliRepArea" class="dis-none">
+                                                <div id="tafziliRep_1" class="dis-none">
+                                                    <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'شخصی که از او این مبلغ را دریافت کرده اید انتخاب کنید. برای اینکار ابتدا با فیلتر گذاری در زیر منوکشی اشخاص را پر کنید. سپس از منو کشویی شخص مورد نظر را انتخاب کنید .')">انتخاب شخص</label>
+                                                </div>
+                                                <div id="tafziliRep_2" class="dis-none">
+                                                    <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'واحدی که از او این مبلغ را دریافت کرده اید انتخاب کنید. برای اینکار ابتدا با فیلتر گذاری در زیر منوکشی واحدها را پر کنید. سپس از منو کشویی واحد مورد نظر را انتخاب کنید .')">انتخاب واحد</label>
+                                                </div>
+                                                <div id="tafziliRep_3" class="dis-none">
+                                                    <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'قرادادی که طبق آن این مبلغ را دریافت کرده اید انتخاب کنید. برای اینکار ابتدا با فیلتر گذاری در زیر منوکشی قراردادها را پر کنید. سپس از منو کشویی قرارداد مورد نظر را انتخاب کنید .')">انتخاب قرارداد</label>
+                                                </div>
+                                                <div class="d-flex">
+                                                    <input type="text" Id="filterTafziliRep" class="control-input text-center" value="" />
+                                                    <button type="button" class="btn_Icon Icon_Blue icofont-2x icofont-search" onclick="ClickBtnValue('ListFindTafziliRepBtn','filterTafziliRep')"></button>
+                                                </div>
+                                                <select class="control-input" id="ListFindTafziliRep" name="TafziliId">
+                                                    <option value="0">در محدوده بالا جستجو کنید</option>
+                                                </select>
+
+                                            </div>
+
+                                        </div>
+                                        <div class="col-12 col-sm-4">
+                                            <span class="control-label">مرتب سازی</span>
+                                            <select class="control-input" name="Sort">
+                                                <option value="A">تاریخ</option>
+                                                <option value="B">تاریخ کاهشی</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-12 col-sm-4">
+                                            <span class="control-label">شرح</span>
+                                            <input class="control-input" name="Sharh" value="" />
+                                        </div>
+                                    </div>
+
+                                    <div class="pt-4 text-end">
+                                        <button type="submit" id="BtnRepPardakht" class="BTN btn_Pill btn_Blue2" onclick="AreaUp('ReportSazPardakht')"><span>جستجوی سندهای پرداخت</span><i class="icofont-2x icofont-search-2"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </form>
+
+            </div>
+
+        </div>
+
+        <div class="container-fluid">
+            <div class="mt-3" id="RepListPardakht">
+                <div class="alert alert-info w-max-400 mx-auto cursor-pointer" onclick="FastReportAjax('1M', 'BtnRepPardakht', 'PRD', 'PRD_LimitDate');">
+                    <i class="icofont-search-2" style="font-size:40px;"></i>
+                    <h6 class="mt-3">هنوز جستجویی انجام نشده</h6>
+                    <p class="text-muted">برای مشاهده دریافت های یک ماه اخیر کلیک کنید، و یا از فیلترهای بالا استفاده کنید</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+</div>
+
+<footer-page class="nav nav-tabs border-top border-light">
+    <div class="w-inline">
+        <div id="menu-page-btn">
+            <menu-page data-bs-toggle="tab" data-bs-target="#tab_A" class="active">داشبورد</menu-page><point></point>
+            <menu-page data-bs-toggle="tab" data-bs-target="#tab_B">سند حسابداری</menu-page><point></point>
+            <menu-page data-bs-toggle="tab" data-bs-target="#tab_C">ثبت هزینه</menu-page><point></point>
+            <menu-page data-bs-toggle="tab" data-bs-target="#tab_D">ثبت دریافت</menu-page><point></point>
+            <menu-page data-bs-toggle="tab" data-bs-target="#tab_E">ثبت پرداخت</menu-page><point></point>
+            <menu-page class="w-min-50" onclick="HelpAjax(@Model.FormId);" data-bs-toggle="tooltip" data-bs-title="راهنما">
+                <span class="menu-firuze icofont-00x icofont-learn"></span>
+            </menu-page>
+            <menu-page class="w-min-50" onclick="ToggleFullscreen();" data-bs-toggle="tooltip" data-bs-title="تمام صفحه">
+                <span class="menu-firuze icofont-00x icofont-expand"></span>
+            </menu-page>
+            <menu-page onclick="GoToTop();" class="w-min-50" data-bs-toggle="tooltip" data-bs-title="برگشت به بالا">
+                <span class="menu-firuze icofont-00x icofont-stylish-up"></span>
+            </menu-page>
+            <menu-page class="bg-secondary" data-bs-toggle="tooltip" data-bs-title="برگشت به صفحه قبل">
+                <select class="text-start bg-secondary text-light" onchange="GoToUrl(this.value);">
+                    @foreach (DataRow item in Model.formData.lastForms.Rows)
+                    {
+                        <option value="/@item["Route"]">@item["FormTitle"]</option>
+                    }
+                </select>
+            </menu-page><point></point>
+            <button type="button" class="pos-Right btn_Icon Icon_Red icofont-2x icofont-curved-double-right d-md-none"
+                    data-bs-title="اسکرول به راست" onclick="ScrollRight('menu-page-btn');"></button>
+            <button type="button" class="pos-Left btn_Icon Icon_Red icofont-2x icofont-curved-double-left d-md-none"
+                    data-bs-title="اسکرول به چپ" onclick="ScrollLeft('menu-page-btn');"></button>
+        </div>
+    </div>
+</footer-page>
+
+
+<div hidden>
+    <form asp-antiforgery="true" method="get" data-ajax-method="get" data-ajax="true"
+          data-ajax-begin="SpinnerShow('AreaFloor', 'در حال بارگذاری لیست طبقات');"
+          data-ajax-url="?handler=ListFloors"
+          data-ajax-update="#AreaFloor">
+        <input type="submit" id="ListFloorsBtn" name="BuildingId" hidden />
+    </form>
+
+    <form asp-antiforgery="true" method="get" data-ajax-method="get" data-ajax="true"
+          data-ajax-begin="SpinnerShow('AreaUnit', 'در حال بارگذاری لیست واحدها');"
+          data-ajax-url="?handler=ListUnits"
+          data-ajax-update="#AreaUnit">
+        <input type="submit" id="ListUnitsBtn" name="FloorId" hidden />
+    </form>
+
+    <form asp-antiforgery="true" method="get" data-ajax-method="get" data-ajax="true"
+          data-ajax-begin="MsgFormSpinner('A','ردیف های سند حسابداری', 'چند لحظه صبر کنید');"
+          data-ajax-url="?handler=ListEventItems"
+          data-ajax-update="#MsgFormMATN_A">
+        <input type="submit" id="ListEventItemsBtn" name="EventId" hidden />
+    </form>
+
+
+    <form asp-antiforgery="true" method="get" data-ajax-method="get" data-ajax="true"
+          data-ajax-begin="SelectWait('ListFindTafziliBes', 'چند لحظه صبر کنید');"
+          data-ajax-url="?handler=ListFindTafzili"
+          data-ajax-update="#ListFindTafziliBes"
+          data-ajax-complete="CheckErrorSelect('ListFindTafziliBes');">
+        <input type="hidden" name="REPValue" value="Bes" />
+        <input type="hidden" id="ListFindTafziliCodeBes" name="DetailCode" />
+        <input type="submit" id="ListFindTafziliBesBtn" name="Filter" hidden />
+    </form>
+
+    <form asp-antiforgery="true" method="get" data-ajax-method="get" data-ajax="true"
+          data-ajax-begin="SelectWait('ListFindTafziliBed', 'چند لحظه صبر کنید');"
+          data-ajax-url="?handler=ListFindTafzili"
+          data-ajax-update="#ListFindTafziliBed"
+          data-ajax-complete="CheckErrorSelect('ListFindTafziliBed');">
+        <input type="hidden" name="REPValue" value="Bed" />
+        <input type="hidden" id="ListFindTafziliCodeBed" name="DetailCode" />
+        <input type="submit" id="ListFindTafziliBtnBed" name="Filter" hidden />
+    </form>
+
+    <form asp-antiforgery="true" method="get" data-ajax-method="get" data-ajax="true"
+          data-ajax-begin="SelectWait('ListFindTafziliRep', 'چند لحظه صبر کنید');"
+          data-ajax-url="?handler=ListFindTafzili"
+          data-ajax-update="#ListFindTafziliRep"
+          data-ajax-complete="CheckErrorSelect('ListFindTafziliRep');">
+        <input type="hidden" id="ListFindTafziliCodeRep" name="DetailCode" />
+        <input type="hidden" name="REPValue" value="Rep" />
+        <input type="submit" id="ListFindTafziliRepBtn" name="Filter" hiden />
+    </form>
+
+</div>

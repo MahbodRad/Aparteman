@@ -1,0 +1,582 @@
+﻿@model Aparteman.Pages.finance.BaseFinanceModel
+@using System.Data;
+@using Aparteman.Services;
+@{
+    var RJ = 0;
+}
+@switch (@ViewData["Switch"])
+{
+    case "FormSabtItem":
+        <section class="container p-1">
+            <div class="secondArea">
+                @if (@ViewData["ID"].ToString() == "0")
+                {
+                    <form asp-antiforgery="true" method="post" data-ajax-method="post" data-ajax="true"
+                          data-ajax-confirm="آیتم هزینه شارژ جدید ذخیره گردد؟"
+                          data-ajax-Btn="UpdateChargeItemBtn"
+                          data-ajax-begin="SpinnerShowForm('چند لحظه صبر کنید');"
+                          data-ajax-url="?handler=UpdateChargeItem"
+                          data-ajax-complete="JsonClose_A"
+                          data-ajax-success="ClickBtn('RepListItemsBtn');">
+                        <input type="hidden" name="ID" value="0" />
+
+                        <div class="p-2 w-100">
+                            <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'یک نام مناسب برای آیتم هزینه تعیین کنید')">عنوان آیتم هزینه</label>
+                            <input type="text" class="control-input text-center" name="ItemTitle">
+                        </div>
+
+                        <div class="mb-3 row">
+                            <div class="col-6 w-min-330">
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'روش مناسب تقسیم یا سرشکن کردن این هزینه بین واحدها و افراد را از منو کشویی زیر انتخاب کنید')">روش سرشکن کردن هزینه</label>
+                                <select class="control-input" name="MethodCode">
+                                    <option value="0">انتخاب کنید</option>
+                                    <option value="1">براساس متراژ</option>
+                                    <option value="2">تعداد نفرات </option>
+                                    <option value="3">مساوی</option>
+                                    <option value="4">مصرف</option>
+                                </select>
+                            </div>
+                            <div class="col-6 w-min-330">
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'برای پاسخ باید تصمیم بگیرید که چه کسی بایستی این هزینه را پرداخت کند. بطور معمول هزینه های جاری با ساکنین است و هزینه های در مورد ساختمان یا بلند مدت و سرمایه گذاری به عهده مالکین میباشد')">پرداخت به عهده کیست؟</label>
+                                <select class="control-input" name="PayerCode">
+                                    <option value="0">انتخاب کنید</option>
+                                    <option value="1">ساکن پرداخت می کند</option>
+                                    <option value="2">مالک پرداخت می کند </option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-3 d-flex flex-wrap">
+                            <div class="w-min-330 flex-fill">
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'با تعیین طرف حساب برای این هزینه، در زمان ثبت هزینه، سند حسابداری آن در حساب تعیین شده ثبت میشود')">طرف حساب</label>
+                                <select class="control-input" name="AccountId">
+                                    <option value="0">انتخاب کنید</option>
+                                    @foreach (DataRow item in Model.ListAccount.Rows)
+                                    {
+                                        <option value="@item["AccountId"]">@item["AccountCode"] --> @item["AccountTitle"]</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="w-fix-100 pt-2">
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'فقط برای هزینه هایی که فعال هستند می توانید سند حسابداری ثبت کنید')">آیا فعال است</label>
+                                <img class="w-fix-75 cursor-pointer" src="/images/Btn_Yes.png" onclick="ToggelYesNo(this,'IsActive');" alt="Aparteman_YesNo" />
+                                <input type="hidden" id="IsActive" name="IsActive" value="1" />
+                            </div>
+                        </div>
+
+
+                        <div class="mb-3">
+                            <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'شرح مناسبی در مورد این هزینه، بنویسید. این شرح کمک می کند که در آینده علت ایجاد و نحوه مدیریت آن را به یاد بیاورید')">شرح</label>
+                            <textarea class="form-control text-center" rows="2" maxlength="300" name="Sharh"></textarea>
+                        </div>
+
+                        <hr />
+                        <div class="text-end px-3">
+                            <button type="submit" id="UpdateChargeItemBtn" class="btn_Icon Icon_Blue2 icofont-2x icofont-checked" title="ایجاد آیتم"><span>ایجاد آیتم</span></button>
+                        </div>
+
+                    </form>
+                }
+                else
+                {
+                    <form asp-antiforgery="true" method="post" data-ajax-method="post" data-ajax="true"
+                          data-ajax-confirm="آیتم هزینه شارژ ویرایش گردد؟"
+                          data-ajax-Btn="UpdateChargeItemBtn"
+                          data-ajax-begin="SpinnerShowForm('چند لحظه صبر کنید');"
+                          data-ajax-url="?handler=UpdateChargeItem"
+                          data-ajax-complete="JsonClose_A"
+                          data-ajax-success="ClickBtn('RepListItemsBtn');">
+                        <input type="hidden" name="ID" value="@ViewData["ID"]" />
+
+                        <div class="p-2 w-100">
+                            <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'یک نام مناسب برای آیتم هزینه تعیین کنید')">عنوان آیتم هزینه</label>
+                            <input type="text" class="control-input text-center" name="ItemTitle" value="@Model.RowData["ItemTitle"]">
+                        </div>
+
+                        <div class="mb-3 row">
+                            <div class="col-6 w-min-330">
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'روش مناسب تقسیم یا سرشکن کردن این هزینه بین واحدها و افراد را از منو کشویی زیر انتخاب کنید')">روش سرشکن کردن هزینه</label>
+                                <select class="control-input" id="ED_MethodCode" name="MethodCode">
+                                    <option value="0">انتخاب کنید</option>
+                                    <option value="1">براساس متراژ</option>
+                                    <option value="2">تعداد نفرات </option>
+                                    <option value="3">مساوی</option>
+                                    <option value="4">مصرف</option>
+                                </select>
+                            </div>
+                            <div class="col-6 w-min-330">
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'برای پاسخ باید تصمیم بگیرید که چه کسی بایستی این هزینه را پرداخت کند. بطور معمول هزینه های جاری با ساکنین است و هزینه های در مورد ساختمان یا بلند مدت و سرمایه گذاری به عهده مالکین میباشد')">پرداخت به عهده کیست؟</label>
+                                <select class="control-input" id="ED_PayerCode" name="PayerCode">
+                                    <option value="0">انتخاب کنید</option>
+                                    <option value="1">ساکن پرداخت می کند</option>
+                                    <option value="2">مالک پرداخت می کند </option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-3 d-flex flex-wrap">
+                            <div class="w-min-330 flex-fill">
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'با تعیین طرف حساب برای این هزینه، در زمان ثبت هزینه، سند حسابداری آن در حساب تعیین شده ثبت میشود')">طرف حساب</label>
+                                <select class="control-input" id="ED_AccountId" name="AccountId">
+                                    <option value="0">انتخاب کنید</option>
+                                    @foreach (DataRow item in Model.ListAccount.Rows)
+                                    {
+                                        <option value="@item["AccountId"]">@item["AccountCode"] --> @item["AccountTitle"]</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="w-fix-100 pt-2">
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'فقط برای هزینه هایی که فعال هستند می توانید سند حسابداری ثبت کنید')">آیا فعال است</label>
+                                <img class="w-fix-75 cursor-pointer" src="@Model.RowData["IsActiveIcon"]" onclick="ToggelYesNo(this,'IsActive');" alt="Aparteman_YesNo" />
+                                <input type="hidden" id="IsActive" name="IsActive" value="@Model.RowData["IsActive"].ToYesNo()" />
+                            </div>
+                        </div>
+
+
+                        <div class="mb-3">
+                            <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'شرح مناسبی در مورد این هزینه، بنویسید. این شرح کمک می کند که در آینده علت ایجاد و نحوه مدیریت آن را به یاد بیاورید')">شرح</label>
+                            <textarea class="form-control text-center" rows="2" maxlength="300" name="Sharh">@Model.RowData["Sharh"]</textarea>
+                        </div>
+
+                        <hr />
+                        <div class="text-end px-3">
+                            <button type="submit" id="UpdateChargeItemBtn" class="btn_Icon Icon_Blue2 icofont-2x icofont-checked" title="ذخیره تغییرات"><span>ذخیره تغییرات</span></button>
+                        </div>
+                    </form>
+                    <script>
+                        SetValueSimpl('ED_MethodCode','@Model.RowData["MethodCode"]','ED_PayerCode','@Model.RowData["PayerCode"]','ED_AccountId','@Model.RowData["AccountId"]');
+                    </script>
+                }
+            </div>
+        </section>
+
+        break;
+
+    case "RepListItems":
+
+        <div class="d-flex flex-wrap justify-content-between">
+            <div class="Area_Count w-fix-200">
+                <span>تعداد : </span><span>@Model.ListItems.Rows.Count </span>
+            </div>
+        </div>
+
+        <div class="header_Table">
+            <button type="button" class="btn_Icon footer_Right Icon_Red icofont-00x icofont-curved-double-right" title="اسکرول به راست" onclick="ScrollRight('@ViewData["Switch"]_FT');"></button>
+            <button type="button" class="btn_Icon footer_Left Icon_Red icofont-00x icofont-curved-double-left" title="اسکرول به چپ" onclick="ScrollLeft('@ViewData["Switch"]_FT');"></button>
+            <div id="@ViewData["Switch"]_FT" class="overflow-hidden" onscroll="ScrollSlave(this, '@ViewData["Switch"]_MS');">
+                <table class="table grid-table">
+                    <thead>
+                        <tr>
+                            <th><span>#</span></th>
+                            <th><span class="w-fix-200">عنوان</span></th>
+                            <th><span class="w-fix-100">روش تقسیم</span></th>
+                            <th><span class="w-fix-200">طرف حساب</span></th>
+                            <th><span class="w-fix-100">پرداخت کننده</span></th>
+                            <th><span class="w-fix-300">توضیح</span></th>
+                            <th><span class="w-fix-50">ویرایش</span></th>
+                            <th><span class="w-fix-90">وضعیت</span></th>
+                            <th><span class="w-fix-180">زمان ثبت</span></th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+        <div class="overflow-auto" id="@ViewData["Switch"]_MS" onscroll="ScrollSlave(this, '@ViewData["Switch"]_FT');">
+            <table class="table grid-table">
+                <thead class="header_Tablehiden">
+                    <tr>
+                        <th><span>#</span></th>
+                        <th><span class="w-fix-200">عنوان</span></th>
+                        <th><span class="w-fix-100">روش تقسیم</span></th>
+                        <th><span class="w-fix-200">طرف حساب</span></th>
+                        <th><span class="w-fix-100">پرداخت کننده</span></th>
+                        <th><span class="w-fix-300">توضیح</span></th>
+                        <th><span class="w-fix-50">ویرایش</span></th>
+                        <th><span class="w-fix-90">وضعیت</span></th>
+                        <th><span class="w-fix-180">زمان ثبت</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (DataRow item in Model.ListItems.Rows)
+                    {
+                        { RJ++; }
+                        <tr onclick="RowSelect(this);">
+                            <td class="text-danger">@RJ</td>
+                            <td><span class="w-fixC-200">@item["ItemTitle"]</span></td>
+                            <td><span class="w-fixC-100">@item["MethodTitle"]</span></td>
+                            <td><span class="w-fixC-200">@item["AccountTitle"]</span></td>
+                            <td><span class="w-fixC-100">@item["PayerTitle"]</span></td>
+                            <td><span class="w-fixC-300">@item["Sharh"]</span></td>
+                            <td>
+                                <button type="button" class="btn_Icon Icon_Mor icofont-00x icofont-edit" title="ویرایش" onclick="ClickBtnSimpl('FormSabtItemBtn','@item["ItemId"]')"></button>
+                            </td>
+                            <td>
+                                <span class="w-fixC-90">
+                                    <img class="w-fix-75" src="@item["IsActiveIcon"]" alt="Aparteman_YesNo" />
+                                </span>
+                            </td>
+                            <td><span class="w-fixC-180 text-start"><span>@item["Editor"]</span><span class="text_line23 ltr">@item["TimeEdit"]</span></span></td>
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+        </div>
+
+        break;
+
+
+    case "FormSabtAccount":
+        <section class="container p-1">
+            <div class="secondArea">
+                @if (@ViewData["ID"].ToString() == "0")
+                {
+                    <form asp-antiforgery="true" method="post" data-ajax-method="post" data-ajax="true"
+                          data-ajax-confirm="حساب جدید ذخیره گردد؟"
+                          data-ajax-Btn="UpdateAccountBtn"
+                          data-ajax-begin="SpinnerShowForm('چند لحظه صبر کنید');"
+                          data-ajax-url="?handler=UpdateAccount"
+                          data-ajax-complete="JsonClose_A"
+                          data-ajax-success="ClickBtn('RepListItemsBtn');">
+                        <input type="hidden" name="ID" value="0" />
+
+                        <div class="p-2 w-100 d-flex gap-2">
+                            <div class="w-fix-100">
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'یک کد مناسب برای حساب تعیین کنید. برای کد گذاری بهتر است هماهنگ با نوع حساب عمل کنید و عدد اول کد برابر با عدد نوع حساب باشد.')">کد حساب</label>
+                                <input type="text" class="control-input text-center" name="AccountCode">
+                            </div>
+                            <div class="flex-fill w-min-330">
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'یک نام مناسب برای حساب تعیین کنید. توجه کنید که حساب معین تعریف میکنید.')">نام حساب</label>
+                                <input type="text" class="control-input text-center" name="AccountTitle">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-6 w-min-330">
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'نوع حساب را از منوکشویی زیر انتخاب کنید. دقت کنید که نوع مرتبط با هر حساب در گزارشات و اسناد حساب داری تاثیر مستقیم دارد. در صورتی که نیاز به نوع حساب دیگری دارید که در مجموعه زیر نمی باشد. با مدیریت سابت تماس بگیرید')">نوع حساب</label>
+                                <select class="control-input" name="AccountTypeCode">
+                                    <option value="0">انتخاب کنید</option>
+                                    <option value="1">1- دارایی</option>
+                                    <option value="2">2- بدهی</option>
+                                    <option value="3">3- درآمد</option>
+                                    <option value="4">4- هزینه</option>
+                                </select>
+                            </div>
+                            <div class="col-6 w-min-330">
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'برای هر حساب لازم است نوع تفصیلی نیز به دقت انتخاب شود. حساب تفصیلی درواقع حساب جزء و با تفکیک بیشتر از یک حساب معین می باشد. درصورتی که تفصیلی جدیدی دارید که در مجموعه زیر نمی باشدو با مدیریت سایت تماس بگیرید')">نوع تفصیلی</label>
+                                <select class="control-input" name="DetailCode">
+                                    <option value="0">انتخاب کنید</option>
+                                    <option value="4">ندارد</option>
+                                    <option value="1">اشخاص</option>
+                                    <option value="2">واحد</option>
+                                    <option value="3">قرارداد</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="text-end p-3">
+                            <div class="w-fix-100">
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'فقط برای هزینه هایی که فعال هستند می توانید سند حسابداری ثبت کنید')">آیا فعال است</label>
+                                <img class="w-fix-75 cursor-pointer" src="/images/Btn_Yes.png" onclick="ToggelYesNo(this,'IsActive');" alt="Aparteman_YesNo" />
+                                <input type="hidden" id="IsActive" name="IsActive" value="1" />
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="text-end px-3">
+                            <button type="submit" id="UpdateAccountBtn" class="btn_Icon Icon_Blue2 icofont-2x icofont-checked" title="ایجاد حساب"><span>ایجاد حساب جدید</span></button>
+                        </div>
+
+                    </form>
+                }
+                else
+                {
+                    <form asp-antiforgery="true" method="post" data-ajax-method="post" data-ajax="true"
+                          data-ajax-confirm="حساب ویرایش گردد؟"
+                          data-ajax-Btn="UpdateAccountBtn"
+                          data-ajax-begin="SpinnerShowForm('چند لحظه صبر کنید');"
+                          data-ajax-url="?handler=UpdateAccount"
+                          data-ajax-complete="JsonClose_A"
+                          data-ajax-success="ClickBtn('RepListItemsBtn');">
+                        <input type="hidden" name="ID" value="@ViewData["ID"]" />
+
+                        <div class="p-2 w-100 d-flex gap-2">
+                            <div class="w-fix-100">
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'یک کد مناسب برای حساب تعیین کنید. برای کد گذاری بهتر است هماهنگ با نوع حساب عمل کنید و عدد اول کد برابر با عدد نوع حساب باشد.')">کد حساب</label>
+                                <input type="text" class="control-input text-center" name="AccountCode" value="@Model.RowData["AccountCode"]">
+                            </div>
+                            <div class="flex-fill w-min-330">
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'یک نام مناسب برای حساب تعیین کنید. توجه کنید که حساب معین تعریف میکنید.')">نام حساب</label>
+                                <input type="text" class="control-input text-center" name="AccountTitle" value="@Model.RowData["AccountTitle"]">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-6 w-min-330">
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'نوع حساب را از منوکشویی زیر انتخاب کنید. دقت کنید که نوع مرتبط با هر حساب در گزارشات و اسناد حساب داری تاثیر مستقیم دارد. در صورتی که نیاز به نوع حساب دیگری دارید که در مجموعه زیر نمی باشد. با مدیریت سابت تماس بگیرید')">نوع حساب</label>
+                                <select class="control-input" id="AccountTypeCode" name="AccountTypeCode">
+                                    <option value="0">انتخاب کنید</option>
+                                    <option value="1">1- دارایی</option>
+                                    <option value="2">2- بدهی</option>
+                                    <option value="3">3- درآمد</option>
+                                    <option value="4">4- هزینه</option>
+                                </select>
+                            </div>
+                            <div class="col-6 w-min-330">
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'برای هر حساب لازم است نوع تفصیلی نیز به دقت انتخاب شود. حساب تفصیلی درواقع حساب جزء و با تفکیک بیشتر از یک حساب معین می باشد. درصورتی که تفصیلی جدیدی دارید که در مجموعه زیر نمی باشدو با مدیریت سایت تماس بگیرید')">نوع تفصیلی</label>
+                                <select class="control-input" id="DetailCode" name="DetailCode">
+                                    <option value="0">انتخاب کنید</option>
+                                    <option value="4">ندارد</option>
+                                    <option value="1">اشخاص</option>
+                                    <option value="2">واحد</option>
+                                    <option value="3">قرارداد</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="text-end p-3">
+                            <div class="w-fix-100">
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'فقط برای هزینه هایی که فعال هستند می توانید سند حسابداری ثبت کنید')">آیا فعال است</label>
+                                <img class="w-fix-75 cursor-pointer" src="@Model.RowData["IsActiveIcon"]" onclick="ToggelYesNo(this,'IsActive');" alt="Aparteman_YesNo" />
+                                <input type="hidden" id="IsActive" name="IsActive" value="@Model.RowData["IsActive"].ToYesNo()" />
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="text-end px-3">
+                            <button type="submit" id="UpdateAccountBtn" class="btn_Icon Icon_Blue2 icofont-2x icofont-checked" title="اصلاح حساب"><span>اصلاح حساب انجام شود</span></button>
+                        </div>
+
+                    </form>
+                    <script>
+                        SetValueSimpl('AccountTypeCode','@Model.RowData["AccountTypeCode"]','DetailCode','@Model.RowData["DetailCode"]');
+                    </script>
+                }
+            </div>
+        </section>
+
+        break;
+
+    case "RepListAccounts":
+
+        <div class="d-flex flex-wrap justify-content-between">
+            <div class="Area_Count w-fix-200">
+                <span>تعداد : </span><span>@Model.ListItems.Rows.Count </span>
+            </div>
+        </div>
+
+        <div class="header_Table">
+            <button type="button" class="btn_Icon footer_Right Icon_Red icofont-00x icofont-curved-double-right" title="اسکرول به راست" onclick="ScrollRight('@ViewData["Switch"]_FT');"></button>
+            <button type="button" class="btn_Icon footer_Left Icon_Red icofont-00x icofont-curved-double-left" title="اسکرول به چپ" onclick="ScrollLeft('@ViewData["Switch"]_FT');"></button>
+            <div id="@ViewData["Switch"]_FT" class="overflow-hidden" onscroll="ScrollSlave(this, '@ViewData["Switch"]_MS');">
+                <table class="table grid-table">
+                    <thead>
+                        <tr>
+                            <th><span>#</span></th>
+                            <th><span class="w-fix-90">کد حساب</span></th>
+                            <th><span class="w-fix-200">نام حساب</span></th>
+                            <th><span class="w-fix-100">نوع حساب</span></th>
+                            <th><span class="w-fix-100">تفصیلی</span></th>
+                            <th><span class="w-fix-50">ویرایش</span></th>
+                            <th><span class="w-fix-90">وضعیت</span></th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+        <div class="overflow-auto" id="@ViewData["Switch"]_MS" onscroll="ScrollSlave(this, '@ViewData["Switch"]_FT');">
+            <table class="table grid-table">
+                <thead class="header_Tablehiden">
+                    <tr>
+                        <th><span>#</span></th>
+                        <th><span class="w-fix-90">کد حساب</span></th>
+                        <th><span class="w-fix-200">نام حساب</span></th>
+                        <th><span class="w-fix-100">نوع حساب</span></th>
+                        <th><span class="w-fix-100">تفصیلی</span></th>
+                        <th><span class="w-fix-50">ویرایش</span></th>
+                        <th><span class="w-fix-90">وضعیت</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (DataRow item in Model.ListItems.Rows)
+                    {
+                        { RJ++; }
+                        <tr onclick="RowSelect(this);">
+                            <td class="text-danger">@RJ</td>
+                            <td><span class="w-fixC-90">@item["AccountCode"]</span></td>
+                            <td><span class="w-fixC-200">@item["AccountTitle"]</span></td>
+                            <td><span class="w-fixC-100">@item["TypeTitle"]</span></td>
+                            <td><span class="w-fixC-100">@item["DetailTitle"]</span></td>
+                            <td>
+                                @if (@item["ComplexId"].ToString() != ""){
+                                    <button type="button" class="btn_Icon Icon_Mor icofont-00x icofont-edit" title="ویرایش" onclick="ClickBtnSimpl('FormSabtAccountBtn','@item["AccountId"]')"></button>
+                                }
+                            </td>
+                            <td>
+                                <span class="w-fixC-90">
+                                    <img class="w-fix-75" src="@item["IsActiveIcon"]" alt="Aparteman_YesNo" />
+                                </span>
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+        </div>
+
+        break;
+
+
+
+    case "FormSabtPeriod":
+        <section class="container p-1">
+            <div class="secondArea">
+                @if (@ViewData["ID"].ToString() == "0")
+                {
+                    <form asp-antiforgery="true" method="post" data-ajax-method="post" data-ajax="true"
+                          data-ajax-confirm="دوره مالی جدید ذخیره گردد؟"
+                          data-ajax-Btn="UpdatePeriodBtn"
+                          data-ajax-begin="SpinnerShowForm('چند لحظه صبر کنید');"
+                          data-ajax-url="?handler=UpdatePeriod"
+                          data-ajax-complete="JsonClose_A"
+                          data-ajax-success="ClickBtn('RepListPeriodsBtn');">
+                        <input type="hidden" name="ID" value="0" />
+
+
+                        <div class="mb-3 w-100">
+                            <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'یک نام یا عبارت مناسب برای دوره بنویسید)">عنوان دوره</label>
+                            <input type="text" name="PeriodTitle" class="control-input text-center w-min-330" value="" />
+                        </div>
+
+                        <div class="row">
+                            <div class="col-6">
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'تاریخ شروع برای دوره را انتخاب کنید. دقت کنید که قبل از تاریخ پایان باشد و با تاریخ دوره های دیگر تداخل نداشته باشد.')"> تاریخ شروع دوره </label>
+                                <div class="control-Date">
+                                    <input id="StartDate" name="StartDate" maxlength="10" readonly class="usage control-input-plaintext" value="@ViewData["Today"]" />
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'تاریخ پایان برای دوره را انتخاب کنید دقت کنید که بعداز تاریخ شروع باشد و با تاریخ دوره های دیگر تداخل نداشته باشد.')"> تاریخ پایان دوره </label>
+                                <div class="control-Date">
+                                    <input id="EndDate" name="EndDate" maxlength="10" readonly class="usage control-input-plaintext" value="@ViewData["Today"]" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr />
+                        <div class="text-end px-3">
+                            <button type="submit" id="UpdatePeriodBtn" class="btn_Icon Icon_Blue2 icofont-2x icofont-checked" title="ایجاد دوره"><span>ایجاد دوره جدید</span></button>
+                        </div>
+
+                    </form>
+                }
+                else
+                {
+                    <form asp-antiforgery="true" method="post" data-ajax-method="post" data-ajax="true"
+                          data-ajax-confirm="دوره مالی جدید ذخیره گردد؟"
+                          data-ajax-Btn="UpdatePeriodBtn"
+                          data-ajax-begin="SpinnerShowForm('چند لحظه صبر کنید');"
+                          data-ajax-url="?handler=UpdatePeriod"
+                          data-ajax-complete="JsonClose_A"
+                          data-ajax-success="ClickBtn('RepListPeriodsBtn');">
+                        <input type="hidden" name="ID" value="@ViewData["ID"]" />
+
+
+                        <div class="mb-3 w-100">
+                            <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'یک نام یا عبارت مناسب برای دوره بنویسید)">عنوان دوره</label>
+                            <input type="text" name="PeriodTitle" class="control-input text-center w-min-330" value="@Model.RowData["PeriodTitle"]" />
+                        </div>
+
+                        <div class="row">
+                            <div class="col-6">
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'تاریخ شروع برای دوره را انتخاب کنید. دقت کنید که قبل از تاریخ پایان باشد و با تاریخ دوره های دیگر تداخل نداشته باشد.')"> تاریخ شروع دوره </label>
+                                <div class="control-Date">
+                                    <input id="StartDate" name="StartDate" maxlength="10" readonly class="usage control-input-plaintext" value="@Model.RowData["StartDate"]" />
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'تاریخ پایان برای دوره را انتخاب کنید دقت کنید که بعداز تاریخ شروع باشد و با تاریخ دوره های دیگر تداخل نداشته باشد.')"> تاریخ پایان دوره </label>
+                                <div class="control-Date">
+                                    <input id="EndDate" name="EndDate" maxlength="10" readonly class="usage control-input-plaintext" value="@Model.RowData["EndDate"]" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr />
+                        <div class="text-end px-3">
+                            <button type="submit" id="UpdatePeriodBtn" class="btn_Icon Icon_Blue2 icofont-2x icofont-checked" title="اصلاح دوره"><span>ذخیره تغییرات</span></button>
+                        </div>
+
+                    </form>
+                }
+            </div>
+        </section>
+        <script>
+            ControlPersianDate('StartDate');
+            ControlPersianDate('EndDate');
+        </script>
+
+        break;
+
+    case "RepListPeriods":
+
+        <div class="d-flex flex-wrap justify-content-between">
+            <div class="Area_Count w-fix-200">
+                <span>تعداد : </span><span>@Model.ListPeriods.Rows.Count </span>
+            </div>
+        </div>
+
+        <div class="header_Table">
+            <button type="button" class="btn_Icon footer_Right Icon_Red icofont-00x icofont-curved-double-right" title="اسکرول به راست" onclick="ScrollRight('@ViewData["Switch"]_FT');"></button>
+            <button type="button" class="btn_Icon footer_Left Icon_Red icofont-00x icofont-curved-double-left" title="اسکرول به چپ" onclick="ScrollLeft('@ViewData["Switch"]_FT');"></button>
+            <div id="@ViewData["Switch"]_FT" class="overflow-hidden" onscroll="ScrollSlave(this, '@ViewData["Switch"]_MS');">
+                <table class="table grid-table">
+                    <thead>
+                        <tr>
+                            <th><span>#</span></th>
+                            <th><span class="w-fix-200">نام دوره</span></th>
+                            <th><span class="w-fix-100">تاریخ شروع</span></th>
+                            <th><span class="w-fix-100">تاریخ پایان</span></th>
+                            <th><span class="w-fix-50">ویرایش</span></th>
+                            <th><span class="w-fix-150">وضعیت</span></th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+        <div class="overflow-auto" id="@ViewData["Switch"]_MS" onscroll="ScrollSlave(this, '@ViewData["Switch"]_FT');">
+            <table class="table grid-table">
+                <thead class="header_Tablehiden">
+                    <tr>
+                        <th><span>#</span></th>
+                        <th><span class="w-fix-200">نام دوره</span></th>
+                        <th><span class="w-fix-100">تاریخ شروع</span></th>
+                        <th><span class="w-fix-100">تاریخ پایان</span></th>
+                        <th><span class="w-fix-50">ویرایش</span></th>
+                        <th><span class="w-fix-150">وضعیت</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (DataRow item in Model.ListPeriods.Rows)
+                    {
+                        { RJ++; }
+                        <tr onclick="RowSelect(this);">
+                            <td class="text-danger">@RJ</td>
+                            <td><span class="w-fixC-200">@item["PeriodTitle"]</span></td>
+                            <td><span class="w-fixC-100">@item["StartDate"]</span></td>
+                            <td><span class="w-fixC-100">@item["EndDate"]</span></td>
+                            <td>
+                                @if (@item["Situation"].ToString() == "1")
+                                {
+                                    <button type="button" class="btn_Icon Icon_Mor icofont-00x icofont-edit" title="ویرایش" onclick="ClickBtnSimpl('FormSabtPeriodBtn','@item["PeriodId"]')"></button>
+                                }
+                            </td>
+                            <td><span class="w-fixC-150">@item["SituationTP"]</span></td>
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+        </div>
+
+        break;
+
+}

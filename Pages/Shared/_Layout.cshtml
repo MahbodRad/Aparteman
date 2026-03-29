@@ -1,0 +1,262 @@
+﻿<!DOCTYPE html>
+@using System.Web;
+@using System.Data;
+@using Aparteman.Models
+@{
+    var User = Model.userInfo;
+}
+<html lang="fa">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,  height=device-height, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Aparteman</title>
+    <script type="importmap456465465"></script>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.rtl.min.css" />
+    <link rel="stylesheet" href="~/fonts/icofont/icofont.min.css" />
+    <link rel="stylesheet" href="~/css/print.min.css" />
+    <link rel="stylesheet" href="~/css/persianDatepicker-latoja.css" />
+    <link rel="stylesheet" href="~/css/styles.css" asp-append-version="true" />
+</head>
+<body class=" RawImg form-disabled" id="forms-root">
+    <div id="loader">در حال بارگذاری...</div>
+    <div class="back-ground-picdark">
+        @await Component.InvokeAsync("LayoutInfo", new { FormId = @Model.FormId, userInfo = User })
+        @{
+            var layoutData = Context.Items["LayoutData"] as LayoutDataModel;
+        }
+        <div class="">
+            <header class="nav nav-tabs border-top border-bottom-0 border-secondary py-2">
+                <div class="w-inline">
+                    <div id="form-btn">
+                        @foreach (var FRM in layoutData.listForms)
+                        {
+                            <menu-form class="@FRM.Css"><a href="@FRM.Adres" class="w-min-100">@FRM.Title</a></menu-form>
+                        }
+                        <menu-form class="bg_Brown"><a href="~/Login" class="text-white w-min-100">خروج</a></menu-form>
+                        <button type="button" class="pos-Right btn_Icon Icon_Red icofont-2x icofont-curved-double-right" data-bs-toggle="tooltip" data-bs-title="اسکرول به راست" onclick="ScrollRight('form-btn');"></button>
+                        <button type="button" class="pos-Left btn_Icon Icon_Red icofont-2x icofont-curved-double-left" data-bs-toggle="tooltip" data-bs-title="اسکرول به چپ" onclick="ScrollLeft('form-btn');"></button>
+                    </div>
+                </div>
+            </header>
+
+            <div id="MainArea" class="main">
+                @if (@layoutData.formSetup.Header != "")
+                {
+                    <div class="m-1 alert alert-primary ">@Html.Raw(HttpUtility.HtmlDecode(@layoutData.formSetup.Header))</div>
+                }
+                @RenderBody()
+                <div class="help" id="HelpArea"></div>
+            </div>
+
+            <footer class="border-top footer text-muted">
+                <div id="FooterArea" class="footerArea pr_180">
+                    @if (@layoutData.formSetup.Footer != "")
+                    {
+                        <div class="m-1 alert alert-secondary">@Html.Raw(HttpUtility.HtmlDecode(@layoutData.formSetup.Footer))</div>
+                    }
+                    <div class="container">
+                        <img src="~/images/logo-96.png" class="w-fix-50" /> آپارتمان من --> امروز: @DateTime.Today.ToString("D").Replace("Sunday", "یکشنبه").Replace("Monday", "دوشنبه").Replace("Tuesday", "سه شنبه").Replace("Wednesday", "چهارشنبه").Replace("Thursday", "پنجشنبه").Replace("Friday", "جمعه").Replace("Saturday", "شنبه") --> @layoutData.formSetup.Today
+                    </div>
+                </div>
+            </footer>
+
+        </div>
+    </div>
+
+
+    <section>
+        <div hidden>
+            <input type="hidden" id="ChapName" value="Chap_@User.Id" />
+            <a hidden id="ChapLink" href="../Uploads/Chap_@User.Id" target="_blank"></a>
+
+            <input type="hidden" id="LocalValue" value="0" />
+
+            <!-- تاریخ -->
+            <form hidden method="get" data-ajax-method="get" data-ajax="true"
+                  data-ajax-url="../ApiCenter?handler=LimitDate"
+                  data-ajax-complete="LimitDateCompelete">
+                <input type="hidden" id="LimitDateKnd" name="LimitDateKnd" value="0" />
+                <input type="hidden" id="LimitDateForm" value="" />
+                <input hidden type="submit" id="LimitDateBtn" value="BtnAct" />
+            </form>
+        </div>
+        <!-- پنجره فرم فریم روی همه فرمها -->
+        <div id="ModalForm_Frame">
+            <span id="MsgFrom_Frame_Btn" onclick="AreaShowFlex('ModalForm_Frame');" hidden>فرم پیام روی صفحه</span>
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="text-primary float-start" id="MsgForm_Frame_TITR">Heading</h6>
+                    <button type="button" class="btn_Icon Icon_Blue icofont-2x icofont-close-squared-alt float-end" id="MsgFrom_Frame_BtnClose" onclick="AreaHide('ModalForm_Frame'); AreaClear('MsgForm_Frame_MATN');" data-bs-toggle="tooltip" data-bs-title="بستن پنجره"></button>
+                </div>
+                <div class="p-1 d-flex justify-content-center align-content-center bg_Gray" style="height:70vh; width:90vw;" id="MsgForm_Frame_MATN">
+                    Msg body..
+                </div>
+            </div>
+        </div>
+
+        <!-- پنجره فرم پیامها یک -->
+        <div id="ModalForm_A">
+            <div class="card rounded-bottom rounded-4">
+                <div class="card-header">
+                    <h6 class="text-primary float-start" id="MsgFormTITR_A">لیست پیام های جدید</h6>
+                    <button type="button" class="btn_Icon Icon_Blue icofont-2x icofont-close-squared-alt float-end" onclick="CloseFormMsg('A');" data-bs-toggle="tooltip" data-bs-title="بستن پنجره"></button>
+                </div>
+                <div class="p-1 w-min-media" id="MsgFormMATN_A">
+                </div>
+            </div>
+        </div>
+        <!-- پنجره فرم پیامها دو -->
+        <div id="ModalForm_B">
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="text-primary float-start" id="MsgFormTITR_B">لیست پیام های جدید</h6>
+                    <button type="button" class="btn_Icon Icon_Blue icofont-2x icofont-close-squared-alt float-end" onclick="CloseFormMsg('B');" data-bs-toggle="tooltip" data-bs-title="بستن پنجره"></button>
+                </div>
+                <div class="p-1 w-min-media" id="MsgFormMATN_B">
+                </div>
+            </div>
+        </div>
+        <!-- پنجره فرم پیامها سه -->
+        <div id="ModalForm_C">
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="text-primary float-start" id="MsgFormTITR_C">لیست پیام های جدید</h6>
+                    <button type="button" class="btn_Icon Icon_Blue icofont-2x icofont-close-squared-alt float-end" onclick="CloseFormMsg('C');" data-bs-toggle="tooltip" data-bs-title="بستن پنجره"></button>
+                </div>
+                <div class="p-1 w-min-media" id="MsgFormMATN_C">
+                </div>
+            </div>
+        </div>
+
+
+        <!-- پنجره پیامها -->
+        <div id="MsgAreaModal">
+            <div class="alert alert-primary border border-1 border-danger w-max-500 w-min-330 mx-auto box-shadow">
+                <div class="text-start">
+                    <h6 class="text-primary"><span class="text-danger m-2 icofont icofont-00x icofont-warning-alt"></span><span id="ShowMsg_TITR"> heading </span></h6>
+                    <hr />
+                    <div class="text-center" style="overflow: auto; max-height: 70vh;" id="ShowMsg_MATN">
+                        Msg body..
+                    </div>
+                    <hr />
+                    <div class="text-end px-2">
+                        <button type="button" class="btn_Icon Icon_Brown icofont-00x icofont-thumbs-up" onclick="AreaHide('MsgAreaModal'); AreaClear('ShowMsg_MATN');"></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <!-- پنجره انتظار -->
+        <div id="ModalSpiner">
+            <div class="w-fix-250 border border-info rounded rounded-3">
+                <div class="py-2">
+                    <h6 class="text-warning" id="SpinnerMsg_TITR">Heading</h6>
+                </div>
+                <div class="modal-body">
+                    <img src="../images/loading.gif" class="w-max-100" />
+                    <div class="timer" id="timerForm">0</div>
+                </div>
+
+                <div>
+                    <button type="button" class="btn_IconPill Icon_Brown icofont-3x icofont-toggle-off mx-auto" data-bs-toggle="tooltip" data-bs-title="بسته شود" onclick="SpinnerHideForm()"></button>
+                </div>
+            </div>
+        </div>
+
+        <!-- پنجره کانفرم -->
+        <div id="ConfirmModal">
+            <input type="hidden" id="ConfirmFormBtn" value="" />
+            <div>
+                <div class="alert alert-primary border border-1 border-danger w-min-300 w-max-500 box-shadow">
+                    <div class="text-start">
+                        <span class="text-danger m-2"><span class="icofont icofont-00x icofont-notification"></span> توجه: </span>
+                        <hr />
+                        <h5 id="ConfirmMsg"></h5>
+                        <hr />
+                    </div>
+                    <div class="d-flex justify-content-around" onkeyup="EnterKey(event, 'ConfirmModalClose');">
+                        <button type="button" class="btn_Icon Icon_Blue icofont-2x icofont-checked" data-bs-toggle="tooltip" data-bs-title="بلی" onclick="ClickBtn(EleValue('ConfirmFormBtn'));AreaHide('ConfirmModal');"><span style="font-family: DastNevis;">بلی</span></button>
+                        <button type="button" class="btn_Icon Icon_Red icofont-2x icofont-close active" id="ConfirmModalClose" data-bs-toggle="tooltip" data-bs-title="خیر" onclick="SetConfirm(); AreaHide('ConfirmModal');"><span style="font-family: DastNevis;">خیر</span></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- صفحه انتظار -->
+        <div id="waitbody">
+            <div>
+                <p>لطفا منتظر باشید</p>
+                <div class="w-100"><img src="../images/loading.gif" class="w-max-100 mx-auto" /><div class="timer" id="timerWait">0</div></div>
+                <p><button type="button" class="BTN btn_Pill btn_Light" onclick="AreaHide('waitbody');">بسته شود</button> </p>
+            </div>
+        </div>
+        <!-- پنجره دانلودفایل اکسل -->
+        <div id="ExcelModal">
+            <span id="Excel_Btn" onclick="$('#ExcelModal').css('display', 'flex');" hidden>فرم دانلود فایل اکسل</span>
+            <div>
+                <div class="alert alert-primary border border-1 border-danger w-max-500 box-shadow">
+                    <h5 class="w-fix-250">فایل اکسل آماده دانلود است</h5>
+                    <div class="modal-footer d-flex justify-content-around">
+                        <button type="button" class="BTN btn_Normal btn_Brown" data-bs-toggle="tooltip" data-bs-title="دانلود اکسل" onclick="ExcelShow(); AreaHide('ExcelModal');">دانلود شود <span class="icofont-00x icofont-download-alt"></span></button>
+                        <button type="button" class="BTN btn_Normal btn_Brown d-none" data-bs-toggle="tooltip" data-bs-title="نمایش اکسل" onclick="ClickBtnSimpl('ExcelWeb_Btn', ''); AreaUp('ExcelModal');">نمایش داده شود <span class="icofont-00x icofont-toggle-on"></span></button>
+                        <button type="button" class="btn_Icon Icon_Red icofont-00x icofont-close" data-bs-toggle="tooltip" data-bs-title="انصراف" onclick="AreaUp('ExcelModal');"></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- پنجره زوم -->
+        <div id="Zoombody">
+            <span id="Zoom_Btn" onclick="AreaDown('Zoombody');" hidden>بزرگنمایی یک تصویر</span>
+            <div class="Header_fix" onclick="AreaUp('Zoombody');">
+                <button type="button" class="btn_Icon Icon_Yellow icofont-2x icofont-close" data-bs-toggle="tooltip" data-bs-title="بستن بزرگنمایی تصویر"></button>
+            </div>
+            <div class="p-3">
+                <div class="w-max-1600 mx-auto">
+                    <zoom id="ZoomPic"></zoom>
+                </div>
+            </div>
+        </div>
+        <!-- ناحیه تصویر موقت -->
+        <canvas id="Picture" class="d-none"></canvas>
+    </section>
+
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/popper.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="~/js/persianDatepicker.js"></script>
+    <script src="~/js/prism.min.js"></script>
+    <script src="~/lib/tinymce/tinymce.min.js"></script>
+
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/print.min.js" asp-append-version="true"></script>
+    <script src="~/js/Ajax.js" asp-append-version="true"></script>
+    <script src="@layoutData.formSetup.Script" asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+    <script>
+        $(function () {
+            ControlPersianDate('');
+        //usage
+        //$(".usage").persianDatepicker({ theme: "latoja", formatDate: "YYYY/0M/0D", cellWidth: 30, cellHeight: 26, fontSize: 15, });
+
+            document.getElementById("forms-root")
+                .classList.remove("form-disabled");
+
+            document.getElementById("loader").style.display = "none";
+
+        document.getElementById("ModalForm_A").addEventListener("input", function (e) {
+          if (e.target.matches("input, select, textarea")) {
+            e.target.classList.remove("error-border");
+          }
+        });
+        });
+
+    </script>
+</body>
+</html>

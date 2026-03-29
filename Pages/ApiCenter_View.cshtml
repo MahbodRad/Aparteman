@@ -1,0 +1,108 @@
+﻿
+@model Aparteman.Pages.ApiCenterModel
+@using System.Web;
+@using System.Data;
+@using Aparteman.Services;
+@{
+    var RJ = 0;
+    var ZF = "";
+}
+
+@switch (@ViewData["Switch"])
+{
+    case "Help":
+        <div class="card">
+            <div class="card-header card-header-best">
+                <div class="form-check form-switch">
+                    <label for="HelpShow">راهنما </label>
+                    <input data-bs-toggle="tooltip" data-bs-title="نمایش" id="HelpShow" type="checkbox" class="form-check-input font-20 cursor-pointer" onclick="AreaToggel('HelpAreaMatn');" checked />
+                </div>
+            </div>
+            <div class="card-body font-20" id="HelpAreaMatn" style="font-family: Calibri;">
+                @foreach (DataRow HLP in Model.ListData.Rows)
+                {
+                    <div class="d-flex justify-content-between p-2 my-2 rounded-3 bg-formHF cursor-pointer" onclick="AreaToggel('Cont_@HLP["Si"]'); ChangIcon('hlpIcn_@HLP["Si"]', 'icofont-caret-down', 'icofont-caret-up')">
+                        <h5 class="text-primary font-bold mt-2">@HLP["OnvanPage"]</h5>
+                        <span id="hlpIcn_@HLP["Si"]" class="text-brown icofont-2x my-auto icofont-caret-down"></span>
+                    </div>
+                    <div class="pb-5 dis-none RawImg" id="Cont_@HLP["Si"]">
+                        <div>@Html.Raw(HttpUtility.HtmlDecode(@HLP["HelpPage"].ToString()))</div>
+                    </div>
+                }
+            </div>
+        </div>
+        break;
+
+    case "SelectFloor":
+        if (Model.ListData.Rows.Count == 0){
+            <option value="">هنوز هیچ طبقه ای تعریف نشده است</option>
+        }
+        else{
+            if (Model.ListData.Rows[0]["success"].ToString().ToUpper() == "NOTOK"){
+                <option value="">@Model.ListData.Rows[0]["message"]</option>
+
+            }
+            else{
+                foreach(DataRow item in Model.ListData.Rows){
+                    <option value="@item["FloorId"]">@item["FloorNumber"] -> @item["FloorTitle"]</option>
+                }
+            }
+        }
+        break;
+
+    case "SelectFloorAll":
+        <option value="">همه</option>
+        if (Model.ListData.Rows.Count == 0)
+        {
+            <option value="">هنوز هیچ طبقه ای تعریف نشده است</option>
+        }
+        else
+        {
+            if (Model.ListData.Rows[0]["success"].ToString().ToUpper() == "NOTOK")
+            {
+                <option value="">@Model.ListData.Rows[0]["message"]</option>
+
+            }
+            else
+            {
+                foreach (DataRow item in Model.ListData.Rows)
+                {
+                    <option value="@item["FloorId"]">@item["FloorNumber"] -> @item["FloorTitle"]</option>
+                }
+            }
+        }
+        break;
+
+
+    case "SelectUnit":
+        if (Model.ListData.Rows.Count == 0){
+            <option value="">هنوز هیچ واحدی تعریف نشده است</option>
+        }
+        else{
+            foreach(DataRow item in Model.ListData.Rows){
+                <option value="@item["UnitId"]">@item["UnitNumber"]</option>
+            }
+        }
+        break;
+
+    case "SelectUnitAll":
+        <option value="">همه</option>
+        if (Model.ListData.Rows.Count == 0)
+        {
+            <option value="">هنوز هیچ واحدی تعریف نشده است</option>
+        }
+        else
+        {
+            foreach (DataRow item in Model.ListData.Rows)
+            {
+                <option value="@item["UnitId"]">@item["UnitNumber"]</option>
+            }
+        }
+        break;
+
+
+
+    case "Select":
+        break;
+
+}

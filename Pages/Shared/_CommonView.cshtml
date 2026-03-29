@@ -1,0 +1,100 @@
+﻿
+@{
+}
+@switch (@ViewData["Switch"])
+{
+    case "Result":
+        <div class='alert alert-primary w-max-350 mt-3 mx-auto text-center'>
+            <p class='alert alert-danger'>@ViewData["MSGHeader"]</p>
+            <div class='spc-pre-line'>
+                <span>@ViewData["MSG"]</span>
+                <span>
+                    @if (@ViewData["MSGAction"].ToString() != ""){
+                        <button type="button" class="BTN btn_Normal btn_Brown w-min-100" onclick="ClickBtn('@ViewData["MSGAction"]')">@ViewData["MSGActionOnvan"]</button>
+                    }
+                </span>
+                <span class="text-secondary">@ViewData["MSGFooter"]</span>
+            </div>
+        </div>
+        break;
+
+    case "ResultALarm":
+        <div class='alert alert-danger w-max-350 mt-3 mx-auto text-center'>
+            <p class='alert alert-primary'>@ViewData["MSGHeader"]</p>
+            <div class='spc-pre-line'>
+                <span>@ViewData["MSG"]</span>
+                <span>
+                    @if (@ViewData["MSGAction"].ToString() != "")
+                    {
+                        <button type="button" class="BTN btn_Normal btn_Brown w-min-100" onclick="ClickBtn('@ViewData["MSGAction"]')">@ViewData["MSGActionOnvan"]</button>
+                    }
+                </span>
+                <span class="text-secondary">@ViewData["MSGFooter"]</span>
+            </div>
+        </div>
+        break;
+
+    case "MSG":
+        <div class="w-100 p-2 font-17">
+            <div class="bg-Learn w-lim-200-500 mx-auto text-center">
+                <span class="icofont-alarm font-22 text-warning float-start mx-2"></span>
+                <div class="spc-pre-line">
+                    @ViewData["MSG"]
+                </div>
+            </div>
+        </div>
+        break;
+
+    case "LoginFast":
+        <div style="direction:rtl" class="container">
+            <div class="mt-5 mt-5 text-center">
+                <div class="w-max-350 border alert alert-info rounded border-info p-3">
+                    <form asp-antiforgery="true" method="post" data-ajax-method="post" data-ajax="true"
+                          data-ajax-begin="SpinnerShow('RES')"
+                          data-ajax-url="../loginfast?handler=Login"
+                          data-ajax-complete="LoginComp">
+                        <div class="text-center">
+                            <h5>برای امنیت بیشتر لازم است رمز ورود خود را تائید کنید</h5>
+                        </div>
+                        <hr class="bg-warning" />
+                        <div class="mb-2 ">
+                            <span class="control-label">رمز ورود به سیستم</span>
+                            <input type="password" name="Password" class="control-input text-center ltr" value="" />
+                        </div>
+                        <div class="mt-4 d-flex flex-wrap justify-content-around">
+                            <button type="submit" class="btn_Icon Icon_Blue">تائید  رمز ورود <span class="icofont-00x icofont-checked"></span> </button>
+                            <button type="button" class="btn_Icon Icon_Red" onclick="GoToUrl('/login');">خروج از برنامه <span class="icofont-00x icofont-logout icofont-rotate-180"></span> </button>
+                        </div>
+                        <hr />
+                        <div class="text-center text-brown" id="RES"></div>
+                        <input type="hidden" name="_Page" value="@ViewData["_Page"]" />
+                    </form>
+                </div>
+            </div>
+            <div id="HelpArea" class="text-center"></div>
+        </div>
+        break;
+
+    case "Error":
+        <div class='card w-max-350 mt-3 mx-auto text-center alert alert-danger'>
+            <p class='card-header alert alert-heading'><span class="icofont-5x text-primary icofont-live-support"></span></p>
+            <div><span class="font-32">خطا در اجرای دستور! </span>  <div class='mt-3 alert alert-info'>اطلاعات ورودی را کنترل کنید و دوباره تلاش کنید. اگر همچنان با خطا مواجه شدید به مدیریت اطلاع بدهید  </div> </div>
+
+            <div class="text-end"><button type="button" class="BTN btn_Top btn_Gray w-fix-75" onclick="AreaToggel('ErrDetail')">جزئیات</button> </div>
+            <div id="ErrDetail" class="border border-primary p-1 rounded rounded-3 text-start text-secondary dis-none">
+                <div>
+                    <span>دستور:</span>
+                    <p class="text-end spc-pre-wrap">@ViewData["ERRComm"]</p>
+                </div>
+                <hr />
+                <div>
+                    <span>خطا:</span>
+                    <p class="text-end spc-pre-wrap">@ViewData["ERRRes"]</p>
+                </div>
+            </div>
+        </div>
+        break;
+
+    default:
+        break;
+}

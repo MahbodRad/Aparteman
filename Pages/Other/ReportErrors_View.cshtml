@@ -1,0 +1,75 @@
+﻿@model Aparteman.Pages.Other.ReportErrorsModel
+@using System.Data;
+@using Aparteman.Services;
+@{
+    var RJ = 0; var ZF = ""; double Man = 0;
+}
+
+@switch (@ViewData["Switch"])
+{
+    case "SelectKarbar":
+        if (Model.ListKarbar.Rows.Count == 0){
+            <option value="0">موردی پیدا نشد</option>
+        }
+        else{
+            foreach (DataRow K in Model.ListKarbar.Rows)
+            {
+                <option value="@K["0"]">@K["KarbarName"]</option>
+            }
+        }
+        break;
+
+
+    case "Report":
+        <p class="rounded-pill bg-dark font-18 text-white op-0-9 p-2 w-min-200"> تعداد ردیف: @Model.ListData.Rows.Count</p>
+        <div class="header_Table">
+            <button type="button" class="btn_Icon footer_Right Icon_Red icofont-00x icofont-curved-double-right" data-bs-toggle="tooltip" data-bs-title="اسکرول به راست" onclick="ScrollRight('Report_FT');"></button>
+            <button type="button" class="btn_Icon footer_Left Icon_Red icofont-00x icofont-curved-double-left" data-bs-toggle="tooltip" data-bs-title="اسکرول به چپ" onclick="ScrollLeft('Report_FT');"></button>
+            <div id="Report_FT" class="overflow-hidden" onscroll="ScrollSlave(this, 'Report_MS');">
+                <table class="table grid-table">
+                    <thead>
+                        <tr>
+                            <th><span>#</span></th>
+                            <th><span class="w-fix-180">زمان</span></th>
+                            <th><span class="w-fix-180">کاربر</span></th>
+                            <th><span class="w-fix-180">فرم</span></th>
+                            <th><span class="w-fix-180">تابع</span></th>
+                            <th><span class="w-fix-300">دستور</span></th>
+                            <th><span class="w-fix-400">خطا</span></th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+        <div class="overflow-auto" id="Report_MS" onscroll="ScrollSlave(this, 'Report_FT');">
+            <table class="table grid-table">
+                <thead class="header_Tablehiden">
+                    <tr>
+                        <th><span>#</span></th>
+                        <th><span class="w-fix-180">زمان</span></th>
+                        <th><span class="w-fix-180">کاربر</span></th>
+                        <th><span class="w-fix-180">فرم</span></th>
+                        <th><span class="w-fix-180">تابع</span></th>
+                        <th><span class="w-fix-300">دستور</span></th>
+                        <th><span class="w-fix-400">خطا</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (DataRow item in Model.ListData.Rows)
+                    {{     RJ++;  }
+                        <tr class="text-center" onclick="RowSelect(this);">
+                            <td class="text-danger">@RJ</td>
+                            <td><span class="w-fixC-180 ltr">@item["TTime"]</span></td>
+                            <td><span class="w-fixC-180">@item["FullName"]</span></td>
+                            <td><span class="w-fixC-180"><a class="text-primary" href="/@item["NameForm"].ToString()" target="_blank">@item["Frm"]</a></span></td>
+                            <td class="ltr wrapword">@item["Prc"]</td>
+                            <td class="ltr wrapword cursor-pointer" onclick="copyAreaToClipboard(this,'خطا کپی شد');">@item["Comm"].ToString().Replace("|", "'")</td>
+                            <td class="ltr wrapword">@item["ERR"].ToString().Replace("|", "'")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        break;
+
+}
