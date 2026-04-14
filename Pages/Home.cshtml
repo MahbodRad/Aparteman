@@ -1,5 +1,204 @@
 ﻿@page 
 @using System.Data;
+@using System.Web
 @model Aparteman.Pages.HomeModel
+@{
+    DataTable ListElanatSath;
+    var RJ = 0;
+    DataRow pagesitem;
+}
 
-<h3 class="text-Panevis">صفحه خانه</h3>
+<div class="tab-content">
+
+    <!-- گزارش اعلانات -->
+    <div class="tab-pane fade active show" id="tab_A">
+        @{
+            pagesitem = Model.formData.Pages.Select("RJ = 1").First();
+        }
+        <div class="OnvanSafhe">
+            <h6 class="shadow">@pagesitem["OnvanPage"]</h6>
+        </div>
+
+        @if (!string.IsNullOrEmpty(pagesitem["HeaderPage"].ToString()))
+        {
+            <div class="alert alert-secondary">
+                @Html.Raw(HttpUtility.HtmlDecode(pagesitem["HeaderPage"].ToString()))
+            </div>
+        }
+
+        <div class="container">
+
+
+            @if(Model.ListElanat.Rows.Count != 0){
+                <div class="notification-list">
+
+                <!-- پیامهای سطح یک -->
+                @foreach (DataRow item in Model.ListElanat.Rows)
+                {
+                    if (item["Sath"].ToString() == "1")
+                    {
+                        <div class="notification-card sath_A">
+                            <div class="notification-icon">💧</div>
+                            <div class="notification-content">
+                                <div class="notification-title">@item["Onvan"].ToString()</div>
+                                <div class="border-top border-2 border-primary">
+                                    @Html.Raw(HttpUtility.HtmlDecode(item["Matn"].ToString()))
+                                </div>
+                                <div class="notification-footer">
+                                    <span>@item["FromDate"].ToString()</span>
+                                    <span>@item["ToDate"].ToString()</span>
+                                </div>
+                            </div>
+                        </div>
+
+                    }
+                }
+
+
+                <!-- پیامهای سطح دو -->
+                @foreach (DataRow item in Model.ListElanat.Rows)
+                {
+                    if (item["Sath"].ToString() == "2")
+                    {
+                        <div class="notification-card sath_B">
+                            <div class="notification-icon">💧</div>
+                            <div class="notification-content">
+                                <div class="notification-title">@item["Onvan"].ToString()</div>
+                                <div class="border-top border-2 border-primary pt-2">
+                                    @Html.Raw(HttpUtility.HtmlDecode(item["Matn"].ToString()))
+                                </div>
+                                <div class="notification-footer">
+                                    <span>@item["FromDate"].ToString()</span>
+                                    <span>@item["ToDate"].ToString()</span>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+
+
+                <!-- پیامهای سطح سه -->
+                @foreach (DataRow item in Model.ListElanat.Rows)
+                {
+                    if (item["Sath"].ToString() == "3")
+                    {
+                        <div class="notification-card sath_C">
+                            <div class="notification-icon">💧</div>
+                            <div class="notification-content">
+                                <div class="notification-title">@item["Onvan"].ToString()</div>
+                                <div class="border-top border-2 border-primary">
+                                    @Html.Raw(HttpUtility.HtmlDecode(item["Matn"].ToString()))
+                                </div>
+                                <div class="notification-footer">
+                                    <span>@item["FromDate"].ToString()</span>
+                                    <span>@item["ToDate"].ToString()</span>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+
+
+                <!-- پیامهای سطح چهار -->
+                @foreach (DataRow item in Model.ListElanat.Rows)
+                {
+                    if (item["Sath"].ToString() == "4")
+                    {
+                        <div class="notification-card sath_D">
+                            <div class="notification-icon">💧</div>
+                            <div class="notification-content">
+                                <div class="notification-title">@item["Onvan"].ToString()</div>
+                                <div class="border-top border-2 border-primary">
+                                    @Html.Raw(HttpUtility.HtmlDecode(item["Matn"].ToString()))
+                                </div>
+                                <div class="notification-footer">
+                                    <span>@item["FromDate"].ToString()</span>
+                                    <span>@item["ToDate"].ToString()</span>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+
+
+
+                <!-- پیامهای سطح پنج -->
+                @foreach (DataRow item in Model.ListElanat.Rows)
+                {
+                    if (item["Sath"].ToString() == "5")
+                    {
+                        <div class="notification-card sath_E">
+                            <div class="notification-icon">💧</div>
+                            <div class="notification-content">
+                                <div class="notification-title">@item["Onvan"].ToString()</div>
+                                <div class="border-top border-2 border-primary">
+                                    @Html.Raw(HttpUtility.HtmlDecode(item["Matn"].ToString()))
+                                </div>
+                                <div class="notification-footer">
+                                    <span>@item["FromDate"].ToString()</span>
+                                    <span>@item["ToDate"].ToString()</span>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+                </div>
+
+            }
+
+        </div>
+    </div>
+
+
+    <!-- پیامهای خصوصی -->
+    <div class="tab-pane fade" id="tab_B">
+        @{
+            pagesitem = Model.formData.Pages.Select("RJ = 2").First();
+        }
+        <div class="OnvanSafhe">
+            <h6 class="shadow">@pagesitem["OnvanPage"]</h6>
+        </div>
+
+        @if (!string.IsNullOrEmpty(pagesitem["HeaderPage"].ToString()))
+        {
+            <div class="alert alert-secondary">
+                @Html.Raw(HttpUtility.HtmlDecode(pagesitem["HeaderPage"].ToString()))
+            </div>
+        }
+
+        <div class="container">
+        </div>
+    </div>
+</div>
+
+
+
+<footer-page class="nav nav-tabs border-top border-light">
+    <div class="w-inline">
+        <div id="menu-page-btn">
+            <menu-page data-bs-toggle="tab" data-bs-target="#tab_A" class="active">تابلوی اعلانات</menu-page><point></point>
+            <menu-page data-bs-toggle="tab" data-bs-target="#tab_B">پیامهای خصوصی</menu-page><point></point>
+            <menu-page class="w-min-50" onclick="HelpAjax(@Model.FormId);" data-bs-toggle="tooltip" data-bs-title="راهنما">
+                <span class="menu-firuze icofont-00x icofont-learn"></span>
+            </menu-page>
+            <menu-page class="w-min-50" onclick="ToggleFullscreen();" data-bs-toggle="tooltip" data-bs-title="تمام صفحه">
+                <span class="menu-firuze icofont-00x icofont-expand"></span>
+            </menu-page>
+            <menu-page onclick="GoToTop();" class="w-min-50" data-bs-toggle="tooltip" data-bs-title="برگشت به بالا">
+                <span class="menu-firuze icofont-00x icofont-stylish-up"></span>
+            </menu-page>
+            <menu-page class="bg-secondary" data-bs-toggle="tooltip" data-bs-title="برگشت به صفحه قبل">
+                <select class="text-start bg-secondary text-light" onchange="GoToUrl(this.value);">
+                    @foreach (DataRow item in Model.formData.lastForms.Rows)
+                    {
+                        <option value="/@item["Route"]">@item["FormOnvan"]</option>
+                    }
+                </select>
+            </menu-page><point></point>
+            <button type="button" class="pos-Right btn_Icon Icon_Red icofont-2x icofont-curved-double-right d-md-none"
+                    data-bs-title="اسکرول به راست" onclick="ScrollRight('menu-page-btn');"></button>
+            <button type="button" class="pos-Left btn_Icon Icon_Red icofont-2x icofont-curved-double-left d-md-none"
+                    data-bs-title="اسکرول به چپ" onclick="ScrollLeft('menu-page-btn');"></button>
+        </div>
+    </div>
+</footer-page>

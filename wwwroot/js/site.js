@@ -1381,7 +1381,7 @@ function SelectItem(S, Fld, Area) {
     SetValueSimplMain(Fld, IdsValue + ID + ',');
     var fnTxt = "ReturnSelectItem('" + ID + "','" + Fld + "','" + Area + "');";
 
-    var NewItem = '<div class="ListItemsSelected" id="' + Area + '_' + ID + '"><span class="float-start">' + SelectOptionText(S) + '</span> <span class="icofont-2x icofont-delete text-danger float-end btn-hover" onclick = "' + fnTxt + '" ></span> </div>'
+    var NewItem = '<div class="ListItemsSelected d-flex justify-content-between" id="' + Area + '_' + ID + '"><span>' + SelectOptionText(S) + '</span> <span class="icofont-2x icofont-delete text-danger btn-hover" onclick = "' + fnTxt + '" ></span> </div>'
     $('#' + Area).append(NewItem);
     SetValueSimplMain(S, '');
 }

@@ -21,11 +21,11 @@
             <div class="card-body font-20" id="HelpAreaMatn" style="font-family: Calibri;">
                 @foreach (DataRow HLP in Model.ListData.Rows)
                 {
-                    <div class="d-flex justify-content-between p-2 my-2 rounded-3 bg-formHF cursor-pointer" onclick="AreaToggel('Cont_@HLP["Si"]'); ChangIcon('hlpIcn_@HLP["Si"]', 'icofont-caret-down', 'icofont-caret-up')">
+                    <div class="d-flex justify-content-between p-2 my-2 rounded-3 bg-formHF cursor-pointer" onclick="AreaToggel('Cont_@HLP["PageId"]'); ChangIcon('hlpIcn_@HLP["PageId"]', 'icofont-caret-down', 'icofont-caret-up')">
                         <h5 class="text-primary font-bold mt-2">@HLP["OnvanPage"]</h5>
-                        <span id="hlpIcn_@HLP["Si"]" class="text-brown icofont-2x my-auto icofont-caret-down"></span>
+                        <span id="hlpIcn_@HLP["PageId"]" class="text-brown icofont-2x my-auto icofont-caret-down"></span>
                     </div>
-                    <div class="pb-5 dis-none RawImg" id="Cont_@HLP["Si"]">
+                    <div class="pb-5 dis-none RawImg" id="Cont_@HLP["PageId"]">
                         <div>@Html.Raw(HttpUtility.HtmlDecode(@HLP["HelpPage"].ToString()))</div>
                     </div>
                 }

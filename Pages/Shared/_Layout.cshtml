@@ -10,7 +10,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,  height=device-height, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Aparteman</title>
+    <title>@ViewData["Onvan"] - Aparteman</title>
     <script type="importmap456465465"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.rtl.min.css" />
     <link rel="stylesheet" href="~/fonts/icofont/icofont.min.css" />
@@ -31,7 +31,7 @@
                     <div id="form-btn">
                         @foreach (var FRM in layoutData.listForms)
                         {
-                            <menu-form class="@FRM.Css"><a href="@FRM.Adres" class="w-min-100">@FRM.Title</a></menu-form>
+                            <menu-form class="@FRM.Css"><a href="@FRM.Adres" class="w-min-100" data-bs-toggle="tooltip" data-bs-title="@FRM.Title">@FRM.Onvan</a></menu-form>
                         }
                         <menu-form class="bg_Brown"><a href="~/Login" class="text-white w-min-100">خروج</a></menu-form>
                         <button type="button" class="pos-Right btn_Icon Icon_Red icofont-2x icofont-curved-double-right" data-bs-toggle="tooltip" data-bs-title="اسکرول به راست" onclick="ScrollRight('form-btn');"></button>
@@ -56,7 +56,7 @@
                         <div class="m-1 alert alert-secondary">@Html.Raw(HttpUtility.HtmlDecode(@layoutData.formSetup.Footer))</div>
                     }
                     <div class="container">
-                        <img src="~/images/logo-96.png" class="w-fix-50" /> آپارتمان من --> امروز: @DateTime.Today.ToString("D").Replace("Sunday", "یکشنبه").Replace("Monday", "دوشنبه").Replace("Tuesday", "سه شنبه").Replace("Wednesday", "چهارشنبه").Replace("Thursday", "پنجشنبه").Replace("Friday", "جمعه").Replace("Saturday", "شنبه") --> @layoutData.formSetup.Today
+                        <img src="~/images/logo.png" class="w-fix-50" /> آپارتمان من --> امروز: @DateTime.Today.ToString("D").Replace("Sunday", "یکشنبه").Replace("Monday", "دوشنبه").Replace("Tuesday", "سه شنبه").Replace("Wednesday", "چهارشنبه").Replace("Thursday", "پنجشنبه").Replace("Friday", "جمعه").Replace("Saturday", "شنبه") --> @layoutData.formSetup.Today
                     </div>
                 </div>
             </footer>
@@ -110,10 +110,11 @@
         <div id="ModalForm_B">
             <div class="card">
                 <div class="card-header">
-                    <h6 class="text-primary float-start" id="MsgFormTITR_B">لیست پیام های جدید</h6>
+                    <h6 class="text-primary float-start" id="MsgFormTITR_B">Heading</h6>
                     <button type="button" class="btn_Icon Icon_Blue icofont-2x icofont-close-squared-alt float-end" onclick="CloseFormMsg('B');" data-bs-toggle="tooltip" data-bs-title="بستن پنجره"></button>
                 </div>
                 <div class="p-1 w-min-media" id="MsgFormMATN_B">
+                    Msg body..
                 </div>
             </div>
         </div>
@@ -121,10 +122,11 @@
         <div id="ModalForm_C">
             <div class="card">
                 <div class="card-header">
-                    <h6 class="text-primary float-start" id="MsgFormTITR_C">لیست پیام های جدید</h6>
+                    <h6 class="text-primary float-start" id="MsgFormTITR_C">Heading</h6>
                     <button type="button" class="btn_Icon Icon_Blue icofont-2x icofont-close-squared-alt float-end" onclick="CloseFormMsg('C');" data-bs-toggle="tooltip" data-bs-title="بستن پنجره"></button>
                 </div>
                 <div class="p-1 w-min-media" id="MsgFormMATN_C">
+                    Msg body..
                 </div>
             </div>
         </div>

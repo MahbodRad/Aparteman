@@ -45,7 +45,7 @@ namespace Aparteman.Pages
                 //******** راهنمای کلی اولیه
                 Params = new Dictionary<string, object>
                 {
-                    { "@Si", ID},
+                    { "@FormId", ID},
                 };
                 ProcName = "Forms_Help";
                 RowData = await DBS.GetReportRowAsync(ProcName, Params);
@@ -53,7 +53,7 @@ namespace Aparteman.Pages
                 //********  راهنمای صفحات
                 Params = new Dictionary<string, object>
                 {
-                    { "@Si", ID},
+                    { "@FormId", ID},
                 };
                 ProcName = "Forms_HelpPages";
                 ListData = await DBS.GetReportAsync(ProcName, Params);

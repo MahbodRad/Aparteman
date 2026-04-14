@@ -1,8 +1,7 @@
 ﻿@model Aparteman.Pages.basedata.BuildingModel
 @using System.Data;
 @using Aparteman.Services;
-@{
-}
+
 @switch (@ViewData["Switch"])
 {
     case "FormSabtComplex":
@@ -21,17 +20,11 @@
                         <div class="row">
 
                             <div class="mb-3">
-                                <div class="d-flex">
-                                    <label class="form-label">نام مجتمع</label>
-                                    <span class="ms-2 py-2 btn_IconPill Icon_Gray icofont-info-circle" onclick="ShowFastHelp(this,'نامی که مجتمع شما با آن در سیستم شناخته می‌شود.این نام در گزارش‌ها و بخش‌های مدیریتی نمایش داده خواهد شد')"></span>
-                                </div>
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'نامی که مجتمع شما با آن در سیستم شناخته می‌شود.این نام در گزارش‌ها و بخش‌های مدیریتی نمایش داده خواهد شد')">نام مجتمع</label>
                                 <input type="text" class="form-control text-center" name="ComplexName" >
                             </div>
                             <div class="mb-3">
-                                <div class="d-flex">
-                                    <label class="form-label">آدرس</label>
-                                    <span class="ms-2 py-2 btn_IconPill Icon_Gray icofont-info-circle" onclick="ShowFastHelp(this,'آدرس مجتمع شما. در چاپ ها و مواردی که نیاز به اعلام آدرس باشد، نمایش داده خواهد شد')"></span>
-                                </div>
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'آدرس مجتمع شما. در چاپ ها و مواردی که نیاز به اعلام آدرس باشد، نمایش داده خواهد شد')">آدرس</label>
                                 <textarea class="form-control" name="Adress"></textarea>
                             </div>
 
@@ -63,17 +56,11 @@
                         <input type="hidden" name="ID" value="@ViewData["ID"]" />
                         <div class="row">
                             <div class="mb-3">
-                                <div class="d-flex">
-                                    <label class="form-label">نام مجتمع</label>
-                                    <span class="ms-2 py-2 btn_IconPill Icon_Gray icofont-info-circle" onclick="ShowFastHelp(this,'نامی که مجتمع شما با آن در سیستم شناخته می‌شود.این نام در گزارش‌ها و بخش‌های مدیریتی نمایش داده خواهد شد')"></span>
-                                </div>
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'نامی که مجتمع شما با آن در سیستم شناخته می‌شود.این نام در گزارش‌ها و بخش‌های مدیریتی نمایش داده خواهد شد')">نام مجتمع</label>
                                 <input type="text" class="form-control text-center" name="ComplexName"  value="@Model.RowData["ComplexName"]">
                             </div>
                             <div class="mb-3">
-                                <div class="d-flex">
-                                    <label class="form-label">آدرس</label>
-                                    <span class="ms-2 py-2 btn_IconPill Icon_Gray icofont-info-circle" onclick="ShowFastHelp(this,'آدرس مجتمع شما. در چاپ ها و مواردی که نیاز به اعلام آدرس باشد، نمایش داده خواهد شد')"></span>
-                                </div>
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'آدرس مجتمع شما. در چاپ ها و مواردی که نیاز به اعلام آدرس باشد، نمایش داده خواهد شد')">آدرس</label>
                                 <textarea class="form-control" name="Adress">@Model.RowData["Adress"]</textarea>
                             </div>
 
@@ -176,10 +163,7 @@
                             </div>
                             <div class="mb-3 row">
                                 <div class="col-6">
-                                    <div class="d-flex">
-                                        <label class="form-label">کد ساختمان</label>
-                                        <span class="ms-2 py-2 btn_IconPill Icon_Gray icofont-info-circle" onclick="ShowFastHelp(this,'کدی که هر ساختمان با آن در سیستم شناخته می‌شود.این کد در گزارش‌ها و بجای نام ساختمان استفاده میشود و در بخش‌های مدیریتی نمایش داده خواهد شد')"></span>
-                                    </div>
+                                    <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'کدی که هر ساختمان با آن در سیستم شناخته می‌شود.این کد در گزارش‌ها و بجای نام ساختمان استفاده میشود و در بخش‌های مدیریتی نمایش داده خواهد شد')">کد ساختمان</label>
                                     <input type="text" class="form-control text-center" id="BuildingCode" name="BuildingCode">
                                 </div>
                                 <div class="col-6">
@@ -191,10 +175,7 @@
                                 </div>
                             </div>
                             <div class="mb-3">
-                                <div class="d-flex">
-                                    <label class="form-label">نام ساختمان</label>
-                                    <span class="ms-2 py-2 btn_IconPill Icon_Gray icofont-info-circle" onclick="ShowFastHelp(this,'نامی که هر ساختمان با آن در سیستم شناخته می‌شود.این نام در گزارش‌ها و بخش‌های مدیریتی نمایش داده خواهد شد')"></span>
-                                </div>
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'نامی که هر ساختمان با آن در سیستم شناخته می‌شود.این نام در گزارش‌ها و بخش‌های مدیریتی نمایش داده خواهد شد')">نام ساختمان</label>
                                 <input type="text" class="form-control text-center" id="BuildingName" name="BuildingName">
                             </div>
                         </div>
@@ -224,10 +205,7 @@
                             </div>
                             <div class="mb-3 row">
                                 <div class="col-6">
-                                    <div class="d-flex">
-                                        <label class="form-label">کد ساختمان</label>
-                                        <span class="ms-2 py-2 btn_IconPill Icon_Gray icofont-info-circle" onclick="ShowFastHelp(this,'کدی که هر ساختمان با آن در سیستم شناخته می‌شود.این کد در گزارش‌ها و بجای نام ساختمان استفاده میشود و در بخش‌های مدیریتی نمایش داده خواهد شد')"></span>
-                                    </div>
+                                    <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'کدی که هر ساختمان با آن در سیستم شناخته می‌شود.این کد در گزارش‌ها و بجای نام ساختمان استفاده میشود و در بخش‌های مدیریتی نمایش داده خواهد شد')">کد ساختمان</label>
                                     <input type="text" class="form-control text-center" id="BuildingCode" name="BuildingCode" value="@Model.RowData["BuildingCode"]">
                                 </div>
                                 <div class="col-6">
@@ -247,10 +225,7 @@
                                 </div>
                             </div>
                             <div class="mb-3">
-                                <div class="d-flex">
-                                    <label class="form-label">نام ساختمان</label>
-                                    <span class="ms-2 py-2 btn_IconPill Icon_Gray icofont-info-circle" onclick="ShowFastHelp(this,'نامی که هر ساختمان با آن در سیستم شناخته می‌شود.این نام در گزارش‌ها و بخش‌های مدیریتی نمایش داده خواهد شد')"></span>
-                                </div>
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'نامی که هر ساختمان با آن در سیستم شناخته می‌شود.این نام در گزارش‌ها و بخش‌های مدیریتی نمایش داده خواهد شد')">نام ساختمان</label>
                                 <input type="text" class="form-control text-center" id="BuildingName" name="BuildingName" value="@Model.RowData["BuildingName"]">
                             </div>
 
@@ -343,10 +318,7 @@
                             </div>
                             <div class="mb-3 row">
                                 <div class="col-6">
-                                    <div class="d-flex">
-                                        <label class="form-label">شماره طبقه</label>
-                                        <span class="ms-2 py-2 btn_IconPill Icon_Gray icofont-info-circle" onclick="ShowFastHelp(this,'شماره ای که به هر طبقه در ساختمان تخصیص میدهید.این شماره در گزارش‌ها و بجای نام طبقه استفاده میشود و در بخش‌های مدیریتی نمایش داده خواهد شد')"></span>
-                                    </div>
+                                    <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'شماره ای که به هر طبقه در ساختمان تخصیص میدهید.این شماره در گزارش‌ها و بجای نام طبقه استفاده میشود و در بخش‌های مدیریتی نمایش داده خواهد شد')">شماره طبقه</label>
                                     <input type="text" class="form-control text-center ltr" id="FloorNumber" name="FloorNumber">
                                 </div>
                                 <div class="col-6">
@@ -358,10 +330,7 @@
                                 </div>
                             </div>
                             <div class="mb-3">
-                                <div class="d-flex">
-                                    <label class="form-label">عنوان طبقه</label>
-                                    <span class="ms-2 py-2 btn_IconPill Icon_Gray icofont-info-circle" onclick="ShowFastHelp(this,'عنوانی که به هر  طبقه در ساختمان میدهید. مثلا طبقه همکف یا طبقه سوم و با آن نام در سیستم شناخته می‌شود.این نام در گزارش‌ها و بخش‌های مدیریتی نمایش داده خواهد شد')"></span>
-                                </div>
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'عنوانی که به هر  طبقه در ساختمان میدهید. مثلا طبقه همکف یا طبقه سوم و با آن نام در سیستم شناخته می‌شود.این نام در گزارش‌ها و بخش‌های مدیریتی نمایش داده خواهد شد')">عنوان طبقه</label>
                                 <input type="text" class="form-control text-center" name="FloorTitle">
                             </div>
                         </div>
@@ -391,10 +360,7 @@
                             </div>
                             <div class="mb-3 row">
                                 <div class="col-6">
-                                    <div class="d-flex">
-                                        <label class="form-label">شماره طبقه</label>
-                                        <span class="ms-2 py-2 btn_IconPill Icon_Gray icofont-info-circle" onclick="ShowFastHelp(this,'شماره ای که به هر طبقه در ساختمان تخصیص میدهید.این شماره در گزارش‌ها و بجای نام طبقه استفاده میشود و در بخش‌های مدیریتی نمایش داده خواهد شد')"></span>
-                                    </div>
+                                    <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'شماره ای که به هر طبقه در ساختمان تخصیص میدهید.این شماره در گزارش‌ها و بجای نام طبقه استفاده میشود و در بخش‌های مدیریتی نمایش داده خواهد شد')">شماره طبقه</label>
                                     <input type="text" class="form-control text-center ltr" id="FloorNumber" name="FloorNumber" value="@Model.RowData["FloorNumber"]">
                                 </div>
                                 <div class="col-6">
@@ -414,10 +380,7 @@
                                 </div>
                             </div>
                             <div class="mb-3">
-                                <div class="d-flex">
-                                    <label class="form-label">عنوان طبقه</label>
-                                    <span class="ms-2 py-2 btn_IconPill Icon_Gray icofont-info-circle" onclick="ShowFastHelp(this,'عنوانی که به هر  طبقه در ساختمان میدهید. مثلا طبقه همکف یا طبقه سوم و با آن نام در سیستم شناخته می‌شود.این نام در گزارش‌ها و بخش‌های مدیریتی نمایش داده خواهد شد')"></span>
-                                </div>
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'عنوانی که به هر  طبقه در ساختمان میدهید. مثلا طبقه همکف یا طبقه سوم و با آن نام در سیستم شناخته می‌شود.این نام در گزارش‌ها و بخش‌های مدیریتی نمایش داده خواهد شد')">عنوان طبقه</label>
                                 <input type="text" class="form-control text-center" name="FloorTitle" value="@Model.RowData["FloorTitle"]">
                             </div>
                         </div>

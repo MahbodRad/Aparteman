@@ -7,48 +7,56 @@ function DissectionItemRep(ITEM) {
 
 function ShowTafzili(ITEM, BedBes) {
     const DetailCode = SelectOptionData(ITEM, 'data-Detail');
-    if (BedBes == 'Bed') {
-        AreaHide('tafziliBed_1');
-        AreaHide('tafziliBed_2');
-        AreaHide('tafziliBed_3');
 
-        if (DetailCode == 4)
-            AreaHide('tafziliBedArea');
-        else
-            AreaShow('tafziliBedArea');
-
-        AreaShow('tafziliBed_' + DetailCode);
-        SetValueSimpl('ListFindTafziliCodeBed', DetailCode, 'filterTafziliBed', '');
-        SetHtml('ListFindTafziliBed', '<option value="0">در محدوده بالا جستجو کنید</option>');
-    }
-    else {
-        AreaHide('tafziliBes_1');
-        AreaHide('tafziliBes_2');
-        AreaHide('tafziliBes_3');
-
-        if (DetailCode == 4)
-            AreaHide('tafziliBesArea');
-        else
-            AreaShow('tafziliBesArea');
-
-        AreaShow('tafziliBes_' + DetailCode);
-        SetValueSimpl('ListFindTafziliCodeBes', DetailCode, 'filterTafziliBes', '');
-        SetHtml('ListFindTafziliBes', '<option value="0">در محدوده بالا جستجو کنید</option>');
-    }
-}
-
-function ShowTafziliRep(ITEM) {
-    const DetailCode = SelectOptionData(ITEM, 'data-Detail');
-    AreaHide('tafziliRep_1');
-    AreaHide('tafziliRep_2');
-    AreaHide('tafziliRep_3');
+    AreaHide('tafzili' + BedBes + '_1');
+    AreaHide('tafzili' + BedBes + '_2');
+    AreaHide('tafzili' + BedBes + '_3');
 
     if (DetailCode == 4)
-        AreaHide('tafziliRepArea');
+        AreaHide('tafzili' + BedBes + 'Area');
     else
-        AreaShow('tafziliRepArea');
+        AreaShow('tafzili' + BedBes + 'Area');
 
-    AreaShow('tafziliRep_' + DetailCode);
-    SetValueSimpl('ListFindTafziliCodeRep', DetailCode, 'filterTafziliRep', '');
-    SetHtml('ListFindTafziliRep', '<option value="0">در محدوده بالا جستجو کنید</option>');
+    AreaShow('tafzili' + BedBes + '_' + DetailCode);
+    SetValueSimpl('filterTafzili' + BedBes, '');
+    SetHtml('ListFindTafzili' + BedBes, '<option value="0">در محدوده بالا جستجو کنید</option>');
+}
+
+function ShowTafziliRep(ITEM,REP) {
+    const DetailCode = SelectOptionData(ITEM, 'data-Detail');
+    AreaHide('tafziliRep' + REP +'_1');
+    AreaHide('tafziliRep' + REP +'_2');
+    AreaHide('tafziliRep' + REP +'_3');
+
+    if (DetailCode == 4)
+        AreaHide('tafziliRep' + REP +'Area');
+    else
+        AreaShow('tafziliRep' + REP +'Area');
+
+    AreaShow('tafziliRep' + REP +'_' + DetailCode);
+    SetValueSimpl('filterTafziliRep' + REP , '');
+    SetHtml('ListFindtafziliRep' + REP , '<option value="0">در محدوده بالا جستجو کنید</option>');
+}
+
+
+FinancialEventsComplete = function (RES) {
+    SpinnerHideForm();
+    if (isJsonString(RES)) {
+        const frm = RES.form
+        const JS = RES.responseJSON;
+        if (JS.success.toUpperCase() == "OK") {
+            ClickBtnSimpl('FormSabtVoucherBtn', JS.FinancialEventId); 
+            ShowMsg('افزودن ردیف ها', JS.message);
+        }
+        else {
+            if (JS.field) {
+                const el = frm.querySelector('[name="' + JS.field + '"]');
+                if (el) {
+                    el.focus();
+                    el.classList.add("error-border");
+                }
+            }
+        };
+        ShowMsg('انجام دستور', JS.message);
+    }
 }

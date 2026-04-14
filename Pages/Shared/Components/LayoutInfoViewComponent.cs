@@ -26,7 +26,7 @@ namespace Aparteman.Pages.Shared.Components
             await FormInfo(FormId, userInfo);
 
             ViewData["Script"] = FormSet.Script;
-            ViewData["Titel"] = FormSet.Title;
+            ViewData["Titel"] = FormSet.Onvan;
           
             var model = new LayoutDataModel
             { 
@@ -62,6 +62,7 @@ namespace Aparteman.Pages.Shared.Components
                 _Frm = new ListForm()
                 {
                     Title = item["FormTitle"].ToString(),
+                    Onvan = item["FormOnvan"].ToString(),
                     Adres = item["Route"].ToString(),
                     
                     Css = "menu-ItemPre",
@@ -71,7 +72,7 @@ namespace Aparteman.Pages.Shared.Components
                 if (item.Field<Int32>("FormId") == FormId)
                 {
                     _Frm.Css = "menu-form-Item";
-                    FormSet.Title = item["FormTitle"].ToString();
+                    FormSet.Onvan = item["FormOnvan"].ToString();
                     FormSet.Header = item["Header"].ToString();
                     FormSet.Footer = item["Footer"].ToString();
                 }

@@ -20,8 +20,8 @@ namespace Aparteman.Pages
 
         public UserInfo userInfo = new UserInfo();
         public required FormData formData;
-        public required DataTable ListProducts { get; set; }
-        public required DataTable ListCategoris { get; set; }
+        public required DataTable ListElanat { get; set; }
+        public required DataTable ListElanatSath { get; set; }
         public required DataRow RowData;
 
 
@@ -34,6 +34,14 @@ namespace Aparteman.Pages
 
                 formData = await DBS.GetFormData(userInfo.Id, FormId);
 
+                // لیست اعلانات
+                Params = new Dictionary<string, object>
+                {
+                    { "@UserId", userInfo.Id },
+                };
+                ProcName = "dbo.Elanat_List";
+                ListElanat = await DBS.GetReportAsync(ProcName, Params);
+
                 return Page();
             }
             catch (Exception ex)
@@ -41,123 +49,6 @@ namespace Aparteman.Pages
                 ViewData["ERRComm"] = await DBS.LogErrorSaveAsync(ProcName, Params, Center.GetUserId(Request.Cookies["User.Aparteman.ir"]), FormId, MethodBase.GetCurrentMethod().Name, ex.Message);
                 return RedirectToPage("/Other/Khata", new { returnUrl = URL });
             }
-        }
-
-        public async Task<IActionResult> OnPostSendToSabad(string ProdID , string NQ, string Sharh)
-        {//افزودن کالا به سبد
-            try
-            {
-                if (!await DBS.CheckToken(Center.TrimTxt(Request.Cookies["Aparteman.ir"]), userInfo))
-                    return RedirectToPage("/LoginFast");
-
-                Params = new Dictionary<string, object>
-                {
-                    { "@Id_Customer", userInfo.Id } ,
-                    { "@Id_Product", ProdID },
-                    { "@Nq", NQ },
-                    { "@Sharh", Sharh },
-                };
-                ProcName = "Factor_Add";
-                return Content(await DBS.GetReportResultAsync(ProcName, Params, "ResTp"));
-            }
-            catch (Exception ex)
-            {
-                ViewData["ERRComm"] = await DBS.LogErrorSaveAsync(ProcName, Params, Center.GetUserId(Request.Cookies["User.Aparteman.ir"]), FormId, MethodBase.GetCurrentMethod().Name, ex.Message);
-                ViewData["ERRRes"] = ex.Message;
-                ViewData["Switch"] = "Error"; VU = "_CommonView";
-            }
-
-            return new PartialViewResult
-            {
-                ViewName = VU,
-                ViewData = this.ViewData
-            };
-
-        }
-
-        public async Task<IActionResult> OnGetFormProductInfo(string ProdID)
-        {//فرم اطلاعات کامل کالا
-            try
-            {
-                if (!await DBS.CheckToken(Center.TrimTxt(Request.Cookies["Aparteman.ir"]), userInfo))
-                    return RedirectToPage("/LoginFast");
-                
-                ViewData["Switch"] = "FormProductInfo";
-
-                Params = new Dictionary<string, object>
-                {
-                    { "@Si", ProdID },
-                };
-                ProcName = "Products_Info";
-                RowData = await DBS.GetReportRowAsync(ProcName, Params);
-            }
-            catch (Exception ex)
-            {
-                ViewData["ERRComm"] = await DBS.LogErrorSaveAsync(ProcName, Params, Center.GetUserId(Request.Cookies["User.Aparteman.ir"]), FormId, MethodBase.GetCurrentMethod().Name, ex.Message);
-                ViewData["ERRRes"] = ex.Message;
-                ViewData["Switch"] = "Error"; VU = "_CommonView";
-            }
-
-            return new PartialViewResult
-            {
-                ViewName = VU,
-                ViewData = this.ViewData
-            };
-
-        }
-        public async Task<IActionResult> OnGetFormSendToSabad(string ProdID)
-        {//افزودن کالا به سبد
-            try
-            {
-                if (!await DBS.CheckToken(Center.TrimTxt(Request.Cookies["Aparteman.ir"]), userInfo))
-                    return RedirectToPage("/LoginFast");
-
-                ViewData["Switch"] = "FormSendToSabad";
-
-                ViewData["ProdID"] = ProdID;
-            }
-            catch (Exception ex)
-            {
-                ViewData["ERRComm"] = await DBS.LogErrorSaveAsync(ProcName, Params, Center.GetUserId(Request.Cookies["User.Aparteman.ir"]), FormId, MethodBase.GetCurrentMethod().Name, ex.Message);
-                ViewData["ERRRes"] = ex.Message;
-                ViewData["Switch"] = "Error"; VU = "_CommonView";
-            }
-
-            return new PartialViewResult
-            {
-                ViewName = VU,
-                ViewData = this.ViewData
-            };
-
-        }
-
-        public async Task<IActionResult> OnGetSearchKala(string Category, string Prod)
-        {// لیست جستجو
-            try
-            {
-                ViewData["Switch"] = "ListProducts";
-
-                // کالاهای جستجو شده
-                Params = new Dictionary<string, object>
-                {
-                    { "@Category", Category },
-                    { "@Prod", Prod }
-                };
-                ProcName = "Products_ListSearh";
-                ListProducts = await DBS.GetReportAsync(ProcName, Params);
-            }
-            catch (Exception ex)
-            {
-                ViewData["ERRComm"] = await DBS.LogErrorSaveAsync(ProcName, Params, Center.GetUserId(Request.Cookies["User.Aparteman.ir"]), FormId, MethodBase.GetCurrentMethod().Name, ex.Message);
-                ViewData["ERRRes"] = ex.Message;
-                ViewData["Switch"] = "Error"; VU = "_CommonView";
-            }
-
-            return new PartialViewResult
-            {
-                ViewName = VU,
-                ViewData = this.ViewData
-            };
         }
 
     }

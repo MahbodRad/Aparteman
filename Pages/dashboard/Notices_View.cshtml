@@ -1,0 +1,243 @@
+﻿@using System.Data;
+@using Aparteman.Services;
+@using System.Web
+@{
+    var RJ = 0;
+}
+
+@switch (@ViewData["Switch"])
+{
+    case "FormSabtElanat":
+        <section class="container p-1">
+            <div class="secondArea">
+                @if (@ViewData["ID"].ToString() == "0")
+                {
+
+                    <form asp-antiforgery="true" method="post" data-ajax-method="post" data-ajax="true"
+                          data-ajax-confirm="متن اطلاعیه ذخیره گردد؟"
+                          data-ajax-begin="SpinnerShowForm('چند لحظه صبر کنید در حال ذخیره');"
+                          data-ajax-Btn="UpdateElanBtn"
+                          data-ajax-url="?handler=UpdateElan"
+                          data-ajax-complete="JsonClose_A">
+                        <input type="hidden" name="ID" value="@ViewData["ID"]" />
+
+
+                        <div class="mb-2">
+                            <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'موضوع مناسبی برای این اطلاعیه بنویسید')">موضوع</label>
+                            <input type="text" class="control-input text-center" maxlength="100" name="Onvan" />
+                        </div>
+                        <div class="row text-center">
+                            <div class="col-sm-4">
+                                <div class="w-fix-200 mb-2">
+                                    <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'سطح نمایش را انتخاب کنید. سطح یک در ابتدای و بالای صفحه اعلانات نمایش داده میشود و سطح پنج در انتهای همه اطلاعیه های دیگر نمایش داده میشود. در هر سطح، ابتدا جدید ترین اطلاعیه نمایش داده خواهد شد.')">ترتیب نمایش </label>
+                                    <select class="control-input" name="Sath">
+                                        <option value="0">انتخاب کنید</option>
+                                        <option value="1">سطح یک</option>
+                                        <option value="2">سطح دو</option>
+                                        <option value="3">سطح سه</option>
+                                        <option value="4">سطح چهار</option>
+                                        <option value="5">سطح پنج</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="w-fix-200 mb-2">
+                                    <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'اطلاعیه از این تاریخ برای اعضای مجتمع نمایش داده خواهد شد.')">تاریخ شروع نمایش </label>
+                                    <div class="control-Date">
+                                        <input id="FromDate" name="FromDate" maxlength="10" readonly class="usage control-input-plaintext" value="@ViewData["Today"]" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="w-fix-200 mb-2">
+                                    <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'اطلاعیه تا این تاریخ برای اعضای مجتمع نمایش داده خواهد شد.')">تاریخ پایان نمایش </label>
+                                    <div class="control-Date">
+                                        <input id="ToDate" name="ToDate" maxlength="10" readonly class="usage control-input-plaintext" value="@ViewData["Today"]" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <textarea class="control-input-Area font-15 h-fix-400 rtl text-start" id="Matn" name="Matn"></textarea>
+
+                        <hr />
+                        <div class="text-end px-3">
+                            <button type="submit" id="UpdateElanBtn" class="BTN btn_Pill btn_Blue2" title="اطلاعیه ذخیره شود"><span>اطلاعیه ذخیره شود</span><i class=" icofont-00x icofont-check"></i></button>
+                        </div>
+
+                    </form>
+
+                }
+                else
+                {
+                    <form asp-antiforgery="true" method="post" data-ajax-method="post" data-ajax="true"
+                          data-ajax-confirm="متن اطلاعیه اصلاح گردد؟"
+                          data-ajax-begin="SpinnerShowForm('چند لحظه صبر کنید در حال ذخیره');"
+                          data-ajax-Btn="UpdateElanBtn"
+                          data-ajax-url="?handler=UpdateElan"
+                          data-ajax-complete="JsonClose_A">
+                        <input type="hidden" name="ID" value="@ViewData["ID"]" />
+
+
+                        <div class="mb-2">
+                            <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'موضوع مناسبی برای این اطلاعیه بنویسید')">موضوع</label>
+                            <input type="text" class="control-input text-center" maxlength="100" name="Onvan" value="@Model.RowData["Onvan"]"/>
+                        </div>
+                        <div class="row text-center">
+                            <div class="col-sm-4">
+                                <div class="w-fix-200 mb-2">
+                                    <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'سطح نمایش را انتخاب کنید. سطح یک در ابتدای و بالای صفحه اعلانات نمایش داده میشود و سطح پنج در انتهای همه اطلاعیه های دیگر نمایش داده میشود. در هر سطح، ابتدا جدید ترین اطلاعیه نمایش داده خواهد شد.')">ترتیب نمایش </label>
+                                    <select id="Sath" class="control-input" name="Sath">
+                                        <option value="0">انتخاب کنید</option>
+                                        <option value="1">سطح یک</option>
+                                        <option value="2">سطح دو</option>
+                                        <option value="3">سطح سه</option>
+                                        <option value="4">سطح چهار</option>
+                                        <option value="5">سطح پنج</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="w-fix-200 mb-2">
+                                    <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'اطلاعیه از این تاریخ برای اعضای مجتمع نمایش داده خواهد شد.')">تاریخ شروع نمایش </label>
+                                    <div class="control-Date">
+                                        <input id="FromDate" name="FromDate" maxlength="10" readonly class="usage control-input-plaintext" value="@Model.RowData["FromDate"]" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="w-fix-200 mb-2">
+                                    <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'اطلاعیه تا این تاریخ برای اعضای مجتمع نمایش داده خواهد شد.')">تاریخ پایان نمایش </label>
+                                    <div class="control-Date">
+                                        <input id="ToDate" name="ToDate" maxlength="10" readonly class="usage control-input-plaintext" value="@Model.RowData["ToDate"]" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <textarea class="control-input-Area font-15 h-fix-400 rtl text-start" id="Matn" name="Matn">@Model.RowData["Matn"]</textarea>
+
+                        <hr />
+                        <div class="text-end px-3">
+                            <button type="submit" id="UpdateElanBtn" class="BTN btn_Pill btn_Blue2" title="اطلاعیه اصلاح شود"><span>اطلاعیه اصلاح شود</span><i class=" icofont-00x icofont-check"></i></button>
+                        </div>
+
+                    </form>
+
+                    <script>
+                        SetValueSimpl('Sath','@Model.RowData["Sath"]');
+                    </script>
+                }
+            </div>
+        </section>
+        <script>
+            ControlPersianDate('FromDate');
+            ControlPersianDate('ToDate');
+            SetTiny('Matn');
+        </script>
+
+        break;
+
+
+    case "RepListElanat":
+        <div class="d-flex flex-wrap justify-content-between">
+            <div class="Area_Count w-fix-200">
+                <span>تعداد : </span><span>@Model.ListData.Rows.Count </span>
+            </div>
+            <div class="flex-fill text-end">
+                <div class="Area_Print w-max-350">
+                    <form asp-antiforgery="true" method="get" data-ajax-method="get" data-ajax="true"
+                          data-ajax-begin="SpinnerShowForm('در حال آماده سازی فایل گزارش');"
+                          data-ajax-url="?handler=Chap_@ViewData["Switch"]"
+                          data-ajax-complete="ControlChap('Chap_@ViewData["Switch"]Btn');">
+                        <input type="hidden" name="ComText" value="@ViewData["ComText"]" />
+                        <input type="submit" hidden id="Chap_@ViewData["Switch"]Btn" name="Chap" value="" />
+                        <div class="d-flex p-2 pb-0 justify-content-end">
+                            <input class="control-input w-100" name="OnvanChap" placeholder="موضوعی برای چاپ بنویسید" value="" />
+                            <button type="button" title="چاپ" class="btn_Icon Icon_Gray icofont-2x icofont-print" onclick="ClickBtnSimpl('Chap_@ViewData["Switch"]Btn', 'CHAP');"></button>
+                            <button type="button" title="پی دی اف" class="btn_Icon Icon_Gray icofont-2x icofont-file-pdf" onclick="ClickBtnSimpl('Chap_@ViewData["Switch"]Btn', 'PDF');"></button>
+                            <button type="button" title="اکسل" class="btn_Icon Icon_Gray icofont-2x icofont-file-excel" onclick="ClickBtnSimpl('Chap_@ViewData["Switch"]Btn', 'XLS');"></button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="header_Table">
+            <button type="button" class="btn_Icon footer_Right Icon_Red icofont-00x icofont-curved-double-right" title="اسکرول به راست" onclick="ScrollRight('@ViewData["Switch"]_FT');"></button>
+            <button type="button" class="btn_Icon footer_Left Icon_Red icofont-00x icofont-curved-double-left" title="اسکرول به چپ" onclick="ScrollLeft('@ViewData["Switch"]_FT');"></button>
+            <div id="@ViewData["Switch"]_FT" class="overflow-hidden" onscroll="ScrollSlave(this, '@ViewData["Switch"]_MS');">
+                <table class="table grid-table">
+                    <thead>
+                        <tr>
+                            <th><span>#</span></th>
+                            <th><span class="w-fix-100">از تاریخ</span></th>
+                            <th><span class="w-fix-100">تا تاریخ</span></th>
+                            <th><span class="w-fix-250">موضوع</span></th>
+                            <th><span class="w-fix-50">مشاهده</span></th>
+                            <th><span class="w-fix-50">ویرایش</span></th>
+                            <th><span class="w-fix-150">سطح نمایش</span></th>
+                            <th><span class="w-fix-200">زمان ثبت</span></th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+        <div class="overflow-auto" id="@ViewData["Switch"]_MS" onscroll="ScrollSlave(this, '@ViewData["Switch"]_FT');">
+            <table class="table grid-table">
+                <thead class="header_Tablehiden">
+                    <tr>
+                        <th><span>#</span></th>
+                        <th><span class="w-fix-100">از تاریخ</span></th>
+                        <th><span class="w-fix-100">تا تاریخ</span></th>
+                        <th><span class="w-fix-250">موضوع</span></th>
+                        <th><span class="w-fix-50">مشاهده</span></th>
+                        <th><span class="w-fix-50">ویرایش</span></th>
+                        <th><span class="w-fix-150">سطح نمایش</span></th>
+                        <th><span class="w-fix-200">زمان ثبت</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (DataRow item in Model.ListData.Rows)
+                    {
+                        { RJ++; }
+                        <tr onclick="RowSelect(this);">
+                            <td class="text-danger">@RJ</td>
+                            <td><span class="w-fixC-100">@item["FromDate"]</span></td>
+                            <td><span class="w-fixC-100">@item["ToDate"]</span></td>
+                            <td><span class="w-fixC-250">@item["Onvan"]</span></td>
+                            <td>
+                                <button type="button" class="btn_Icon Icon_Mor icofont-2x icofont-search-2" title="مشاهده" onclick="ClickBtnSimpl('MatnElanatBtn', '@item["ElanatId"]');"></button>
+                            </td>
+                            <td>
+                                <button type="button" class="btn_Icon Icon_Mor icofont-2x icofont-edit" title="ویرایش" onclick="ClickBtnSimpl('FormSabtElanatBtn', '@item["ElanatId"]');"></button>
+                            </td>
+                            <td><span class="w-fixC-150">@item["Sath"]</span></td>
+
+                            <td><span class="w-fixC-200 text-start"><span>@item["EditorName"]</span><span class="text_line23">@item["TimeEdit"]</span></span></td>
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+        </div>
+        break;
+
+
+    case "MatnElanat":
+
+        <section class="container p-1">
+            <div class="secondArea">
+                <div class="alert alert-primary">
+                    @Html.Raw(HttpUtility.HtmlDecode(Model.RowData["Matn"].ToString()))
+                </div>
+            </div>
+        </section>
+        break;
+
+
+
+
+}

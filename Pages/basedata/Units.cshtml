@@ -24,7 +24,7 @@
                     <select class="text-start bg-secondary text-light" onchange="GoToUrl(this.value);">
                         @foreach (DataRow item in Model.formData.lastForms.Rows)
                         {
-                            <option value="/@item["Route"]">@item["FormTitle"]</option>
+                            <option value="/@item["Route"]">@item["FormOnvan"]</option>
                         }
                     </select>
                 </menu-page><point></point>

@@ -21,7 +21,7 @@ namespace Aparteman.Models
         public int FormId { get; set; }
         public int UserId { get; set; }
         public string UserName { get; set; }
-        public string Title { get; set; }
+        public string Onvan { get; set; }
         public string Header { get; set; }
         public string Footer { get; set; }
         public string MSG { get; set; }
@@ -32,6 +32,7 @@ namespace Aparteman.Models
     public class ListForm
     {
         public string Daste { get; set; }
+        public string Onvan { get; set; }
         public string Title { get; set; }
         public string Adres { get; set; }
         public string Css { get; set; }

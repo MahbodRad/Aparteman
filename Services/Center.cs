@@ -28,7 +28,7 @@ namespace Aparteman.Services
         }
         public static void ChapEmpty(string webRootPath, string Chap, string ext)
         {
-            string filePath = Path.Combine(webRootPath, "Upload");
+            string filePath = Path.Combine(webRootPath, "Uploads");
             File.Copy(Path.Combine(filePath, "Empty" + ext), Path.Combine(filePath, Chap + ext), true);
         }
 
@@ -87,7 +87,7 @@ namespace Aparteman.Services
             string Params = JsonConvert.SerializeObject(parameters);
             // اصلاحات برای ذخیره مناسب
             Params = Params.Replace("\"@", "@").Replace("\":", "=");
-            Params = Params.Replace("{", "").Replace("}", "").Replace("\"", "'").Replace("null", "''");
+            Params = Params.Replace("{", "").Replace("}", "").Replace("\"", "'");
             return $"Exec {procName} {Params} ";
         }
 
@@ -119,6 +119,14 @@ namespace Aparteman.Services
             if (legacyCookie != null)
                 UserSi = int.Parse(legacyCookie["Si"]);
             return UserSi;
+        }
+        public static string GetUserName(string userCooki)
+        { // بازگرداندن آیدی کاربر از روی کوکی
+            var legacyCookie = userCooki.FromLegacyCookieString();
+            string UserName = "0";
+            if (legacyCookie != null)
+                UserName = legacyCookie["UserName"];
+            return UserName;
         }
 
         public static string CommaClear(object NUMBER)
@@ -152,7 +160,7 @@ namespace Aparteman.Services
 
         public static string Encrypt(string clearText)
         {
-            string EncryptionKey = "bEnIcE";
+            string EncryptionKey = "Aparteman";
             byte[] clearBytes = Encoding.Unicode.GetBytes(clearText);
             using (Aes encryptor = Aes.Create())
             {
@@ -173,7 +181,7 @@ namespace Aparteman.Services
         }
         public static string Decrypt(string cipherText)
         {
-            string EncryptionKey = "bEnIcE";
+            string EncryptionKey = "Aparteman";
             cipherText = cipherText.Replace(" ", "+");
             byte[] cipherBytes = Convert.FromBase64String(cipherText);
             using (Aes encryptor = Aes.Create())

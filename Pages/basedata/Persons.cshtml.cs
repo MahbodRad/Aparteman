@@ -3,14 +3,15 @@ using Aparteman.Services;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using NPOI.SS.Formula.Functions;
+using NPOI.SS.UserModel;
+using NPOI.SS.Util;
+using NPOI.XSSF.UserModel;
+using QuestPDF.Fluent;
+using QuestPDF.Helpers;
+using QuestPDF.Infrastructure;
 using System;
 using System.Data;
-using System.Numerics;
 using System.Reflection;
-using static NPOI.HSSF.Util.HSSFColor;
-using static QuestPDF.Helpers.Colors;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Aparteman.Pages.basedata
 {
@@ -102,6 +103,7 @@ namespace Aparteman.Pages.basedata
 
                 ListPersons = await DBS.GetReportAsync(ProcName, Params);
                 await DBS.TestProcedure(ProcName, Params);
+                ViewData["ComText"] = Center.CommandText(ProcName, Params);
 
                 if (ListPersons.Rows.Count == 0)
                 {
@@ -255,7 +257,196 @@ namespace Aparteman.Pages.basedata
             };
 
         }
+        public async Task<IActionResult> OnGetChap_ListPerson(string ComText, string Chap, string OnvanChap)
+        {
+            try
+            {
+                var ReportData = await DBS.GetReportDataAsync(ComText);
 
+                OnvanChap = (Center.TrimTxt(OnvanChap) == "") ? "گزارش اشخاص" : OnvanChap;
+                string webRootPath = _hostingEnvironment.WebRootPath;
+                string FileName = System.IO.Path.Combine(webRootPath, "Uploads", Request.Cookies["Chap.Aparteman.ir"]);
+
+                if (Chap == "CHAP" || Chap == "PDF")
+                {
+                    FileName += ".pdf";
+                    Center.DeleteFileIfExists(FileName);
+
+                    // code in your main method
+                    Document.Create(container =>
+                    {
+                        container.Page(page =>
+                        {
+                            page.Size(PageSizes.A4);
+                            page.Margin(1, Unit.Centimetre);
+                            page.PageColor(Colors.White);
+                            page.DefaultTextStyle(x => x.FontSize(10));
+                            page.ContentFromRightToLeft();
+
+                            static IContainer DefaultCellStyle(IContainer container, string backgroundColor = "")
+                            {
+                                return container
+                                  .Border(1)
+                                  .BorderColor(Colors.Grey.Lighten1)
+                                  .Background(!string.IsNullOrEmpty(backgroundColor) ? backgroundColor : Colors.White)
+                                  .PaddingVertical(7)
+                                  .PaddingHorizontal(3);
+                            }
+                            var RJ = 0;
+
+                            page.Header()
+                                .Text(OnvanChap)
+                                .SemiBold().FontSize(14).FontColor(Colors.Blue.Medium);
+
+
+                            page.Content()
+                                .PaddingVertical(1, Unit.Centimetre)
+                                .Border(1)
+                                .Table(table =>
+                                {
+                                    table.ColumnsDefinition(columns =>
+                                    {
+                                        columns.RelativeColumn(2);
+                                        columns.RelativeColumn(8);
+                                        columns.RelativeColumn(5);
+                                        columns.RelativeColumn(5);
+                                        columns.RelativeColumn(5);
+                                        columns.RelativeColumn(10);
+                                    });
+                                    table.Header(header =>
+                                    {
+                                        header.Cell().Element(CellStyle).AlignCenter().Text("#").FontSize(11).SemiBold();
+                                        header.Cell().Element(CellStyle).Text("نام").FontSize(11).SemiBold();
+                                        header.Cell().Element(CellStyle).Text("تلفن").FontSize(11).SemiBold();
+                                        header.Cell().Element(CellStyle).Text("کدملی").FontSize(11).SemiBold();
+                                        header.Cell().Element(CellStyle).Text("نقش").FontSize(11).SemiBold();
+                                        header.Cell().Element(CellStyle).Text("واحد").FontSize(11).SemiBold();
+
+                                        // you can extend existing styles by creating additional methods
+                                        IContainer CellStyle(IContainer container) => DefaultCellStyle(container, Colors.Grey.Lighten3);
+                                    });
+
+                                    foreach (DataRow item in ReportData.Rows)
+                                    {
+                                        RJ++;
+                                        table.Cell().Element(CellStyle).Text(RJ.ToString());
+                                        table.Cell().Element(CellStyle).Text(item["FullName"].ToString());
+                                        table.Cell().Element(CellStyle).Text(item["Mobile"].ToString()+ "\n" + item["Phone"].ToString());
+                                        table.Cell().Element(CellStyle).Text(item["NationalCode"].ToString());
+                                        table.Cell().Element(CellStyle).Text(item["RoleTitle"].ToString());
+                                        table.Cell().Element(CellStyle).Text(item["BuildingCode"].ToString() + " -> " + item["BuildingName"].ToString() + "\n" + item["FloorNumber"].ToString() + " -> " + item["FloorTitle"].ToString() + "\n واحد: " + item["UnitNumber"].ToString());
+                                    }
+
+                                    IContainer CellStyle(IContainer container) => DefaultCellStyle(container).ShowOnce();
+                                });
+
+                            page.Footer()
+                                .AlignCenter()
+                                .Text(x =>
+                                {
+                                    x.Span("صفحه");
+                                    x.CurrentPageNumber();
+                                });
+                        });
+                    })
+                    .GeneratePdf(FileName);
+
+                }
+                if (Chap == "XLS")
+                {
+                    FileName += ".xlsx";
+                    Center.DeleteFileIfExists(FileName);
+
+                    string sheetName = "لیست اشخاص";
+                    // فایلی از نوع xlsx
+                    IWorkbook workbook = new XSSFWorkbook();
+                    //ایجاد شیت در فایل اکسل
+                    ISheet sheet = workbook.CreateSheet(sheetName);
+                    sheet.IsRightToLeft = true;
+                    // ایجاد عنصر سطر
+                    IRow row = sheet.CreateRow(1);
+
+                    IFont font = workbook.CreateFont();
+                    font.IsBold = true;
+                    font.FontHeightInPoints = 14;
+                    ICellStyle boldStyle = workbook.CreateCellStyle();
+                    boldStyle.SetFont(font);
+
+                    int _Row = 1;
+                    sheet.AddMergedRegion(new CellRangeAddress(_Row, _Row + 1, 1, 10));
+                    row = sheet.CreateRow(_Row);
+                    Center.CellAddData(row, 1, OnvanChap, CellType.String); ;
+
+                    _Row += 3;
+                    row = sheet.CreateRow(_Row);
+                    Center.CellAddData(row, 1, "نام", CellType.String);
+                    Center.CellAddData(row, 2, "شماره همراه", CellType.String);
+                    Center.CellAddData(row, 3, "تلفن", CellType.String);
+                    Center.CellAddData(row, 4, "کد ملی", CellType.String);
+                    Center.CellAddData(row, 5, "ایمیل", CellType.String);
+                    Center.CellAddData(row, 6, "نقش", CellType.String);
+                    Center.CellAddData(row, 7, "کد ساختمان", CellType.String);
+                    Center.CellAddData(row, 8, "نام ساختمان", CellType.String);
+                    Center.CellAddData(row, 9, "شماره طبقه", CellType.String);
+                    Center.CellAddData(row, 10, "طبقه", CellType.String);
+                    Center.CellAddData(row, 11, "واحد", CellType.String);
+                    Center.CellAddData(row, 12, "وضعیت فعال", CellType.String);
+                    Center.CellAddData(row, 13, "شرح", CellType.String);
+                    Center.CellAddData(row, 14, "ویرایشگر", CellType.String);
+                    Center.CellAddData(row, 15, "زمان ویرایش", CellType.String);
+
+
+                    foreach (DataRow item in ReportData.Rows)
+                    {
+                        _Row += 1;
+                        row = sheet.CreateRow(_Row);
+                        // پرکردن سلولها
+                        Center.CellAddData(row, 1, item["FullName"].ToString(), CellType.String);
+                        Center.CellAddData(row, 2, item["Mobile"].ToString(), CellType.String);
+                        Center.CellAddData(row, 3, item["Phone"].ToString(), CellType.String);
+
+                        Center.CellAddData(row, 4, item["NationalCode"].ToString(), CellType.Numeric);
+                        Center.CellAddData(row, 5, item["Email"].ToString(), CellType.String);
+                        Center.CellAddData(row, 6, item["RoleTitle"].ToString(), CellType.String);
+
+                        Center.CellAddData(row, 7, item["BuildingCode"].ToString(), CellType.String);
+                        Center.CellAddData(row, 8, item["BuildingName"].ToString(), CellType.String);
+                        Center.CellAddData(row, 9, item["FloorNumber"].ToString(), CellType.Numeric);
+                        Center.CellAddData(row, 10, item["FloorTitle"].ToString(), CellType.String);
+                        Center.CellAddData(row, 11, item["UnitNumber"].ToString(), CellType.Numeric);
+
+                        if (item["IsActive"].ToYesNo() == "1")
+                            Center.CellAddData(row, 12, "بلی", CellType.String);
+                        else
+                            Center.CellAddData(row, 12, "خیر", CellType.String);
+
+                        Center.CellAddData(row, 13, item["Sharh"].ToString(), CellType.String);
+                        Center.CellAddData(row, 14, item["EditorName"].ToString(), CellType.String);
+                        Center.CellAddData(row, 15, item["TimeEdit"].ToString(), CellType.String);
+                    }
+
+                    // سایزبندی 20 ستون در شیت
+                    for (int i = 0; i <= 20; i++) sheet.AutoSizeColumn(i, true);
+
+                    using (FileStream stream = new FileStream(FileName, FileMode.Create, FileAccess.Write, FileShare.None))
+                    {
+                        workbook.Write(stream);
+                    }
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                if (Chap == "CHAP" || Chap == "PDF")
+                    Center.ChapEmpty(_hostingEnvironment.WebRootPath, Request.Cookies["Chap.Aparteman.ir"], ".pdf");
+                if (Chap == "XLS")
+                    Center.ChapEmpty(_hostingEnvironment.WebRootPath, Request.Cookies["Chap.Aparteman.ir"], ".xlsx");
+
+                await DBS.LogErrorSaveAsync(ProcName, Params, Center.GetUserId(Request.Cookies["User.Aparteman.ir"]), FormId, MethodBase.GetCurrentMethod().Name, ex.Message);
+            }
+            return Content("OK");
+        }
 
 
 
@@ -716,7 +907,7 @@ namespace Aparteman.Pages.basedata
             }
             catch (Exception ex)
             {
-                ViewData["ERRComm"] = await DBS.LogErrorSaveAsync(ProcName, Params, Center.GetUserId(Request.Cookies["User.BenIce.ir"]), FormId, MethodBase.GetCurrentMethod().Name, ex.Message);
+                ViewData["ERRComm"] = await DBS.LogErrorSaveAsync(ProcName, Params, Center.GetUserId(Request.Cookies["User.Aparteman.ir"]), FormId, MethodBase.GetCurrentMethod().Name, ex.Message);
                 ViewData["ERRRes"] = ex.Message;
                 ViewData["Switch"] = "Error"; VU = "_CommonView";
 

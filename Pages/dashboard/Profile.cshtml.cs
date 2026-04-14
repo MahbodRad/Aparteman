@@ -334,7 +334,7 @@ namespace Aparteman.Pages.dashboard
             }
             catch (Exception ex)
             {
-                ViewData["ERRComm"] = await DBS.LogErrorSaveAsync(ProcName, Params, Center.GetUserId(Request.Cookies["User.BenIce.ir"]), FormId, MethodBase.GetCurrentMethod().Name, ex.Message);
+                ViewData["ERRComm"] = await DBS.LogErrorSaveAsync(ProcName, Params, Center.GetUserId(Request.Cookies["User.Aparteman.ir"]), FormId, MethodBase.GetCurrentMethod().Name, ex.Message);
                 ViewData["ERRRes"] = ex.Message;
                 ViewData["Switch"] = "Error"; VU = "_CommonView";
 

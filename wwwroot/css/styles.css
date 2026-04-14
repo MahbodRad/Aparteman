@@ -114,7 +114,7 @@ html {
 
     .w-min-media {
         display: inline-block;
-        min-width: 90%;
+        min-width: 440px;
         width: -webkit-fill-available;
     }
 
@@ -127,7 +127,7 @@ html {
 @media (min-width: 800px) {
     .w-min-media {
         display: inline-block;
-        min-width: 85px;
+        min-width: 700px;
         width: -webkit-fill-available;
     }
 }
@@ -135,7 +135,7 @@ html {
 @media (min-width: 1200px) {
     .w-min-media {
         display: inline-block;
-        min-width: 80px;
+        min-width: 1000px;
         width: -webkit-fill-available;
     }
 }
@@ -581,6 +581,7 @@ body {
     color: midnightblue;
     background-color: rgb(174 178 247 / 61%);
     border-radius: 10px;
+    min-width: 100%;
 }
 
 .back-ground-pic {
@@ -3704,3 +3705,76 @@ a {
         background: url(../images/loading.gif) no-repeat center center;
         background-size: contain;
     }
+
+.notification-list {
+    max-width: 1200px;
+    margin: 30px auto;
+    padding: 10px;
+}
+
+.notification-card {
+    display: flex;
+    gap: 12px;
+    padding: 14px 16px;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    transition: all 0.2s ease;
+}
+
+    .notification-card:hover {
+        background: #eef2ff;
+        transform: translateY(-2px);
+    }
+
+.notification-icon {
+    font-size: 20px;
+    margin-top: 4px;
+}
+
+.notification-content {
+    flex: 1;
+}
+
+.notification-title {
+    font-weight: 600;
+    font-size: 15px;
+    margin-bottom: 4px;
+}
+
+
+.notification-footer {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    margin-top: 6px;
+    color: #888;
+}
+
+/* نوع اعلان */
+.sath_A {
+    border-left: 4px solid #3b82f6;
+}
+
+.sath_B {
+    border-left: 4px solid #10b981;
+}
+
+.sath_C {
+    border-left: 4px solid #f59e0b;
+}
+
+.sath_D {
+    border-left: 4px solid #ef4444;
+}
+
+.sath_E {
+    border-left: 4px solid #cf4444;
+}
+
+/* اعلان خوانده نشده */
+.unread {
+    background: #eef2ff;
+    font-weight: bold;
+}

@@ -482,6 +482,20 @@
                 </div>
             </form>
 
+            <form hidden method="get" data-ajax="true" data-ajax-method="get"
+                  data-ajax-begin="MsgFormSpinner('A','شماره گذاری موقت اسناد', 'چند لحظه صبر کنید');"
+                  data-ajax-url="?handler=FormNumbering"
+                  data-ajax-update="#MsgFormMATN_A">
+                <input type="submit" hidden id="FormNumberingBtn" name="ID" />
+            </form>
+
+            <form hidden method="get" data-ajax="true" data-ajax-method="get"
+                  data-ajax-begin="MsgFormSpinner('A','بستن و باز کردن دوره مالی', 'چند لحظه صبر کنید');"
+                  data-ajax-url="?handler=FormCloseOpen"
+                  data-ajax-update="#MsgFormMATN_A">
+                <input type="submit" hidden id="FormCloseOpenBtn" name="ID" />
+            </form>
+
 
             <div class="filterArea">
                 <form asp-antiforgery="true" method="get" data-ajax-method="get" data-ajax="true"
@@ -527,6 +541,7 @@
 
     </div>
 
+
 </div>
 
 <footer-page class="nav nav-tabs border-top border-light">
@@ -549,7 +564,7 @@
                 <select class="text-start bg-secondary text-light" onchange="GoToUrl(this.value);">
                     @foreach (DataRow item in Model.formData.lastForms.Rows)
                     {
-                        <option value="/@item["Route"]">@item["FormTitle"]</option>
+                        <option value="/@item["Route"]">@item["FormOnvan"]</option>
                     }
                 </select>
             </menu-page><point></point>

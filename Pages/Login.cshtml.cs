@@ -125,7 +125,7 @@ namespace Aparteman.Pages
             };
 
             Response.Cookies.Append("Aparteman.ir", Token , option);
-  //          Response.Cookies.Append("Chap.Aparteman.ir", "Chap_" + si, option);
+            Response.Cookies.Append("Chap.Aparteman.ir", "Chap_" + ueserSi, option);
 
             Response.Cookies.Append(
                 "User.Aparteman.ir",

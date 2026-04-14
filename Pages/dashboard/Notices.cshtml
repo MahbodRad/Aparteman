@@ -1,0 +1,168 @@
+﻿@page
+@model Aparteman.Pages.dashboard.NoticesModel
+@using System.Data;
+@using System.Web
+@{
+    DataRow pagesitem;
+}
+<div class="tab-content">
+
+    <!-- گزارش اعلانات -->
+    <div class="tab-pane fade active show" id="tab_A">
+        @{
+            pagesitem = Model.formData.Pages.Select("RJ = 1").First();
+        }
+        <div class="OnvanSafhe">
+            <h6 class="shadow">@pagesitem["OnvanPage"]</h6>
+        </div>
+
+        @if (!string.IsNullOrEmpty(pagesitem["HeaderPage"].ToString()))
+        {
+            <div class="alert alert-secondary">
+                @Html.Raw(HttpUtility.HtmlDecode(pagesitem["HeaderPage"].ToString()))
+            </div>
+        }
+
+        <div class="container">
+
+            <div class="text-end">
+                <form method="get" data-ajax="true" data-ajax-method="get"
+                      data-ajax-begin="MsgFormSpinner('A','ثبت اطلاعیه', 'چند لحظه صبر کنید');"
+                      data-ajax-url="?handler=FormSabtElanat"
+                      data-ajax-update="#MsgFormMATN_A">
+                    <input type="submit" hidden id="FormSabtElanatBtn" name="ID" />
+                    <div class="px-2 text-end">
+                        <button type="button" class="BTN btn_Pill btn_Blue2" onclick="ClickBtnSimpl('FormSabtElanatBtn','0');"><span>ثبت اطلاعیه جدید</span><i class="icofont-00x icofont-plus"></i></button>
+                    </div>
+                </form>
+            </div>
+
+
+            <div class="filterArea">
+                <form asp-antiforgery="true" method="get" data-ajax-method="get" data-ajax="true"
+                      data-ajax-begin="SpinnerShow('RepListElanat', 'در حال بارگذاری لیست اعلانات');"
+                      data-ajax-url="?handler=RepListElanat"
+                      data-ajax-update="#RepListElanat">
+
+                    <div class="p-1">
+                        <div id="AreaBtn">
+                            <button type="button" class="BTN btn_Pill btn_Firuze m-2 w-min-75" onclick="Btn_Select(this, 'AreaBtn'); FastReportAjax('TD', 'BtnRepELN', 'ELN', 'ELN_LimitDate');">امروز</button>
+                            <button type="button" class="BTN btn_Pill btn_Firuze m-2 w-min-75" onclick="Btn_Select(this, 'AreaBtn'); FastReportAjax('1W', 'BtnRepELN', 'ELN', 'ELN_LimitDate');">هفته</button>
+                            <button type="button" class="BTN btn_Pill btn_Firuze m-2 w-min-75" onclick="Btn_Select(this, 'AreaBtn'); FastReportAjax('2W', 'BtnRepELN', 'ELN', 'ELN_LimitDate');">دوهفته</button>
+                            <button type="button" class="BTN btn_Pill btn_Firuze m-2 w-min-75" onclick="Btn_Select(this, 'AreaBtn'); FastReportAjax('1M', 'BtnRepELN', 'ELN', 'ELN_LimitDate');">یک ماه</button>
+                            <button type="button" class="BTN btn_Pill btn_Firuze m-2 w-min-75" onclick="Btn_Select(this, 'AreaBtn'); FastReportAjax('3M', 'BtnRepELN', 'ELN', 'ELN_LimitDate');">سه ماه</button>
+                            <button type="button" class="BTN btn_Pill btn_Firuze m-2 w-min-75" onclick="Btn_Select(this, 'AreaBtn'); FastReportAjax('TM', 'BtnRepELN', 'ELN', 'ELN_LimitDate');">ماه جاری</button>
+                            <button type="button" class="BTN btn_Top btn_Light m-2 w-min-75" onclick="Btn_Select(this, 'AreaBtn'); AreaToggel('ReportSaz');">گزارش ساز <span class="text-primary icofont-00x icofont-cubes"></span></button>
+                        </div>
+                        <div id="ReportSaz" class="alert alert-info rounded p-3 dis-none border shadow">
+                            <div class="row">
+                                <div class="col-12 col-sm-3">
+                                    <div class="w-fix-180 mx-1">
+                                        <span class="control-label">محدوده تاریخ</span>
+                                        <select class="control-input" id="ELN_LimitDate" onchange="LimitDateAjax(this,'ELN');">
+                                            <option value="0" selected>انتخاب شود</option>
+                                            <option value="TD">امروز</option>
+                                            <option value="1W">یک هفته</option>
+                                            <option value="2W">دو هفته</option>
+                                            <option value="1M">یک ماه</option>
+                                            <option value="TM">ماه جاری</option>
+                                            <option value="LM">ماه قبل</option>
+                                            <option value="3M">سه ماه</option>
+                                            <option value="6M">شش ماه</option>
+                                            <option value="1Y">یکسال</option>
+                                            <option value="TY">امسال</option>
+                                            <option value="LY">پارسال</option>
+                                        </select>
+
+                                        <div id="waitLimitDateELN"></div>
+
+                                        <span class="control-label">از تاریخ</span>
+                                        <div class="control-Date">
+                                            <input placeholder="از تاریخ" id="FromDateELN" name="FromDate" maxlength="10" readonly class="usage control-input-plaintext" value="@ViewData["Today"]" />
+                                        </div>
+                                        <span class="control-label">تا تاریخ</span>
+                                        <div class="control-Date">
+                                            <input placeholder="از تاریخ" id="ToDateELN" name="ToDate" maxlength="10" readonly class="usage control-input-plaintext" value="@ViewData["Today"]" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-sm-9">
+                                    <div class="row">
+                                        <div class="col-12 col-sm-4">
+                                            <span class="control-label">موضوع</span>
+                                            <input class="control-text" name="Onvan" value="" />
+                                        </div>
+                                        <div class="col-12 col-sm-4">
+                                            <span class="control-label">مرتب سازی</span>
+                                            <select class="control-input" name="Sort">
+                                                <option value="A"> تاریخ نمایش</option>
+                                                <option value="B">موضوع</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-3 text-end">
+                        <button type="submit" id="BtnRepELN" class="BTN btn_Pill btn_Blue2"><span>جستجوی اطلاعیه ها</span><i class="icofont-2x icofont-search-2"></i></button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+
+        <div class="container-fluid">
+            <div class="mt-3" id="RepListElanat">
+                <div class="alert alert-info w-max-400 mx-auto cursor-pointer" onclick="FastReportAjax('1M', 'BtnRepELN', 'ELN', 'ELN_LimitDate');">
+                    <i class="icofont-search-2" style="font-size:40px;"></i>
+                    <h6 class="mt-3">هنوز جستجویی انجام نشده</h6>
+                    <p class="text-muted">برای مشاهده اطلاعیه های اخیر کلیک کنید، و یا از فیلترهای بالا استفاده کنید</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+</div>
+
+<footer-page class="nav nav-tabs border-top border-light">
+    <div class="w-inline">
+        <div id="menu-page-btn">
+            <menu-page data-bs-toggle="tab" data-bs-target="#tab_A" class="active">گزارش اعلانات</menu-page><point></point>
+            <menu-page class="w-min-50" onclick="HelpAjax(@Model.FormId);" data-bs-toggle="tooltip" data-bs-title="راهنما">
+                <span class="menu-firuze icofont-00x icofont-learn"></span>
+            </menu-page>
+            <menu-page class="w-min-50" onclick="ToggleFullscreen();" data-bs-toggle="tooltip" data-bs-title="تمام صفحه">
+                <span class="menu-firuze icofont-00x icofont-expand"></span>
+            </menu-page>
+            <menu-page onclick="GoToTop();" class="w-min-50" data-bs-toggle="tooltip" data-bs-title="برگشت به بالا">
+                <span class="menu-firuze icofont-00x icofont-stylish-up"></span>
+            </menu-page>
+            <menu-page class="bg-secondary" data-bs-toggle="tooltip" data-bs-title="برگشت به صفحه قبل">
+                <select class="text-start bg-secondary text-light" onchange="GoToUrl(this.value);">
+                    @foreach (DataRow item in Model.formData.lastForms.Rows)
+                    {
+                        <option value="/@item["Route"]">@item["FormOnvan"]</option>
+                    }
+                </select>
+            </menu-page><point></point>
+            <button type="button" class="pos-Right btn_Icon Icon_Red icofont-2x icofont-curved-double-right d-md-none"
+                    data-bs-title="اسکرول به راست" onclick="ScrollRight('menu-page-btn');"></button>
+            <button type="button" class="pos-Left btn_Icon Icon_Red icofont-2x icofont-curved-double-left d-md-none"
+                    data-bs-title="اسکرول به چپ" onclick="ScrollLeft('menu-page-btn');"></button>
+        </div>
+    </div>
+</footer-page>
+
+
+<div hidden>
+    <form asp-antiforgery="true" method="get" data-ajax-method="get" data-ajax="true"
+          data-ajax-begin="MsgFormSpinner('A','متن اطلاعیه', 'چند لحظه صبر کنید');"
+          data-ajax-url="?handler=MatnElanat"
+          data-ajax-update="#MsgFormMATN_A">
+        <input type="submit" id="MatnElanatBtn" name="ID" hidden />
+    </form>
+</div>

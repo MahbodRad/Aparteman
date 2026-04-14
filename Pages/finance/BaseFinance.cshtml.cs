@@ -437,5 +437,150 @@ namespace Aparteman.Pages.finance
 
         }
 
+
+
+
+        public async Task<IActionResult> OnGetFormNumbering(string ID)
+        {// شماره گذاری اسناد یک دوره
+            try
+            {
+                ViewData["ID"] = ID;
+                var UserId = Center.GetUserId(Request.Cookies["User.Aparteman.ir"]);
+            
+                
+                if (ID != "0")
+                {
+                    Params = new Dictionary<string, object>
+                    {
+                        { "@UserId" , UserId } ,
+                        { "@PeriodId" , ID } ,
+                    };
+                    ProcName = "dbo.FinancialPeriods_NumberingInfo";
+                    RowData = await DBS.GetReportRowAsync(ProcName, Params);
+                }
+
+                ViewData["Switch"] = "FormNumbering";
+            }
+            catch (Exception ex)
+            {
+                ViewData["ERRComm"] = await DBS.LogErrorSaveAsync(ProcName, Params, Center.GetUserId(Request.Cookies["User.Aparteman.ir"]), FormId, MethodBase.GetCurrentMethod().Name, ex.Message);
+                ViewData["ERRRes"] = ex.Message;
+                ViewData["Switch"] = "Error"; VU = "_CommonView";
+            }
+
+            return new PartialViewResult
+            {
+                ViewName = VU,
+                ViewData = this.ViewData
+            };
+        }
+
+
+        public async Task<IActionResult> OnPostNumberingAsnad(string ID, string Num)
+        {//شماره گذاری اسناد یک دوره مالی
+            try
+            {
+                if (!await DBS.CheckToken(Center.TrimTxt(Request.Cookies["Aparteman.ir"]), userInfo))
+                    return RedirectToPage("/LoginFast");
+
+                Params = new Dictionary<string, object>
+                {
+                    { "@UserId", userInfo.Id } ,
+                    { "@PeriodId", ID },
+                    { "@Num", Num },
+                };
+
+                ProcName = "dbo.FinancialPeriods_Numbering";
+                var RES = await DBS.GetReportRowAsync(ProcName, Params);
+                return new JsonResult(RES);
+
+            }
+            catch (Exception ex)
+            {
+                ViewData["ERRComm"] = await DBS.LogErrorSaveAsync(ProcName, Params, Center.GetUserId(Request.Cookies["User.Aparteman.ir"]), FormId, MethodBase.GetCurrentMethod().Name, ex.Message);
+                ViewData["ERRRes"] = ex.Message;
+                ViewData["Switch"] = "Error"; VU = "_CommonView";
+            }
+
+            return new PartialViewResult
+            {
+                ViewName = VU,
+                ViewData = this.ViewData
+            };
+
+        }
+
+
+
+
+        public async Task<IActionResult> OnGetFormCloseOpen(string ID)
+        {// فرم باز و بسته کردن یک دوره مالی
+            try
+            {
+                ViewData["ID"] = ID;
+                var UserId = Center.GetUserId(Request.Cookies["User.Aparteman.ir"]);
+
+
+                if (ID != "0")
+                {
+                    Params = new Dictionary<string, object>
+                    {
+                        { "@UserId" , UserId } ,
+                        { "@PeriodId" , ID } ,
+                    };
+                    ProcName = "dbo.FinancialPeriods_CloseOpenInfo";
+                    RowData = await DBS.GetReportRowAsync(ProcName, Params);
+                }
+
+                ViewData["Switch"] = "FormCloseOpen";
+            }
+            catch (Exception ex)
+            {
+                ViewData["ERRComm"] = await DBS.LogErrorSaveAsync(ProcName, Params, Center.GetUserId(Request.Cookies["User.Aparteman.ir"]), FormId, MethodBase.GetCurrentMethod().Name, ex.Message);
+                ViewData["ERRRes"] = ex.Message;
+                ViewData["Switch"] = "Error"; VU = "_CommonView";
+            }
+
+            return new PartialViewResult
+            {
+                ViewName = VU,
+                ViewData = this.ViewData
+            };
+        }
+
+        public async Task<IActionResult> OnPostCloseOpen(string ID, string Num, string Situation)
+        {// فرم باز و بسته کردن یک دوره مالی
+            try
+            {
+                if (!await DBS.CheckToken(Center.TrimTxt(Request.Cookies["Aparteman.ir"]), userInfo))
+                    return RedirectToPage("/LoginFast");
+
+                Params = new Dictionary<string, object>
+                {
+                    { "@UserId", userInfo.Id } ,
+                    { "@PeriodId", ID },
+                    { "@Situation", Situation },
+                    { "@Num", Num },
+                };
+               
+                ProcName = "dbo.FinancialPeriods_CloseOpen";
+                var RES = await DBS.GetReportRowAsync(ProcName, Params);
+                return new JsonResult(RES);
+
+            }
+            catch (Exception ex)
+            {
+                ViewData["ERRComm"] = await DBS.LogErrorSaveAsync(ProcName, Params, Center.GetUserId(Request.Cookies["User.Aparteman.ir"]), FormId, MethodBase.GetCurrentMethod().Name, ex.Message);
+                ViewData["ERRRes"] = ex.Message;
+                ViewData["Switch"] = "Error"; VU = "_CommonView";
+            }
+
+            return new PartialViewResult
+            {
+                ViewName = VU,
+                ViewData = this.ViewData
+            };
+        }
+
     }
 }

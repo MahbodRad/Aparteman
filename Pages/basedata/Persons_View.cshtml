@@ -13,6 +13,23 @@
                 <span>تعداد : </span><span>@Model.ListPersons.Rows.Count </span>
             </div>
         </div>
+        <div class="flex-fill text-end">
+            <div class="Area_Print w-max-350">
+                <form asp-antiforgery="true" method="get" data-ajax-method="get" data-ajax="true"
+                      data-ajax-begin="SpinnerShowForm('در حال آماده سازی فایل گزارش');"
+                      data-ajax-url="?handler=Chap_@ViewData["Switch"]"
+                      data-ajax-complete="ControlChap('Chap_@ViewData["Switch"]Btn');">
+                    <input type="hidden" name="ComText" value="@ViewData["ComText"]" />
+                    <input type="submit" hidden id="Chap_@ViewData["Switch"]Btn" name="Chap" value="" />
+                    <div class="d-flex p-2 pb-0 justify-content-end">
+                        <input class="control-input w-100" name="OnvanChap" placeholder="عنوانی برای چاپ بنویسید" value="" />
+                        <button type="button" title="چاپ" class="btn_Icon Icon_Gray icofont-2x icofont-print" onclick="ClickBtnSimpl('Chap_@ViewData["Switch"]Btn', 'CHAP');"></button>
+                        <button type="button" title="پی دی اف" class="btn_Icon Icon_Gray icofont-2x icofont-file-pdf" onclick="ClickBtnSimpl('Chap_@ViewData["Switch"]Btn', 'PDF');"></button>
+                        <button type="button" title="اکسل" class="btn_Icon Icon_Gray icofont-2x icofont-file-excel" onclick="ClickBtnSimpl('Chap_@ViewData["Switch"]Btn', 'XLS');"></button>
+                    </div>
+                </form>
+            </div>
+        </div>
 
 
         <div class="header_Table">
@@ -122,7 +139,7 @@
 
     case "FormSabtPerson":
         <section class="container p-1">
-            <div class="secondArea w-min-330 p-2">
+            <div class="secondArea p-2">
                 @if (@ViewData["ID"].ToString() == "0")
                 {
                     <form asp-antiforgery="true" method="post" data-ajax-method="post" data-ajax="true"
@@ -953,7 +970,7 @@
                             <div class="mb-2 w-min-330  pt-4">
                                 <div class="d-flex">
                                     <button type="button" id="FileKnd"
-                                            class="btn_Icon Icon_MorLight icofont-3x icofont-upload mx-2"
+                                            class="btn_Icon Icon_Mor icofont-3x icofont-upload mx-2"
                                             onclick="ClickBtn('FileUpload');"
                                             title="انتخاب فایل"></button>
                                     <div class="flex-fill pt-4">
@@ -1086,9 +1103,9 @@
                     @foreach (DataRow item in Model.ListForms.Rows)
                     {
                         { RJ++; ZF = (ZF == "Fard") ? "Zoj" : "Fard"; }
-                        <button class="@ZF d-flex p-2 cursor-pointer btn_Pill w-fix-250 my-1" id="FRM_@item["FormId"]" title="اجازه دسترسی به @item["FormTitle"]" onclick="ClickBtnSimpl('UpdateAccessFormBtn', '@item["FormId"]');">
+                        <button class="@ZF d-flex p-2 cursor-pointer btn_Pill w-fix-250 my-1" id="FRM_@item["FormId"]" title="اجازه دسترسی به @item["FormOnvan"]" onclick="ClickBtnSimpl('UpdateAccessFormBtn', '@item["FormId"]');">
                             <span class="text-danger mx-2 ">@RJ -</span>
-                            <span>@item["FormTitle"]</span>
+                            <span>@item["FormOnvan"]</span>
                             <div class="flex-fill text-end">
                                 <span class="icofont icofont-verification-check text-primary"></span>
                             </div>
@@ -1100,9 +1117,9 @@
                     @foreach (DataRow item in Model.ListData.Rows)
                     {
                         { RJ++; ZF = (ZF == "Fard") ? "Zoj" : "Fard"; }
-                        <button class="@ZF d-flex p-2 cursor-pointer btn_Pill w-fix-250 my-1" id="FRM_@item["FormId"]" title="حذف دسترسی از  @item["FormTitle"]" onclick="ClickBtnSimpl('UpdateAccessFormBtn', '@item["FormId"]');">
+                        <button class="@ZF d-flex p-2 cursor-pointer btn_Pill w-fix-250 my-1" id="FRM_@item["FormId"]" title="حذف دسترسی از  @item["FormOnvan"]" onclick="ClickBtnSimpl('UpdateAccessFormBtn', '@item["FormId"]');">
                             <span class="text-danger mx-2 ">@RJ -</span>
-                            <span>@item["FormTitle"]</span>
+                            <span>@item["FormOnvan"]</span>
                             <div class="flex-fill text-end">
                                 <span class="icofont icofont-close-circled text-danger"></span>
                             </div>
@@ -1134,9 +1151,9 @@
                 @foreach (DataRow item in Model.ListForms.Rows)
                 {
                     { RJ++; ZF = (ZF == "Fard") ? "Zoj" : "Fard"; }
-                    <button class="@ZF d-flex p-2 cursor-pointer btn_Pill w-fix-250 my-1" id="FRM_@item["FormId"]" title="اجازه دسترسی به @item["FormTitle"]" onclick="ClickBtnSimpl('UpdateAccessFormBtn', '@item["FormId"]');">
+                    <button class="@ZF d-flex p-2 cursor-pointer btn_Pill w-fix-250 my-1" id="FRM_@item["FormId"]" title="اجازه دسترسی به @item["FormOnvan"]" onclick="ClickBtnSimpl('UpdateAccessFormBtn', '@item["FormId"]');">
                         <span class="text-danger mx-2 ">@RJ -</span>
-                        <span>@item["FormTitle"]</span>
+                        <span>@item["FormOnvan"]</span>
                         <div class="flex-fill text-end">
                             <span class="icofont icofont-verification-check text-primary"></span>
                         </div>
@@ -1148,9 +1165,9 @@
                 @foreach (DataRow item in Model.ListData.Rows)
                 {
                     { RJ++; ZF = (ZF == "Fard") ? "Zoj" : "Fard"; }
-                    <button class="@ZF d-flex p-2 cursor-pointer btn_Pill w-fix-250 my-1" id="FRM_@item["FormId"]" title="حذف دسترسی از  @item["FormTitle"]" onclick="ClickBtnSimpl('UpdateAccessFormBtn', '@item["FormId"]');">
+                    <button class="@ZF d-flex p-2 cursor-pointer btn_Pill w-fix-250 my-1" id="FRM_@item["FormId"]" title="حذف دسترسی از  @item["FormOnvan"]" onclick="ClickBtnSimpl('UpdateAccessFormBtn', '@item["FormId"]');">
                         <span class="text-danger mx-2 ">@RJ -</span>
-                        <span>@item["FormTitle"]</span>
+                        <span>@item["FormOnvan"]</span>
                         <div class="flex-fill text-end">
                             <span class="icofont icofont-close-circled text-danger"></span>
                         </div>

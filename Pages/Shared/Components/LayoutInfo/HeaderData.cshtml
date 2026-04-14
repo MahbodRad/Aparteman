@@ -2,17 +2,19 @@
 
 <header class="text-white px-2">
     <div class="d-flex justify-content-between pt-3">
-        <div class="d-flex">
-            <img src="~/images/logo.png" class="w-fix-50" data-bs-toggle="tooltip" data-bs-title="دایانان دانا" />
-        </div>
-        <div class="text-warning">
-            <h5>@Model.formSetup.Title</h5>
-        </div>
         <div class="">
             <a class="font-16" asp-area="" asp-page="/Home">
-                <span class="cursor-pointer" style="font-family: DastNevis; color:orangered">آپارتمان من</span>
+                <img src="~/images/logo.png" class="w-fix-50" data-bs-toggle="tooltip" data-bs-title="آپارتمان من" />
             </a>
-            <a class=" text-white text_line22" style="font-family: DastNevis;" asp-page="/Other/Profile">سلام @Model.formSetup.UserName <span class="icofont icofont-simple-smile text-warning"></span></a>
+        </div>
+        <div class="text-warning">
+            <h5>@Model.formSetup.Onvan</h5>
+        </div>
+        <div class="">
+            <a class="font-16" asp-area="dashbord" asp-page="Profile">
+                <span class="cursor-pointer" style="font-family: DastNevis; color:orangered">آپارتمان من</span>
+                <div class=" text-white text_line22" style="font-family: DastNevis;">سلام @Model.formSetup.UserName <span class="icofont icofont-simple-smile text-warning"></span></div>
+            </a>
         </div>
     </div>
 </header>

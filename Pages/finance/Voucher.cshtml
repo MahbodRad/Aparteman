@@ -63,53 +63,167 @@
                       data-ajax-url="?handler=RepListVouchers"
                       data-ajax-update="#RepListVouchers">
 
-                    <div class="row">
-                        <div class="col-6 col-sm-2">
-                            <span class="control-label">شرح سند</span>
-                            <input class="control-text" name="ItemTitle" value="" />
+                    <div class="p-1">
+                        <div id="AreaBtnVoucher">
+                            <button type="button" class="BTN btn_Pill btn_Firuze m-2 w-min-75" onclick="Btn_Select(this, 'AreaBtnVoucher'); FastReportAjax('TD', 'BtnRepVoucher', 'VHR', 'VHR_LimitDate');">امروز</button>
+                            <button type="button" class="BTN btn_Pill btn_Firuze m-2 w-min-75" onclick="Btn_Select(this, 'AreaBtnVoucher'); FastReportAjax('1W', 'BtnRepVoucher', 'VHR', 'VHR_LimitDate');">هفته</button>
+                            <button type="button" class="BTN btn_Pill btn_Firuze m-2 w-min-75" onclick="Btn_Select(this, 'AreaBtnVoucher'); FastReportAjax('2W', 'BtnRepVoucher', 'VHR', 'VHR_LimitDate');">دوهفته</button>
+                            <button type="button" class="BTN btn_Pill btn_Firuze m-2 w-min-75" onclick="Btn_Select(this, 'AreaBtnVoucher'); FastReportAjax('1M', 'BtnRepVoucher', 'VHR', 'VHR_LimitDate');">یک ماه</button>
+                            <button type="button" class="BTN btn_Pill btn_Firuze m-2 w-min-75" onclick="Btn_Select(this, 'AreaBtnVoucher'); FastReportAjax('3M', 'BtnRepVoucher', 'VHR', 'VHR_LimitDate');">سه ماه</button>
+                            <button type="button" class="BTN btn_Pill btn_Firuze m-2 w-min-75" onclick="Btn_Select(this, 'AreaBtnVoucher'); FastReportAjax('TM', 'BtnRepVoucher', 'VHR', 'VHR_LimitDate');">ماه جاری</button>
+                            <button type="button" class="BTN btn_Top btn_Light m-2 w-min-75" onclick="Btn_Select(this, 'AreaBtnVoucher'); AreaToggel('ReportSazVoucher');">گزارش ساز <span class="text-primary icofont-00x icofont-cubes"></span></button>
                         </div>
-                        <div class="col-6 col-sm-2">
-                            <span class="control-label">نوع سند</span>
-                            <select class="control-input" name="MethodCode">
-                                <option value="0">همه</option>
-                                <option value="1">براساس متراژ</option>
-                                <option value="2">تعداد نفرات </option>
-                                <option value="3">مساوی</option>
-                                <option value="4">مصرف</option>
-                            </select>
-                        </div>
-                        <div class="col-6 col-sm-2">
-                            <span class="control-label">طرف حساب</span>
-                            <input class="control-text" name="AccountTitle" value="" />
-                        </div>
+                        <div id="ReportSazVoucher" class="alert alert-info rounded p-3 dis-none border shadow">
+                            <div class="row">
+                                <div class="col-12 col-sm-3">
+                                    <div class="w-fix-180 mx-1">
+                                        <span class="control-label">محدوده تاریخ</span>
+                                        <select class="control-input" id="VHR_LimitDate" onchange="LimitDateAjax(this,'VHR');">
+                                            <option value="0" selected>انتخاب شود</option>
+                                            <option value="TD">امروز</option>
+                                            <option value="1W">یک هفته</option>
+                                            <option value="2W">دو هفته</option>
+                                            <option value="1M">یک ماه</option>
+                                            <option value="TM">ماه جاری</option>
+                                            <option value="LM">ماه قبل</option>
+                                            <option value="3M">سه ماه</option>
+                                            <option value="6M">شش ماه</option>
+                                            <option value="1Y">یکسال</option>
+                                            <option value="TY">امسال</option>
+                                            <option value="LY">پارسال</option>
+                                        </select>
 
-                        <div class="col-6 col-sm-2">
-                            <span class="control-label">پرداخت کننده</span>
-                            <select class="control-input" name="PayerCode">
-                                <option value="0">همه</option>
-                                <option value="1">ساکن است</option>
-                                <option value="2">مالک است</option>
-                            </select>
-                        </div>
-                        <div class="col-6 col-sm-2">
-                            <span class="control-label">وضعیت</span>
-                            <select class="control-input" name="IsActive">
-                                <option value="2">همه</option>
-                                <option value="1">فعال است</option>
-                                <option value="0">غیرفعال است</option>
-                            </select>
-                        </div>
-                        <div class="col-6 col-sm-2">
-                            <span class="control-label">مرتب سازی</span>
-                            <select class="control-input" name="Sort">
-                                <option value="A">عنوان</option>
-                                <option value="B">روش تقسیم</option>
-                            </select>
+                                        <div id="waitLimitDateVHR"></div>
+
+                                        <span class="control-label">از تاریخ</span>
+                                        <div class="control-Date">
+                                            <input placeholder="از تاریخ" id="FromDateVHR" name="FromDate" maxlength="10" readonly class="usage control-input-plaintext" value="@ViewData["Today"]" />
+                                        </div>
+                                        <span class="control-label">تا تاریخ</span>
+                                        <div class="control-Date">
+                                            <input placeholder="از تاریخ" id="ToDateVHR" name="ToDate" maxlength="10" readonly class="usage control-input-plaintext" value="@ViewData["Today"]" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-sm-9">
+                                    <div class="row">
+                                        <div class="col-12 col-sm-4">
+                                            <span class="control-label">شرح سند</span>
+                                            <input class="control-text" name="Sharh" value="" />
+                                        </div>
+                                        <div class="col-12 col-sm-4">
+                                            <span class="control-label">نوع سند</span>
+                                            <select class="control-input" name="EventType">
+                                                <option value="0">همه</option>
+                                                <option value="1">هزینه</option>
+                                                <option value="2">دریافت </option>
+                                                <option value="3">پرداخت</option>
+                                                <option value="4">انتفال</option>
+                                                <option value="5">امور مالی</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-12 col-sm-4">
+                                            <span class="control-label">مرتب سازی</span>
+                                            <select class="control-input" name="Sort">
+                                                <option value="A">تاریخ</option>
+                                                <option value="B">شماره</option>
+                                                <option value="C">مبلغ</option>
+                                                <option value="D">نوع سند</option>
+                                            </select>
+                                        </div>
+
+
+                                        <div class="col-12 col-sm-4">
+                                            <span class="control-label">حساب بستانکار</span>
+                                            <select class="control-input" name="AccountBes" onchange="ShowTafziliRep(this,'VHRBes')">
+                                                <option value="0" data-Detail="4">همه حساب ها</option>
+                                                @foreach (DataRow item in Model.ListAccount.Rows)
+                                                {
+                                                    <option value="@item["AccountId"]" data-Detail="@item["DetailCode"]">@item["AccountCode"] -> @item["AccountTitle"]</option>
+                                                }
+                                            </select>
+                                            <div id="tafziliRepVHRBesArea" class="dis-none">
+                                                <div id="tafziliRepVHRBes_1" class="dis-none">
+                                                    <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'شخصی که از او این مبلغ را دریافت کرده اید انتخاب کنید. برای اینکار ابتدا با فیلتر گذاری در زیر منوکشی اشخاص را پر کنید. سپس از منو کشویی شخص مورد نظر را انتخاب کنید .')">از شخص</label>
+                                                    <div class="d-flex">
+                                                        <input type="text" Id="filtertafziliRepVHRBes_1" class="control-input text-center" value="" />
+                                                        <button type="button" class="btn_Icon Icon_Blue icofont-2x icofont-search" onclick="ClickBtnValueSimpl('ListFindtafziliRepVHRBesBtn','filtertafziliRepVHRBes_1','ListFindTafziliCodeVHRBes','1')"></button>
+                                                    </div>
+                                                </div>
+                                                <div id="tafziliRepVHRBes_2" class="dis-none">
+                                                    <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'واحدی که از او این مبلغ را دریافت کرده اید انتخاب کنید. برای اینکار ابتدا با فیلتر گذاری در زیر منوکشی واحدها را پر کنید. سپس از منو کشویی واحد مورد نظر را انتخاب کنید .')">از واحد</label>
+                                                    <div class="d-flex">
+                                                        <input type="text" Id="filtertafziliRepVHRBes_2" class="control-input text-center" value="" />
+                                                        <button type="button" class="btn_Icon Icon_Blue icofont-2x icofont-search" onclick="ClickBtnValueSimpl('ListFindtafziliRepVHRBesBtn','filtertafziliRepVHRBes_2','ListFindTafziliCodeVHRBes','2')"></button>
+                                                    </div>
+                                                </div>
+                                                <div id="tafziliRepVHRBes_3" class="dis-none">
+                                                    <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'قرادادی که طبق آن این مبلغ را دریافت کرده اید انتخاب کنید. برای اینکار ابتدا با فیلتر گذاری در زیر منوکشی قراردادها را پر کنید. سپس از منو کشویی قرارداد مورد نظر را انتخاب کنید .')">از قرارداد</label>
+                                                    <div class="d-flex">
+                                                        <input type="text" Id="filtertafziliRepVHRBes_3" class="control-input text-center" value="" />
+                                                        <button type="button" class="btn_Icon Icon_Blue icofont-2x icofont-search" onclick="ClickBtnValueSimpl('ListFindtafziliRepVHRBesBtn','filtertafziliRepVHRBes_3','ListFindTafziliCodeVHRBes','3')"></button>
+                                                    </div>
+                                                </div>
+                                                <select class="control-input" id="ListFindtafziliRepVHRBes" name="TafziliBes">
+                                                    <option value="0">در محدوده بالا جستجو کنید</option>
+                                                </select>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="col-12 col-sm-4">
+                                            <span class="control-label">حساب بدهکار</span>
+                                            <select class="control-input" name="AccountBed" onchange="ShowTafziliRep(this,'VHRBed')">
+                                                <option value="0" data-Detail="4">همه حساب ها</option>
+                                                @foreach (DataRow item in Model.ListAccount.Rows)
+                                                {
+                                                    <option value="@item["AccountId"]" data-Detail="@item["DetailCode"]">@item["AccountCode"] -> @item["AccountTitle"]</option>
+                                                }
+                                            </select>
+                                            <div id="tafziliRepVHRBedArea" class="dis-none">
+                                                <div id="tafziliRepVHRBed_1" class="dis-none">
+                                                    <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'شخصی که از او این مبلغ را دریافت کرده اید انتخاب کنید. برای اینکار ابتدا با فیلتر گذاری در زیر منوکشی اشخاص را پر کنید. سپس از منو کشویی شخص مورد نظر را انتخاب کنید .')">از شخص</label>
+                                                    <div class="d-flex">
+                                                        <input type="text" Id="filtertafziliRepVHRBed_1" class="control-input text-center" value="" />
+                                                        <button type="button" class="btn_Icon Icon_Blue icofont-2x icofont-search" onclick="ClickBtnValueSimpl('ListFindtafziliRepVHRBedBtn','filtertafziliRepVHRBed_1','ListFindTafziliCodeVHRBed','1')"></button>
+                                                    </div>
+                                                </div>
+                                                <div id="tafziliRepVHRBed_2" class="dis-none">
+                                                    <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'واحدی که از او این مبلغ را دریافت کرده اید انتخاب کنید. برای اینکار ابتدا با فیلتر گذاری در زیر منوکشی واحدها را پر کنید. سپس از منو کشویی واحد مورد نظر را انتخاب کنید .')">از واحد</label>
+                                                    <div class="d-flex">
+                                                        <input type="text" Id="filtertafziliRepVHRBed_2" class="control-input text-center" value="" />
+                                                        <button type="button" class="btn_Icon Icon_Blue icofont-2x icofont-search" onclick="ClickBtnValueSimpl('ListFindtafziliRepVHRBedBtn','filtertafziliRepVHRBed_2','ListFindTafziliCodeVHRBed','2')"></button>
+                                                    </div>
+                                                </div>
+                                                <div id="tafziliRepVHRBed_3" class="dis-none">
+                                                    <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'قرادادی که طبق آن این مبلغ را دریافت کرده اید انتخاب کنید. برای اینکار ابتدا با فیلتر گذاری در زیر منوکشی قراردادها را پر کنید. سپس از منو کشویی قرارداد مورد نظر را انتخاب کنید .')">از قرارداد</label>
+                                                    <div class="d-flex">
+                                                        <input type="text" Id="filtertafziliRepVHRBed_3" class="control-input text-center" value="" />
+                                                        <button type="button" class="btn_Icon Icon_Blue icofont-2x icofont-search" onclick="ClickBtnValueSimpl('ListFindtafziliRepVHRBedBtn','filtertafziliRepVHRBed_3','ListFindTafziliCodeVHRBed','3')"></button>
+                                                    </div>
+                                                </div>
+                                                <select class="control-input" id="ListFindtafziliRepVHRBed" name="TafziliBed">
+                                                    <option value="0">در محدوده بالا جستجو کنید</option>
+                                                </select>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="col-12 col-sm-4">
+                                            <span class="control-label">محدوده</span>
+                                            <select class="control-input" name="Filter">
+                                                <option value="A">همه اسناد</option>
+                                                <option value="B">تراز نشده ها</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
                     <div class="p-3 text-end">
-                        <button type="submit" id="RepListVouchersBtn" class="BTN btn_Pill btn_Blue2"><span>جستجوی سندها</span><i class="icofont-2x icofont-search-2"></i></button>
+                        <button type="submit" id="BtnRepVoucher" class="BTN btn_Pill btn_Blue2"><span>جستجوی سندها</span><i class="icofont-2x icofont-search-2"></i></button>
                     </div>
                 </form>
             </div>
@@ -118,10 +232,10 @@
 
         <div class="container-fluid">
             <div class="mt-3" id="RepListVouchers">
-                <div class="alert alert-info w-max-400 mx-auto cursor-pointer" onclick="ClickBtn('RepListVouchersBtn')">
-                    <i class="icofont-search-2" style="font-size:40px;"></i>
+                <div class="alert alert-info w-max-400 mx-auto cursor-pointer" onclick="FastReportAjax('1M', 'BtnRepVoucher', 'VHR', 'VHR_LimitDate');">
+                        <i class="icofont-search-2" style="font-size:40px;"></i>
                     <h6 class="mt-3">هنوز جستجویی انجام نشده</h6>
-                    <p class="text-muted">برای مشاهده 1000 سند اخیر کلیک کنید، و یا از فیلترهای بالا استفاده کنید</p>
+                    <p class="text-muted">برای مشاهده سندهای اخیر کلیک کنید، و یا از فیلترهای بالا استفاده کنید</p>
                 </div>
             </div>
         </div>
@@ -164,14 +278,14 @@
                       data-ajax-url="?handler=RepListCost"
                       data-ajax-update="#RepListCost">
                     <div class="p-1">
-                        <div id="AreaBtn">
-                            <button type="button" class="BTN btn_Pill btn_Firuze m-2 w-min-75" onclick="Btn_Select(this, 'AreaBtn'); FastReportAjax('TD', 'BtnRepCost', 'CST', 'CST_LimitDate');">امروز</button>
-                            <button type="button" class="BTN btn_Pill btn_Firuze m-2 w-min-75" onclick="Btn_Select(this, 'AreaBtn'); FastReportAjax('1W', 'BtnRepCost', 'CST', 'CST_LimitDate');">هفته</button>
-                            <button type="button" class="BTN btn_Pill btn_Firuze m-2 w-min-75" onclick="Btn_Select(this, 'AreaBtn'); FastReportAjax('2W', 'BtnRepCost', 'CST', 'CST_LimitDate');">دوهفته</button>
-                            <button type="button" class="BTN btn_Pill btn_Firuze m-2 w-min-75" onclick="Btn_Select(this, 'AreaBtn'); FastReportAjax('1M', 'BtnRepCost', 'CST', 'CST_LimitDate');">یک ماه</button>
-                            <button type="button" class="BTN btn_Pill btn_Firuze m-2 w-min-75" onclick="Btn_Select(this, 'AreaBtn'); FastReportAjax('3M', 'BtnRepCost', 'CST', 'CST_LimitDate');">سه ماه</button>
-                            <button type="button" class="BTN btn_Pill btn_Firuze m-2 w-min-75" onclick="Btn_Select(this, 'AreaBtn'); FastReportAjax('TM', 'BtnRepCost', 'CST', 'CST_LimitDate');">ماه جاری</button>
-                            <button type="button" class="BTN btn_Top btn_Light m-2 w-min-75" onclick="Btn_Select(this, 'AreaBtn'); AreaToggel('ReportSazCost');">گزارش ساز <span class="text-primary icofont-00x icofont-cubes"></span></button>
+                        <div id="AreaBtnCost">
+                            <button type="button" class="BTN btn_Pill btn_Firuze m-2 w-min-75" onclick="Btn_Select(this, 'AreaBtnCost'); FastReportAjax('TD', 'BtnRepCost', 'CST', 'CST_LimitDate');">امروز</button>
+                            <button type="button" class="BTN btn_Pill btn_Firuze m-2 w-min-75" onclick="Btn_Select(this, 'AreaBtnCost'); FastReportAjax('1W', 'BtnRepCost', 'CST', 'CST_LimitDate');">هفته</button>
+                            <button type="button" class="BTN btn_Pill btn_Firuze m-2 w-min-75" onclick="Btn_Select(this, 'AreaBtnCost'); FastReportAjax('2W', 'BtnRepCost', 'CST', 'CST_LimitDate');">دوهفته</button>
+                            <button type="button" class="BTN btn_Pill btn_Firuze m-2 w-min-75" onclick="Btn_Select(this, 'AreaBtnCost'); FastReportAjax('1M', 'BtnRepCost', 'CST', 'CST_LimitDate');">یک ماه</button>
+                            <button type="button" class="BTN btn_Pill btn_Firuze m-2 w-min-75" onclick="Btn_Select(this, 'AreaBtnCost'); FastReportAjax('3M', 'BtnRepCost', 'CST', 'CST_LimitDate');">سه ماه</button>
+                            <button type="button" class="BTN btn_Pill btn_Firuze m-2 w-min-75" onclick="Btn_Select(this, 'AreaBtnCost'); FastReportAjax('TM', 'BtnRepCost', 'CST', 'CST_LimitDate');">ماه جاری</button>
+                            <button type="button" class="BTN btn_Top btn_Light m-2 w-min-75" onclick="Btn_Select(this, 'AreaBtnCost'); AreaToggel('ReportSazCost');">گزارش ساز <span class="text-primary icofont-00x icofont-cubes"></span></button>
                         </div>
                         <div id="ReportSazCost" class="alert alert-info rounded p-3 dis-none border shadow">
                             <div class="row">
@@ -257,7 +371,7 @@
                                             <select class="control-input" name="Sort">
                                                 <option value="A">تاریخ</option>
                                                 <option value="B">تاریخ کاهشی</option>
-                                                <option value="C">عنوان</option>
+                                                <option value="C">نوع هزینه</option>
                                             </select>
                                         </div>
                                         <div class="col-12">
@@ -371,29 +485,37 @@
                                 <div class="col-12 col-sm-9">
                                     <div class="row">
                                         <div class="col-12 col-sm-4">
-                                            <span class="control-label">حساب / </span>
-                                            <select class="control-input" name="AccountId" onchange="ShowTafziliRep(this)">
+                                            <span class="control-label">حساب</span>
+                                            <select class="control-input" name="AccountId" onchange="ShowTafziliRep(this,'DRF')">
                                                 <option value="0" data-Detail="4">همه حساب ها</option>
                                                 @foreach (DataRow item in Model.ListAccount.Rows)
                                                 {
-                                                   <option value="@item["AccountId"]" data-Detail="@item["DetailCode"]">@item["AccountCode"] -> @item["AccountTitle"]</option>
+                                                    <option value="@item["AccountId"]" data-Detail="@item["DetailCode"]">@item["AccountCode"] -> @item["AccountTitle"]</option>
                                                 }
                                             </select>
-                                            <div id="tafziliRepArea" class="dis-none">
-                                                <div id="tafziliRep_1" class="dis-none">
-                                                    <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'شخصی که از او این مبلغ را دریافت کرده اید انتخاب کنید. برای اینکار ابتدا با فیلتر گذاری در زیر منوکشی اشخاص را پر کنید. سپس از منو کشویی شخص مورد نظر را انتخاب کنید .')">انتخاب شخص</label>
+                                            <div id="tafziliRepDRFArea" class="dis-none">
+                                                <div id="tafziliRepDRF_1" class="dis-none">
+                                                    <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'شخصی که از او این مبلغ را دریافت کرده اید انتخاب کنید. برای اینکار ابتدا با فیلتر گذاری در زیر منوکشی اشخاص را پر کنید. سپس از منو کشویی شخص مورد نظر را انتخاب کنید .')">از شخص</label>
+                                                    <div class="d-flex">
+                                                        <input type="text" Id="filtertafziliRepDRF_1" class="control-input text-center" value="" />
+                                                        <button type="button" class="btn_Icon Icon_Blue icofont-2x icofont-search" onclick="ClickBtnValueSimpl('ListFindtafziliRepDRFBtn','filtertafziliRepDRF_1','ListFindTafziliCodeDRF','1')"></button>
+                                                    </div>
                                                 </div>
-                                                <div id="tafziliRep_2" class="dis-none">
-                                                    <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'واحدی که از او این مبلغ را دریافت کرده اید انتخاب کنید. برای اینکار ابتدا با فیلتر گذاری در زیر منوکشی واحدها را پر کنید. سپس از منو کشویی واحد مورد نظر را انتخاب کنید .')">انتخاب واحد</label>
+                                                <div id="tafziliRepDRF_2" class="dis-none">
+                                                    <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'واحدی که از او این مبلغ را دریافت کرده اید انتخاب کنید. برای اینکار ابتدا با فیلتر گذاری در زیر منوکشی واحدها را پر کنید. سپس از منو کشویی واحد مورد نظر را انتخاب کنید .')">از واحد</label>
+                                                    <div class="d-flex">
+                                                        <input type="text" Id="filtertafziliRepDRF_2" class="control-input text-center" value="" />
+                                                        <button type="button" class="btn_Icon Icon_Blue icofont-2x icofont-search" onclick="ClickBtnValueSimpl('ListFindtafziliRepDRFBtn','filtertafziliRepDRF_2','ListFindTafziliCodeDRF','2')"></button>
+                                                    </div>
                                                 </div>
-                                                <div id="tafziliRep_3" class="dis-none">
-                                                    <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'قرادادی که طبق آن این مبلغ را دریافت کرده اید انتخاب کنید. برای اینکار ابتدا با فیلتر گذاری در زیر منوکشی قراردادها را پر کنید. سپس از منو کشویی قرارداد مورد نظر را انتخاب کنید .')">انتخاب قرارداد</label>
+                                                <div id="tafziliRepDRF_3" class="dis-none">
+                                                    <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'قرادادی که طبق آن این مبلغ را دریافت کرده اید انتخاب کنید. برای اینکار ابتدا با فیلتر گذاری در زیر منوکشی قراردادها را پر کنید. سپس از منو کشویی قرارداد مورد نظر را انتخاب کنید .')">از قرارداد</label>
+                                                    <div class="d-flex">
+                                                        <input type="text" Id="filtertafziliRepDRF_3" class="control-input text-center" value="" />
+                                                        <button type="button" class="btn_Icon Icon_Blue icofont-2x icofont-search" onclick="ClickBtnValueSimpl('ListFindtafziliRepDRFBtn','filtertafziliRepDRF_3','ListFindTafziliCodeDRF','3')"></button>
+                                                    </div>
                                                 </div>
-                                                <div class="d-flex">
-                                                    <input type="text" Id="filterTafziliRep" class="control-input text-center" value="" />
-                                                    <button type="button" class="btn_Icon Icon_Blue icofont-2x icofont-search" onclick="ClickBtnValue('ListFindTafziliRepBtn','filterTafziliRep')"></button>
-                                                </div>
-                                                <select class="control-input" id="ListFindTafziliRep" name="TafziliId">
+                                                <select class="control-input" id="ListFindtafziliRepDRF" name="TafziliBes">
                                                     <option value="0">در محدوده بالا جستجو کنید</option>
                                                 </select>
 
@@ -521,29 +643,37 @@
                                 <div class="col-12 col-sm-9">
                                     <div class="row">
                                         <div class="col-12 col-sm-4">
-                                            <span class="control-label">حساب / </span>
-                                            <select class="control-input" name="AccountId" onchange="ShowTafziliRep(this)">
+                                            <span class="control-label">حساب</span>
+                                            <select class="control-input" name="AccountId" onchange="ShowTafziliRep(this,'PRD')">
                                                 <option value="0" data-Detail="4">همه حساب ها</option>
                                                 @foreach (DataRow item in Model.ListAccount.Rows)
                                                 {
                                                     <option value="@item["AccountId"]" data-Detail="@item["DetailCode"]">@item["AccountCode"] -> @item["AccountTitle"]</option>
                                                 }
                                             </select>
-                                            <div id="tafziliRepArea" class="dis-none">
-                                                <div id="tafziliRep_1" class="dis-none">
-                                                    <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'شخصی که از او این مبلغ را دریافت کرده اید انتخاب کنید. برای اینکار ابتدا با فیلتر گذاری در زیر منوکشی اشخاص را پر کنید. سپس از منو کشویی شخص مورد نظر را انتخاب کنید .')">انتخاب شخص</label>
+                                            <div id="tafziliRepPRDArea" class="dis-none">
+                                                <div id="tafziliRepPRD_1" class="dis-none">
+                                                    <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'شخصی که از او این مبلغ را دریافت کرده اید انتخاب کنید. برای اینکار ابتدا با فیلتر گذاری در زیر منوکشی اشخاص را پر کنید. سپس از منو کشویی شخص مورد نظر را انتخاب کنید .')">از شخص</label>
+                                                    <div class="d-flex">
+                                                        <input type="text" Id="filtertafziliRepPRD_1" class="control-input text-center" value="" />
+                                                        <button type="button" class="btn_Icon Icon_Blue icofont-2x icofont-search" onclick="ClickBtnValueSimpl('ListFindtafziliRepPRDBtn','filtertafziliRepPRD_1','ListFindTafziliCodePRD','1')"></button>
+                                                    </div>
                                                 </div>
-                                                <div id="tafziliRep_2" class="dis-none">
-                                                    <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'واحدی که از او این مبلغ را دریافت کرده اید انتخاب کنید. برای اینکار ابتدا با فیلتر گذاری در زیر منوکشی واحدها را پر کنید. سپس از منو کشویی واحد مورد نظر را انتخاب کنید .')">انتخاب واحد</label>
+                                                <div id="tafziliRepPRD_2" class="dis-none">
+                                                    <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'واحدی که از او این مبلغ را دریافت کرده اید انتخاب کنید. برای اینکار ابتدا با فیلتر گذاری در زیر منوکشی واحدها را پر کنید. سپس از منو کشویی واحد مورد نظر را انتخاب کنید .')">از واحد</label>
+                                                    <div class="d-flex">
+                                                        <input type="text" Id="filtertafziliRepPRD_2" class="control-input text-center" value="" />
+                                                        <button type="button" class="btn_Icon Icon_Blue icofont-2x icofont-search" onclick="ClickBtnValueSimpl('ListFindtafziliRepPRDBtn','filtertafziliRepPRD_2','ListFindTafziliCodePRD','2')"></button>
+                                                    </div>
                                                 </div>
-                                                <div id="tafziliRep_3" class="dis-none">
-                                                    <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'قرادادی که طبق آن این مبلغ را دریافت کرده اید انتخاب کنید. برای اینکار ابتدا با فیلتر گذاری در زیر منوکشی قراردادها را پر کنید. سپس از منو کشویی قرارداد مورد نظر را انتخاب کنید .')">انتخاب قرارداد</label>
+                                                <div id="tafziliRepPRD_3" class="dis-none">
+                                                    <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'قرادادی که طبق آن این مبلغ را دریافت کرده اید انتخاب کنید. برای اینکار ابتدا با فیلتر گذاری در زیر منوکشی قراردادها را پر کنید. سپس از منو کشویی قرارداد مورد نظر را انتخاب کنید .')">از قرارداد</label>
+                                                    <div class="d-flex">
+                                                        <input type="text" Id="filtertafziliRepPRD_3" class="control-input text-center" value="" />
+                                                        <button type="button" class="btn_Icon Icon_Blue icofont-2x icofont-search" onclick="ClickBtnValueSimpl('ListFindtafziliRepPRDBtn','filtertafziliRepPRD_3','ListFindTafziliCodePRD','3')"></button>
+                                                    </div>
                                                 </div>
-                                                <div class="d-flex">
-                                                    <input type="text" Id="filterTafziliRep" class="control-input text-center" value="" />
-                                                    <button type="button" class="btn_Icon Icon_Blue icofont-2x icofont-search" onclick="ClickBtnValue('ListFindTafziliRepBtn','filterTafziliRep')"></button>
-                                                </div>
-                                                <select class="control-input" id="ListFindTafziliRep" name="TafziliId">
+                                                <select class="control-input" id="ListFindtafziliRepPRD" name="TafziliBes">
                                                     <option value="0">در محدوده بالا جستجو کنید</option>
                                                 </select>
 
@@ -591,6 +721,167 @@
     </div>
 
 
+
+    <!-- ✅ عملیات بانک -->
+    <div class="tab-pane fade" id="tab_F">
+        @{
+            pagesitem = Model.formData.Pages.Select("RJ = 6").First();
+        }
+        <div class="OnvanSafhe">
+            <h6 class="shadow">@pagesitem["OnvanPage"]</h6>
+        </div>
+
+        @if (!string.IsNullOrEmpty(pagesitem["HeaderPage"].ToString()))
+        {
+            <div class="alert alert-secondary">
+                @Html.Raw(HttpUtility.HtmlDecode(pagesitem["HeaderPage"].ToString()))
+            </div>
+        }
+
+        <div class="container">
+
+            <form method="get" data-ajax="true" data-ajax-method="get"
+                  data-ajax-begin="MsgFormSpinner('A','ثبت جابجایی مبلغ بین حساب ها', 'چند لحظه صبر کنید');"
+                  data-ajax-url="?handler=FormSabtTransfer"
+                  data-ajax-update="#MsgFormMATN_A">
+                <input type="submit" hidden id="FormSabtTransferBtn" name="ID" />
+                <div class="px-2 text-end">
+                    <button type="button" class="BTN btn_Pill btn_Blue2" onclick="ClickBtnSimpl('FormSabtTransferBtn','0');"><span>ثبت عملیات بانک جدید</span><i class="icofont-00x icofont-plus"></i></button>
+                </div>
+            </form>
+
+
+            <div class="filterArea">
+
+                <form asp-antiforgery="true" method="get" data-ajax-method="get" data-ajax="true"
+                      data-ajax-begin="SpinnerShow('RepListTransfer', 'در حال بارگذاری لیست عملیات بانک');"
+                      data-ajax-url="?handler=RepListTransfer"
+                      data-ajax-update="#RepListTransfer">
+                    <div class="p-1">
+                        <div id="AreaBtnTransfer">
+                            <button type="button" class="BTN btn_Pill btn_Firuze m-2 w-min-75" onclick="Btn_Select(this, 'AreaBtnTransfer'); FastReportAjax('TD', 'BtnRepTransfer', 'TRS', 'TRS_LimitDate');">امروز</button>
+                            <button type="button" class="BTN btn_Pill btn_Firuze m-2 w-min-75" onclick="Btn_Select(this, 'AreaBtnTransfer'); FastReportAjax('1W', 'BtnRepTransfer', 'TRS', 'TRS_LimitDate');">هفته</button>
+                            <button type="button" class="BTN btn_Pill btn_Firuze m-2 w-min-75" onclick="Btn_Select(this, 'AreaBtnTransfer'); FastReportAjax('2W', 'BtnRepTransfer', 'TRS', 'TRS_LimitDate');">دوهفته</button>
+                            <button type="button" class="BTN btn_Pill btn_Firuze m-2 w-min-75" onclick="Btn_Select(this, 'AreaBtnTransfer'); FastReportAjax('1M', 'BtnRepTransfer', 'TRS', 'TRS_LimitDate');">یک ماه</button>
+                            <button type="button" class="BTN btn_Pill btn_Firuze m-2 w-min-75" onclick="Btn_Select(this, 'AreaBtnTransfer'); FastReportAjax('3M', 'BtnRepTransfer', 'TRS', 'TRS_LimitDate');">سه ماه</button>
+                            <button type="button" class="BTN btn_Pill btn_Firuze m-2 w-min-75" onclick="Btn_Select(this, 'AreaBtnTransfer'); FastReportAjax('TM', 'BtnRepTransfer', 'TRS', 'TRS_LimitDate');">ماه جاری</button>
+                            <button type="button" class="BTN btn_Top btn_Light m-2 w-min-75" onclick="Btn_Select(this, 'AreaBtnTransfer'); AreaToggel('ReportSazTransfer');">گزارش ساز <span class="text-primary icofont-00x icofont-cubes"></span></button>
+                        </div>
+                        <div id="ReportSazTransfer" class="alert alert-info rounded p-3 dis-none border shadow">
+                            <div class="row">
+                                <div class="col-12 col-sm-3">
+                                    <div class="w-fix-180 mx-1">
+                                        <span class="control-label">محدوده تاریخ</span>
+                                        <select class="control-input" id="TRS_LimitDate" onchange="LimitDateAjax(this,'TRS');">
+                                            <option value="0" selected>انتخاب شود</option>
+                                            <option value="TD">امروز</option>
+                                            <option value="1W">یک هفته</option>
+                                            <option value="2W">دو هفته</option>
+                                            <option value="1M">یک ماه</option>
+                                            <option value="TM">ماه جاری</option>
+                                            <option value="LM">ماه قبل</option>
+                                            <option value="3M">سه ماه</option>
+                                            <option value="6M">شش ماه</option>
+                                            <option value="1Y">یکسال</option>
+                                            <option value="TY">امسال</option>
+                                            <option value="LY">پارسال</option>
+                                        </select>
+
+                                        <div id="waitLimitDateTRS"></div>
+
+                                        <span class="control-label">از تاریخ</span>
+                                        <div class="control-Date">
+                                            <input placeholder="از تاریخ" id="FromDateTRS" name="FromDate" maxlength="10" readonly class="usage control-input-plaintext" value="@ViewData["Today"]" />
+                                        </div>
+                                        <span class="control-label">تا تاریخ</span>
+                                        <div class="control-Date">
+                                            <input placeholder="از تاریخ" id="ToDateTRS" name="ToDate" maxlength="10" readonly class="usage control-input-plaintext" value="@ViewData["Today"]" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-sm-9">
+                                    <div class="row">
+                                        <div class="col-12 col-sm-4">
+                                            <span class="control-label">حساب </span>
+                                            <select class="control-input" name="AccountId" onchange="ShowTafziliRep(this,'TRS')">
+                                                <option value="0" data-Detail="4">همه حساب ها</option>
+                                                @foreach (DataRow item in Model.ListAccount.Rows)
+                                                {
+                                                    @if (@item["AccountTypeCode"].ToString() == "1")
+                                                    {
+                                                        <option value="@item["AccountId"]" data-Detail="@item["DetailCode"]">@item["AccountCode"] -> @item["AccountTitle"]</option>
+                                                    }
+                                                }
+                                            </select>
+                                            <div id="tafziliRepTRSArea" class="dis-none">
+                                                <div id="tafziliRepTRS_1" class="dis-none">
+                                                    <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'شخصی که از او این مبلغ را دریافت کرده اید انتخاب کنید. برای اینکار ابتدا با فیلتر گذاری در زیر منوکشی اشخاص را پر کنید. سپس از منو کشویی شخص مورد نظر را انتخاب کنید .')">از شخص</label>
+                                                    <div class="d-flex">
+                                                        <input type="text" Id="filtertafziliRepTRS_1" class="control-input text-center" value="" />
+                                                        <button type="button" class="btn_Icon Icon_Blue icofont-2x icofont-search" onclick="ClickBtnValueSimpl('ListFindtafziliRepTRSBtn','filtertafziliRepTRS_1','ListFindTafziliCodeTRS','1')"></button>
+                                                    </div>
+                                                </div>
+                                                <div id="tafziliRepTRS_2" class="dis-none">
+                                                    <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'واحدی که از او این مبلغ را دریافت کرده اید انتخاب کنید. برای اینکار ابتدا با فیلتر گذاری در زیر منوکشی واحدها را پر کنید. سپس از منو کشویی واحد مورد نظر را انتخاب کنید .')">از واحد</label>
+                                                    <div class="d-flex">
+                                                        <input type="text" Id="filtertafziliRepTRS_2" class="control-input text-center" value="" />
+                                                        <button type="button" class="btn_Icon Icon_Blue icofont-2x icofont-search" onclick="ClickBtnValueSimpl('ListFindtafziliRepTRSBtn','filtertafziliRepTRS_2','ListFindTafziliCodeTRS','2')"></button>
+                                                    </div>
+                                                </div>
+                                                <div id="tafziliRepTRS_3" class="dis-none">
+                                                    <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'قرادادی که طبق آن این مبلغ را دریافت کرده اید انتخاب کنید. برای اینکار ابتدا با فیلتر گذاری در زیر منوکشی قراردادها را پر کنید. سپس از منو کشویی قرارداد مورد نظر را انتخاب کنید .')">از قرارداد</label>
+                                                    <div class="d-flex">
+                                                        <input type="text" Id="filtertafziliRepTRS_3" class="control-input text-center" value="" />
+                                                        <button type="button" class="btn_Icon Icon_Blue icofont-2x icofont-search" onclick="ClickBtnValueSimpl('ListFindtafziliRepTRSBtn','filtertafziliRepTRS_3','ListFindTafziliCodeTRS','3')"></button>
+                                                    </div>
+                                                </div>
+                                                <select class="control-input" id="ListFindtafziliRepTRS" name="TafziliBes">
+                                                    <option value="0">در محدوده بالا جستجو کنید</option>
+                                                </select>
+
+                                            </div>
+
+                                        </div>
+                                        <div class="col-12 col-sm-4">
+                                            <span class="control-label">مرتب سازی</span>
+                                            <select class="control-input" name="Sort">
+                                                <option value="A">تاریخ</option>
+                                                <option value="B">تاریخ کاهشی</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-12 col-sm-4">
+                                            <span class="control-label">شرح</span>
+                                            <input class="control-input" name="Sharh" value="" />
+                                        </div>
+                                    </div>
+
+                                    <div class="pt-4 text-end">
+                                        <button type="submit" id="BtnRepTransfer" class="BTN btn_Pill btn_Blue2" onclick="AreaUp('ReportSazTransfer')"><span>جستجوی سندهای پرداخت</span><i class="icofont-2x icofont-search-2"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </form>
+
+            </div>
+
+        </div>
+
+        <div class="container-fluid">
+            <div class="mt-3" id="RepListTransfer">
+                <div class="alert alert-info w-max-400 mx-auto cursor-pointer" onclick="FastReportAjax('1M', 'BtnRepTransfer', 'TRS', 'TRS_LimitDate');">
+                    <i class="icofont-search-2" style="font-size:40px;"></i>
+                    <h6 class="mt-3">هنوز جستجویی انجام نشده</h6>
+                    <p class="text-muted">برای مشاهده دریافت های یک ماه اخیر کلیک کنید، و یا از فیلترهای بالا استفاده کنید</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
 </div>
 
 <footer-page class="nav nav-tabs border-top border-light">
@@ -601,6 +892,7 @@
             <menu-page data-bs-toggle="tab" data-bs-target="#tab_C">ثبت هزینه</menu-page><point></point>
             <menu-page data-bs-toggle="tab" data-bs-target="#tab_D">ثبت دریافت</menu-page><point></point>
             <menu-page data-bs-toggle="tab" data-bs-target="#tab_E">ثبت پرداخت</menu-page><point></point>
+            <menu-page data-bs-toggle="tab" data-bs-target="#tab_F">عملیات بانک</menu-page><point></point>
             <menu-page class="w-min-50" onclick="HelpAjax(@Model.FormId);" data-bs-toggle="tooltip" data-bs-title="راهنما">
                 <span class="menu-firuze icofont-00x icofont-learn"></span>
             </menu-page>
@@ -614,7 +906,7 @@
                 <select class="text-start bg-secondary text-light" onchange="GoToUrl(this.value);">
                     @foreach (DataRow item in Model.formData.lastForms.Rows)
                     {
-                        <option value="/@item["Route"]">@item["FormTitle"]</option>
+                        <option value="/@item["Route"]">@item["FormOnvan"]</option>
                     }
                 </select>
             </menu-page><point></point>
@@ -670,14 +962,60 @@
         <input type="submit" id="ListFindTafziliBtnBed" name="Filter" hidden />
     </form>
 
-    <form asp-antiforgery="true" method="get" data-ajax-method="get" data-ajax="true"
-          data-ajax-begin="SelectWait('ListFindTafziliRep', 'چند لحظه صبر کنید');"
-          data-ajax-url="?handler=ListFindTafzili"
-          data-ajax-update="#ListFindTafziliRep"
-          data-ajax-complete="CheckErrorSelect('ListFindTafziliRep');">
-        <input type="hidden" id="ListFindTafziliCodeRep" name="DetailCode" />
-        <input type="hidden" name="REPValue" value="Rep" />
-        <input type="submit" id="ListFindTafziliRepBtn" name="Filter" hiden />
-    </form>
 
+
+    <form asp-antiforgery="true" method="get" data-ajax-method="get" data-ajax="true"
+          data-ajax-begin="SelectWait('ListFindtafziliRepTRS', 'چند لحظه صبر کنید');"
+          data-ajax-url="?handler=ListFindTafzili"
+          data-ajax-update="#ListFindtafziliRepTRS"
+          data-ajax-complete="CheckErrorSelect('ListFindtafziliRepTRS');">
+        <input type="hidden" id="ListFindTafziliCodeTRS" name="DetailCode" />
+        <input type="hidden" name="REPValue" value="Rep" />
+        <input type="submit" id="ListFindtafziliRepTRSBtn" name="Filter" hiden />
+    </form>
+    <form asp-antiforgery="true" method="get" data-ajax-method="get" data-ajax="true"
+          data-ajax-begin="SelectWait('ListFindtafziliRepPRD', 'چند لحظه صبر کنید');"
+          data-ajax-url="?handler=ListFindTafzili"
+          data-ajax-update="#ListFindtafziliRepPRD"
+          data-ajax-complete="CheckErrorSelect('ListFindtafziliRepPRD');">
+        <input type="hidden" id="ListFindTafziliCodePRD" name="DetailCode" />
+        <input type="hidden" name="REPValue" value="Rep" />
+        <input type="submit" id="ListFindtafziliRepPRDBtn" name="Filter" hiden />
+    </form>
+    <form asp-antiforgery="true" method="get" data-ajax-method="get" data-ajax="true"
+          data-ajax-begin="SelectWait('ListFindtafziliRepDRF', 'چند لحظه صبر کنید');"
+          data-ajax-url="?handler=ListFindTafzili"
+          data-ajax-update="#ListFindtafziliRepDRF"
+          data-ajax-complete="CheckErrorSelect('ListFindtafziliRepDRF');">
+        <input type="hidden" id="ListFindTafziliCodeDRF" name="DetailCode" />
+        <input type="hidden" name="REPValue" value="Rep" />
+        <input type="submit" id="ListFindtafziliRepDRFBtn" name="Filter" hiden />
+    </form>
+    <form asp-antiforgery="true" method="get" data-ajax-method="get" data-ajax="true"
+          data-ajax-begin="SelectWait('ListFindtafziliRepVHRBes', 'چند لحظه صبر کنید');"
+          data-ajax-url="?handler=ListFindTafzili"
+          data-ajax-update="#ListFindtafziliRepVHRBes"
+          data-ajax-complete="CheckErrorSelect('ListFindtafziliRepVHRBes');">
+        <input type="hidden" id="ListFindTafziliCodeVHRBes" name="DetailCode" />
+        <input type="hidden" name="REPValue" value="Rep" />
+        <input type="submit" id="ListFindtafziliRepVHRBesBtn" name="Filter" hiden />
+    </form>
+    <form asp-antiforgery="true" method="get" data-ajax-method="get" data-ajax="true"
+          data-ajax-begin="SelectWait('ListFindtafziliRepVHRBed', 'چند لحظه صبر کنید');"
+          data-ajax-url="?handler=ListFindTafzili"
+          data-ajax-update="#ListFindtafziliRepVHRBed"
+          data-ajax-complete="CheckErrorSelect('ListFindtafziliRepVHRBed');">
+        <input type="hidden" id="ListFindTafziliCodeVHRBed" name="DetailCode" />
+        <input type="hidden" name="REPValue" value="Rep" />
+        <input type="submit" id="ListFindtafziliRepVHRBedBtn" name="Filter" hiden />
+    </form>
+    <form asp-antiforgery="true" method="get" data-ajax-method="get" data-ajax="true"
+          data-ajax-begin="SelectWait('ListFindTafziliBesBed', 'چند لحظه صبر کنید');"
+          data-ajax-url="?handler=ListFindTafzili"
+          data-ajax-update="#ListFindTafziliBesBed"
+          data-ajax-complete="CheckErrorSelect('ListFindTafziliBesBed');">
+        <input type="hidden" id="ListFindTafziliCodeBesBed" name="DetailCode" />
+        <input type="hidden" name="REPValue" value="Rep" />
+        <input type="submit" id="ListFindTafziliBesBedBtn" name="Filter" hiden />
+    </form>
 </div>

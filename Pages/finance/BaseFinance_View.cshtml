@@ -442,7 +442,7 @@
 
 
                         <div class="mb-3 w-100">
-                            <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'یک نام یا عبارت مناسب برای دوره بنویسید)">عنوان دوره</label>
+                            <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'یک نام یا عبارت مناسب برای دوره بنویسید')">عنوان دوره</label>
                             <input type="text" name="PeriodTitle" class="control-input text-center w-min-330" value="" />
                         </div>
 
@@ -507,6 +507,25 @@
 
                     </form>
                 }
+               <div class="text-start">
+                   <ul>
+                       <li>
+                            دوره مالی میتواند هر محدوده زمانی باشد.
+                       </li>
+                       <li>
+                            می توانید دوره های مالی ماهانه ایجاد کنید
+                        </li>
+                       <li>
+                            و یا دوره های فصلی و یا سالانه
+                       </li>
+                       <li>
+                            محدودیتی در طول دوره ندارید.
+                        </li>
+                        <li>
+                            اما برای ثبت هر سند مالی لازم است که برای تاریخ آن سند یک دوره مالی تعریف کرده باشید
+                        </li>
+                    </ul>
+               </div>
             </div>
         </section>
         <script>
@@ -536,6 +555,8 @@
                             <th><span class="w-fix-100">تاریخ شروع</span></th>
                             <th><span class="w-fix-100">تاریخ پایان</span></th>
                             <th><span class="w-fix-50">ویرایش</span></th>
+                            <th><span class="w-fix-50">بستن/بازکردن</span></th>
+                            <th><span class="w-fix-50">شماره گذاری موقت</span></th>
                             <th><span class="w-fix-150">وضعیت</span></th>
                         </tr>
                     </thead>
@@ -551,6 +572,8 @@
                         <th><span class="w-fix-100">تاریخ شروع</span></th>
                         <th><span class="w-fix-100">تاریخ پایان</span></th>
                         <th><span class="w-fix-50">ویرایش</span></th>
+                        <th><span class="w-fix-50">بستن/بازکردن</span></th>
+                        <th><span class="w-fix-50">شماره گذاری موقت</span></th>
                         <th><span class="w-fix-150">وضعیت</span></th>
                     </tr>
                 </thead>
@@ -569,6 +592,18 @@
                                     <button type="button" class="btn_Icon Icon_Mor icofont-00x icofont-edit" title="ویرایش" onclick="ClickBtnSimpl('FormSabtPeriodBtn','@item["PeriodId"]')"></button>
                                 }
                             </td>
+                            <td>
+                                @if (@item["Situation"].ToString() != "3")
+                                {
+                                    <button type="button" class="btn_Icon Icon_Brown icofont-00x icofont-shield-alt" title="بستن یا بازکردن دوره مالی" onclick="ClickBtnSimpl('FormCloseOpenBtn','@item["PeriodId"]')"></button>
+                                }
+                            </td>
+                            <td>
+                                @if (@item["Situation"].ToString() == "1")
+                                {
+                                    <button type="button" class="btn_Icon Icon_Blue2 icofont-00x icofont-listing-number" title="شماره گذاری موقت اسناد" onclick="ClickBtnSimpl('FormNumberingBtn','@item["PeriodId"]')"></button>
+                                }
+                            </td>
                             <td><span class="w-fixC-150">@item["SituationTP"]</span></td>
                         </tr>
                     }
@@ -579,4 +614,179 @@
 
         break;
 
+
+
+    case "FormNumbering":
+        <section class="container p-1">
+            <div class="secondArea">
+                <form asp-antiforgery="true" method="post" data-ajax-method="post" data-ajax="true"
+                      data-ajax-confirm="آیا شماره گذاری اسناد انجام شود"
+                      data-ajax-Btn="NumberingAsnadBtn"
+                      data-ajax-begin="SpinnerShowForm('چند لحظه صبر کنید');"
+                      data-ajax-url="?handler=NumberingAsnad"
+                      data-ajax-complete="JsonClose_A">
+                    <input type="hidden" name="ID" value="@ViewData["ID"]" />
+
+
+                    <div class="mb-3 w-100">
+                        <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'دوره ای که برای شماره گذاری اسناد  انتخاب کرده اید)">عنوان دوره</label>
+                        <span class="control-text w-min-330">@Model.RowData["PeriodTitle"]</span>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-6">
+                            <label class="control-label"> تاریخ شروع دوره </label>
+                            <span class="control-text w-min-330">@Model.RowData["StartDate"]</span>
+                        </div>
+                        <div class="col-6">
+                            <label class="control-label" > تاریخ پایان دوره </label>
+                            <span class="control-text w-min-330">@Model.RowData["EndDate"]</span>
+                        </div>
+                    </div>
+                    <div class="mb-3 w-100 text-center">
+                        <div class="w-fix-200">
+                            <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'تعداد سندهای حسابداری که در این دوره صادر کرده اید نمایش داده میشود')">تعداد اسناد صادر شده</label>
+                            <span class="control-text">@Model.RowData["NqVoucher"].ToComma()</span>
+                        </div>
+                        <div class="w-fix-200">
+                            <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'هر دوره می تواند شماره گذاری مستقل داشته باشد مثلا برای دوره سالانه میتوانید شماره را ترکیبی از عدد سال و چند رقم مجزا داشته باشید')">شروع شماره گذاری از شماره</label>
+                            <input class="control-input text-center rtl" name="Num" value="@Model.RowData["StartNumber"]" />
+                        </div>
+                    </div>
+
+                    <hr />
+                    <div class="text-end px-3">
+                        <button type="submit" id="NumberingAsnadBtn" class="btn_Icon Icon_Blue2 icofont-2x icofont-checked" title="شماره گذاری اسناد"><span>شماره گذاری موقت اسناد انجام شود</span></button>
+                    </div>
+
+                </form>
+
+            </div>
+        </section>
+        break;
+
+
+
+    case "FormCloseOpen":
+        <section class="container p-1">
+            <div class="secondArea">
+
+                    <div class="mb-3 w-100">
+                        <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'دوره ای که برای تغییر وضعیت انتخاب کرده اید)">عنوان دوره</label>
+                        <span class="control-text w-min-330">@Model.RowData["PeriodTitle"]</span>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-6">
+                            <label class="control-label"> تاریخ شروع دوره </label>
+                            <span class="control-text w-min-330">@Model.RowData["StartDate"]</span>
+                        </div>
+                        <div class="col-6">
+                            <label class="control-label"> تاریخ پایان دوره </label>
+                            <span class="control-text w-min-330">@Model.RowData["EndDate"]</span>
+                        </div>
+                    </div>
+                    <div class="mb-3 w-100 text-center">
+                        <div class="">
+                            <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'وضعیت فعلی دوره بصورت زیر است')">وضعیت فعلی</label>
+                            <span class="control-text">@Model.RowData["ActionTp"]</span>
+                        </div>
+                    </div>
+                <hr />
+
+                @if (Model.RowData["Situation"].ToString() == "1")
+                {
+                    <div class="">
+                        <form asp-antiforgery="true" method="post" data-ajax-method="post" data-ajax="true"
+                                data-ajax-confirm="آیا این دوره مالی بسته شود؟"
+                                data-ajax-Btn="CloseBtn"
+                                data-ajax-begin="SpinnerShowForm('چند لحظه صبر کنید');"
+                                data-ajax-url="?handler=CloseOpen"
+                                data-ajax-complete="JsonClose_A">
+                            <input type="hidden" name="ID" value="@ViewData["ID"]" />
+                            <input type="hidden" name="Situation" value="2" />
+                            <div class="w-fix-200">
+                                <label class="control-label cursor-pointer" onclick="ShowFastHelp(this,'هر دوره می تواند شماره گذاری مستقل داشته باشد مثلا برای دوره سالانه میتوانید شماره را ترکیبی از عدد سال و چند رقم مجزا داشته باشید')">شروع شماره گذاری از شماره</label>
+                                <input class="control-input text-center rtl" name="Num" value="@Model.RowData["StartNumber"]" />
+                            </div>
+
+                            
+                            <div class="text-end px-3">
+                                <button type="submit" id="CloseBtn" class="btn_Icon Icon_Blue2 icofont-2x icofont-checked" title="بستن دوره مالی"><span>دوره مالی بسته شود</span></button>
+                            </div>
+                            <div class="text-start">
+                                <ul>
+                                    <li>
+                                        بعد از ثبت همه اسناد حسابداری، دوره مالی را ببندید تا امکان تغییر اسناد وجود نداشته باشد.
+                                    </li>
+                                    <li>
+                                        قبل از بستن دوره لازم است که همه اسناد حسابداری آن دوره تراز باشند. یعنی جمع بدهکار و بستانکار سند برابر باشد
+                                    </li>
+                                    <li>
+                                        با ثبت دوره مانده همه حسابها به دوره جدید منتقل میشود
+                                    </li>
+                                    <li>
+                                        برای ثبت مانده حساب لازم است که ابتدا دوره جدید بعدی را ایجاد کنید.
+                                    </li>
+                                </ul>
+                            </div>
+                        </form>
+                    </div>
+                }
+
+                @if (Model.RowData["Situation"].ToString() == "2")
+                {
+                    <div class="">
+                        <form asp-antiforgery="true" method="post" data-ajax-method="post" data-ajax="true"
+                              data-ajax-confirm="آیا این دوره مالی باز شود؟"
+                              data-ajax-Btn="CloseBtn"
+                              data-ajax-begin="SpinnerShowForm('چند لحظه صبر کنید');"
+                              data-ajax-url="?handler=CloseOpen"
+                              data-ajax-complete="JsonClose_A">
+                            <input type="hidden" name="ID" value="@ViewData["ID"]" />
+                            <input type="hidden" name="Situation" value="1" />
+                            <div class="text-end px-3">
+                                <button type="submit" id="CloseBtn" class="btn_Icon Icon_Blue2 icofont-2x icofont-checked" title="بازکردن دوره مالی"><span>دوره مالی باز شود</span></button>
+                            </div>
+                            <div class="text-start">
+                                <ul>
+                                    <li>
+                                        در صورت نیاز به اصلاح اسناد یک دوره که بسته شده است، لازم است که آن را یاز کنید
+                                    </li>
+                                    <li>
+                                        با باز شدن دوره اسناد برای اصلاح و یا افزودن سند در آن دوره فعال میشود
+                                    </li>
+                                </ul>
+                            </div>
+                        </form>
+                    </div>
+                    <hr/>
+                    <div class="">
+                        <form asp-antiforgery="true" method="post" data-ajax-method="post" data-ajax="true"
+                              data-ajax-confirm="آیا این دوره مالی ثبت نهایی شود؟"
+                              data-ajax-Btn="CloseBtn"
+                              data-ajax-begin="SpinnerShowForm('چند لحظه صبر کنید');"
+                              data-ajax-url="?handler=CloseOpen"
+                              data-ajax-complete="JsonClose_A">
+                            <input type="hidden" name="ID" value="@ViewData["ID"]" />
+                            <input type="hidden" name="Situation" value="3" />
+                            <div class="text-end px-3">
+                                <button type="submit" id="CloseBtn" class="btn_Icon Icon_Blue2 icofont-2x icofont-checked" title="ثبت نهایی دوره مالی"><span>دوره مالی ثبت نهایی شود</span></button>
+                            </div>
+                            <div class="text-start">
+                                <ul>
+                                    <li>
+                                        ثبت نهایی موجب میشود که دوره برای همیشه بدون تغییر شود
+                                    </li>
+                                    <li>
+                                        در صورت ثبت نهایی دیگر امکان باز کردن دوره را ندارید. پس دقت کنید که همه اسناد حسابداری دوره صادر شده باشد
+                                    </li>
+                                </ul>
+                            </div>
+                        </form>
+                    </div>
+                }
+            </div>
+        </section>
+        break;
 }
